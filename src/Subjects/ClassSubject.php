@@ -15,7 +15,7 @@ class ClassSubject extends SubjectAbstract
      */
     public function __construct(
         public object|string $class,
-        protected FileSubject $fileSubject,
+        public FileSubject $fileSubject,
     ) {
         /**
          * Create nodes

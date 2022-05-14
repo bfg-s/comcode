@@ -39,6 +39,15 @@ class FileSubject extends SubjectAbstract
     }
 
     /**
+     * Delete fool file
+     * @return bool
+     */
+    public function delete(): bool
+    {
+        return unlink($this->file);
+    }
+
+    /**
      * Discover individual environment
      * @return void
      */

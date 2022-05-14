@@ -17,7 +17,8 @@
     "require-dev": {},
     "autoload": {
         "psr-4": {
-            "Bfg\\Comcode\\": "src/"
+            "Bfg\\Comcode\\": "src/",
+            "Bfg\\Comcode\\Tests\\": "tests/"
         },
         "files": [
             "src/helpers.php"
