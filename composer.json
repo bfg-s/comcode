@@ -17,12 +17,16 @@
     "require-dev": {},
     "autoload": {
         "psr-4": {
-            "Bfg\\Comcode\\": "src/",
-            "LteAdmin\\Tests\\": "tests/"
+            "Bfg\\Comcode\\": "src/"
         },
         "files": [
             "src/helpers.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bfg\\Comcode\\Tests\\": "tests/"
+        }
     },
     "extra": {
         "laravel": {
