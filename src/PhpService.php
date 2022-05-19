@@ -2,8 +2,8 @@
 
 namespace Bfg\Comcode;
 
-use Bfg\Comcode\Exceptions\CodeNotFoundException;
-use Bfg\Comcode\Exceptions\PhpParserErrorException;
+use Bfg\Comcode\Exceptions\CodeNotFound;
+use Bfg\Comcode\Exceptions\PhpParserError;
 use Bfg\Comcode\Subjects\ClassSubject;
 use Bfg\Comcode\Subjects\FileSubject;
 use PhpParser\Error;
@@ -44,8 +44,8 @@ class PhpService
     /**
      * @param  string  $code
      * @return Stmt[]|null
-     * @throws CodeNotFoundException
-     * @throws PhpParserErrorException
+     * @throws CodeNotFound
+     * @throws PhpParserError
      */
     public static function parse(string $code): ?array
     {
@@ -73,7 +73,7 @@ class PhpService
         }
 
         if (!$code) {
-            throw new CodeNotFoundException();
+            throw new CodeNotFound();
         }
 
         if (!str_starts_with($code, "<?php")) {
@@ -85,7 +85,7 @@ class PhpService
                 ->create(ParserFactory::PREFER_PHP7)
                 ->parse($code);
         } catch (Error $exception) {
-            throw new PhpParserErrorException(
+            throw new PhpParserError(
                 message: $exception->getMessage(),
                 previous: $exception
             );

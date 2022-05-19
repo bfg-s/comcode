@@ -2,23 +2,66 @@
 
 namespace Bfg\Comcode\Subjects;
 
-use Illuminate\Support\Traits\Conditionable;
-use JetBrains\PhpStorm\ArrayShape;
+use Bfg\Comcode\Comcode;
+use Bfg\Comcode\Exceptions\QueryNodeError;
+use Bfg\Comcode\PrettyPrinter;
+use Bfg\Comcode\QueryNodeBuilder;
+use Bfg\Comcode\Traits\Conditionable;
+use JetBrains\PhpStorm\NoReturn;
 use PhpParser\Node\Stmt;
-use PhpParser\PrettyPrinter\Standard;
 
 abstract class SubjectAbstract implements \Stringable
 {
     use Conditionable;
 
-    /**
-     * Abstract constructor
-     * @param  Stmt[]  $nodes
-     */
-    public function __construct(
-        protected Stmt|array $nodes = [],
-    ) {
+    public array $stmts = [];
+
+    public FileSubject $fileSubject;
+
+    public function setUp(FileSubject $fileSubject): static
+    {
+        $this->fileSubject = $fileSubject;
+        $this->stmts = Comcode::parsPhpFile($this->fileSubject->file);
         $this->discoverStmtEnvironment();
+        return $this;
+    }
+
+    /**
+     * Create new query node content
+     * @template QUERY_NODE
+     * @param  QUERY_NODE|QueryNodeBuilder  $nodeClass
+     * @return QUERY_NODE
+     */
+    public function apply(
+        QueryNodeBuilder $nodeClass
+    ): QueryNodeBuilder {
+        return Comcode::createQueryContent(
+            $this->stmts,
+            $nodeClass,
+            $this
+        );
+    }
+
+    /**
+     * Save nodes to file
+     * @return bool|int
+     */
+    public function save(): bool|int
+    {
+        return file_put_contents(
+            $this->fileSubject->file,
+            (string) $this
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function fileGetContent(): string
+    {
+        return file_get_contents(
+            $this->fileSubject->file
+        ) ?? '';
     }
 
     /**
@@ -37,15 +80,18 @@ abstract class SubjectAbstract implements \Stringable
     }
 
     /**
-     * @return array|null
+     * Create stmt list from collection items
+     * @return array
      */
-    #[ArrayShape(['nodes' => "string", 'nodesList' => "string"])]
-    public function __debugInfo(): ?array
+    public function toStmt(): array
     {
-        return [
-            'nodes' => '\PhpParser\Node\Stmt('.count($this->nodes).')',
-            'nodesList' => $this->nodes
-        ];
+        return Comcode::undressNodes($this->stmts);
+    }
+
+    #[NoReturn]
+    public function dd()
+    {
+        dd($this->__toString());
     }
 
     /**
@@ -53,10 +99,9 @@ abstract class SubjectAbstract implements \Stringable
      */
     public function __toString()
     {
-        return (new Standard)
-            ->{is_array($this->nodes)
-                ? 'prettyPrintFile'
-                : 'prettyPrintExpr'
-            }($this->nodes);
+        return (new PrettyPrinter)
+            ->prettyPrintFile(
+                $this->toStmt()
+            );
     }
 }

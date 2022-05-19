@@ -2,7 +2,7 @@
 
 namespace Bfg\Comcode\Exceptions;
 
-class FileErrorException extends \Exception
+class QueryNodeError extends \Exception
 {
 
 }

@@ -4,14 +4,15 @@ namespace Bfg\Comcode\Exceptions;
 
 use Throwable;
 
-class CodeNotFoundException extends \Exception
+class PhpParserError extends \Exception
 {
     public function __construct(
-        int $code = 3,
+        string $message,
+        int $code = 2,
         ?Throwable $previous = null
     ) {
         parent::__construct(
-            "Code not found!",
+            "PHP parser error exception: " . $message,
             $code,
             $previous
         );

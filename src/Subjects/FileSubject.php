@@ -5,16 +5,14 @@ namespace Bfg\Comcode\Subjects;
 use Bfg\Comcode\FileParser;
 use Closure;
 
-class FileSubject extends SubjectAbstract
+class FileSubject
 {
     /**
      * @param  string  $file
      */
     public function __construct(
        public string $file,
-    ) {
-        parent::__construct();
-    }
+    ) {}
 
     /**
      * CHILDHOOD FUNCTION
@@ -23,9 +21,9 @@ class FileSubject extends SubjectAbstract
      */
     public function class(object|string $class = null): ClassSubject
     {
-        return new ClassSubject(
-            $class ?: (new FileParser)->getClassFullNameFromFile($this->file), $this
-        );
+        return (new ClassSubject(
+            $class ?: (new FileParser)->getClassFullNameFromFile($this->file)
+        ))->setUp($this);
     }
 
     /**

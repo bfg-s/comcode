@@ -2,43 +2,71 @@
 
 namespace Bfg\Comcode\Subjects;
 
-use Bfg\Comcode\Comcode;
-use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\ParserFactory;
-use PhpParser\Node;
+use Bfg\Comcode\QStmt;
+use Bfg\Comcode\QueryNodes\ClassQueryNode;
+use Bfg\Comcode\QueryNodes\NamespaceQueryNode;
 
 class ClassSubject extends SubjectAbstract
 {
     /**
+     * @var ClassQueryNode
+     */
+    protected ClassQueryNode $classNode;
+
+    /**
+     * @var NamespaceQueryNode
+     */
+    protected NamespaceQueryNode $namespaceNode;
+
+    /**
      * @param  object|string  $class
-     * @param  FileSubject  $fileSubject
      */
     public function __construct(
         public object|string $class,
-        public FileSubject $fileSubject,
-    ) {
-        /**
-         * Create nodes
-         */
-        parent::__construct(
-            (new ParserFactory())
-                ->create(ParserFactory::PREFER_PHP7)
-                ->parse(
-                    file_get_contents($this->fileSubject->file)
-                )
-        );
+    ) {}
+
+    /**
+     * @param  string  $namespace
+     * @return $this
+     */
+    public function use(string $namespace): static
+    {
+        $this->namespaceNode->use($namespace);
+
+        return $this;
     }
 
     /**
-     * Save nodes to file
-     * @return bool|int
+     * @param  string  $namespace
+     * @return $this
      */
-    public function save(): bool|int
+    public function extends(string $namespace): static
     {
-        return file_put_contents(
-            $this->fileSubject->file,
-            (string) $this
-        );
+        $this->classNode->extends($namespace);
+
+        return $this;
+    }
+
+    /**
+     * @param  string  $namespace
+     * @return $this
+     */
+    public function implement(string $namespace): static
+    {
+        $this->classNode->implement($namespace);
+
+        return $this;
+    }
+
+    /**
+     * @param  callable  $callback
+     * @return $this
+     */
+    public function body(callable $callback): static
+    {
+        call_user_func($callback, $this->classNode, $this);
+
+        return $this;
     }
 
     /**
@@ -47,25 +75,14 @@ class ClassSubject extends SubjectAbstract
      */
     protected function discoverStmtEnvironment(): void
     {
-        $existsNamespaceName = false;
-        $namespaceName = Comcode::classNamespaceName($this->class);
-        foreach ($this->nodes as $node) {
-            if ($node instanceof Namespace_) {
-                $node->name->parts = explode(
-                    "\\",
-                    $namespaceName
-                );
-                $existsNamespaceName = true;
-                break;
-            }
-        }
-        if (!$existsNamespaceName) {
-            $this->nodes = [
-                new Namespace_(
-                    new Node\Name($namespaceName)
-                ),
-                ...$this->nodes,
-            ];
-        }
+        $this->namespaceNode = $this->apply(
+            new NamespaceQueryNode($this->class)
+        );
+
+        $this->classNode = $this->namespaceNode->apply(
+            new ClassQueryNode($this->class)
+        );
+
+        $this->stmts = [$this->namespaceNode];
     }
 }

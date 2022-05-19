@@ -2,7 +2,7 @@
 
 use Bfg\Comcode\PhpService;
 
-if (!  function_exists('php')) {
+if (! function_exists('php')) {
 
     function php (): PhpService
     {
