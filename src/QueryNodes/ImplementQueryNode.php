@@ -9,14 +9,15 @@ use Bfg\Comcode\QStmt;
 use Bfg\Comcode\QueryNodeBuilder;
 use Bfg\Comcode\Subjects\ClassSubject;
 use Bfg\Comcode\Subjects\SubjectAbstract;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Use_;
 
-class UseQueryNode extends QueryNodeBuilder implements
+class ImplementQueryNode extends QueryNodeBuilder implements
     ClarificationNodeInterface, ReconstructionNodeInterface, BirthNodeInterface
 {
     /**
-     * @var Use_|null
+     * @var Name|null
      */
     public ?Stmt $stmt = null;
 

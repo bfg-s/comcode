@@ -21,6 +21,11 @@ abstract class QueryNodeBuilder
     public bool $prepend = false;
 
     /**
+     * @var string
+     */
+    public string $store = 'stmts';
+
+    /**
      * @var SubjectAbstract
      */
     public SubjectAbstract $subjectAbstract;
@@ -34,11 +39,43 @@ abstract class QueryNodeBuilder
     public function apply(
         QueryNodeBuilder $nodeClass
     ): QueryNodeBuilder {
-        return Comcode::createQueryContent(
-            $this->stmt,
-            $nodeClass,
-            $this->subjectAbstract
-        );
+
+        $store = $nodeClass->store;
+
+        $nodeClass->subjectAbstract = $this->subjectAbstract;
+
+        $query = Query::new((array) $this->stmt?->{$store})
+            ->isA($nodeClass::nodeClass())
+            ->filter(
+                $nodeClass instanceof ClarificationNodeInterface
+                    ? [$nodeClass, 'clarification'] : null
+            );
+
+        $key = $query->firstKey();
+
+        $nodeClass->stmt = $query->first();
+
+        $nodeClass->isMatch()
+            ? $nodeClass instanceof ReconstructionNodeInterface && $nodeClass->reconstruction()
+            : $nodeClass instanceof BirthNodeInterface && $nodeClass->stmt = $nodeClass->birth();
+
+        if (property_exists($this->stmt, $store)) {
+            if (is_array($this->stmt->{$store})) {
+                if (is_int($key)) {
+                    $this->stmt->{$store}[$key] = $nodeClass->stmt;
+                } else {
+                    if ($nodeClass->prepend) {
+                        array_unshift($this->stmt->{$store}, $nodeClass->stmt);
+                    } else {
+                        $this->stmt->{$store}[] = $nodeClass->stmt;
+                    }
+                }
+            } else {
+                $this->stmt->{$store} = $nodeClass->stmt;
+            }
+        }
+
+        return $nodeClass;
     }
 
     /**
@@ -47,47 +84,6 @@ abstract class QueryNodeBuilder
     public function isMatch(): bool
     {
         return $this->stmt && is_a($this->stmt, static::nodeClass());
-    }
-
-    /**
-     * @param  Stmt|null  $stmt
-     * @return QueryNodeBuilder
-     */
-    public function setUp(Stmt $stmt = null): static
-    {
-        $this->stmt = $stmt ?: Comcode::anonymousStmt();
-
-        $this->mount();
-
-        return $this;
-    }
-
-    /**
-     * The mount function for checking the stmt class
-     * @return void
-     */
-    protected function mount(): void
-    {
-        $this->isMatch()
-            ? $this instanceof ReconstructionNodeInterface && $this->reconstruction()
-            : $this instanceof BirthNodeInterface && $this->stmt = $this->birth();
-    }
-
-    /**
-     * Finder self abstract
-     * @param  QuerySearchEngine  $query
-     * @param  SubjectAbstract  $subjectAbstract
-     * @return static
-     */
-    public function finder(QuerySearchEngine $query, SubjectAbstract $subjectAbstract): static
-    {
-        $this->subjectAbstract = $subjectAbstract;
-
-        return $query->isA(
-            static::nodeClass(),
-            $this instanceof ClarificationNodeInterface
-                ? [$this, 'clarification'] : null
-        )->first($this, $this->prepend);
     }
 
     /**

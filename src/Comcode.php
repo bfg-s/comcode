@@ -146,21 +146,4 @@ class Comcode
     {
         return new AnonymousStmt($stmts);
     }
-
-    /**
-     * Create new query content
-     * @template QUERY_NODE
-     * @param  QUERY_NODE|QueryNodeBuilder  $nodeClass
-     * @return QUERY_NODE
-     */
-    public static function createQueryContent(
-        Stmt|array $stmt,
-        QueryNodeBuilder $nodeClass,
-        SubjectAbstract $subjectAbstract,
-    ) {
-        return $nodeClass->finder(
-            Query::new(is_array($stmt) ? static::anonymousStmt($stmt) : $stmt),
-            $subjectAbstract
-        );
-    }
 }

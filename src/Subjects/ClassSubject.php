@@ -82,7 +82,5 @@ class ClassSubject extends SubjectAbstract
         $this->classNode = $this->namespaceNode->apply(
             new ClassQueryNode($this->class)
         );
-
-        $this->stmts = [$this->namespaceNode];
     }
 }

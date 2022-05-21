@@ -12,6 +12,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class CCClassContentTest extends TestCase
 {
+    public function test_qname()
+    {
+        dd(QStmt::name('test\\to'));
+    }
+
     public function test_class_content()
     {
         $class = $this->class();
@@ -20,6 +25,8 @@ class CCClassContentTest extends TestCase
         $class->use(Arrayable::class);
         $class->use(ArrayAccess::class);
         $class->use(ArrayAccess::class);
+
+        //dd($class->stmts);
 
         $class->extends('Model');
         $class->implement('Arrayable');

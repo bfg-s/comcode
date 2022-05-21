@@ -10,8 +10,8 @@ use Bfg\Comcode\QueryNodeBuilder;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 
-class ClassQueryNode extends QueryNodeBuilder implements
-    ReconstructionNodeInterface, BirthNodeInterface
+class ClassQueryNode extends QueryNodeBuilder
+    implements ReconstructionNodeInterface, BirthNodeInterface
 {
     /**
      * @var Class_|null
@@ -48,7 +48,7 @@ class ClassQueryNode extends QueryNodeBuilder implements
                 break;
             }
         }
-        if (! $exists) {
+        if (!$exists) {
             $this->stmt->implements[] = $newName;
         }
     }

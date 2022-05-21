@@ -2,10 +2,14 @@
 
 namespace Bfg\Comcode\Subjects;
 
+use Bfg\Comcode\AnonymousStmt;
 use Bfg\Comcode\Comcode;
-use Bfg\Comcode\Exceptions\QueryNodeError;
+use Bfg\Comcode\Interfaces\BirthNodeInterface;
+use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
+use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
 use Bfg\Comcode\PrettyPrinter;
 use Bfg\Comcode\QueryNodeBuilder;
+use Bfg\Comcode\Query;
 use Bfg\Comcode\Traits\Conditionable;
 use JetBrains\PhpStorm\NoReturn;
 use PhpParser\Node\Stmt;
@@ -16,12 +20,15 @@ abstract class SubjectAbstract implements \Stringable
 
     public array $stmts = [];
 
+    public Stmt $stmt;
+
     public FileSubject $fileSubject;
 
     public function setUp(FileSubject $fileSubject): static
     {
         $this->fileSubject = $fileSubject;
         $this->stmts = Comcode::parsPhpFile($this->fileSubject->file);
+        $this->stmt = Comcode::anonymousStmt($this->stmts);
         $this->discoverStmtEnvironment();
         return $this;
     }
@@ -35,11 +42,31 @@ abstract class SubjectAbstract implements \Stringable
     public function apply(
         QueryNodeBuilder $nodeClass
     ): QueryNodeBuilder {
-        return Comcode::createQueryContent(
-            $this->stmts,
-            $nodeClass,
-            $this
+
+        $nodeClass->subjectAbstract = $this;
+
+        $query = Query::new($this->stmts)->isA(
+            $nodeClass::nodeClass()
+        )->filter(
+            $nodeClass instanceof ClarificationNodeInterface
+                ? [$nodeClass, 'clarification'] : null
         );
+
+        $key = $query->firstKey();
+
+        $nodeClass->stmt = $query->first();
+
+        $nodeClass->isMatch()
+            ? $nodeClass instanceof ReconstructionNodeInterface && $nodeClass->reconstruction()
+            : $nodeClass instanceof BirthNodeInterface && $nodeClass->stmt = $nodeClass->birth();
+
+        if (is_int($key)) {
+            $this->stmts[$key] = $nodeClass->stmt;
+        } else {
+            $this->stmts = [$nodeClass->stmt];
+        }
+
+        return $nodeClass;
     }
 
     /**
