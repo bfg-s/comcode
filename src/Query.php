@@ -3,7 +3,7 @@
 namespace Bfg\Comcode;
 
 use Bfg\Comcode\Traits\Conditionable;
-use PhpParser\Node\Stmt;
+use PhpParser\NodeAbstract;
 use Bfg\Comcode\Traits\EngineHelpersTrait;
 
 class Query
@@ -57,9 +57,9 @@ class Query
     }
 
     /**
-     * @return Stmt
+     * @return NodeAbstract
      */
-    public function first(): Stmt
+    public function first(): NodeAbstract
     {
         return $this->items[$this->firstKey()]
             ?? Comcode::anonymousStmt();
@@ -74,11 +74,11 @@ class Query
     }
 
     /**
-     * @param  array  $item
+     * @param  mixed  $item
      * @return static
      */
-    public static function new(array $item = []): static
+    public static function new(mixed $item = []): static
     {
-        return new static($item);
+        return new static(is_array($item) ? $item : [$item]);
     }
 }

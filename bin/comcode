@@ -1,0 +1,130 @@
+#!/usr/bin/env php
+<?php
+
+use Composer\XdebugHandler\XdebugHandler;
+
+$ds = DIRECTORY_SEPARATOR;
+
+$possibleFiles = [
+    __DIR__.$ds."..$ds..{$ds}autoload.php",
+    __DIR__.$ds."..{$ds}autoload.php",
+    __DIR__.$ds."..{$ds}vendor{$ds}autoload.php",
+];
+$file = null;
+foreach ($possibleFiles as $possibleFile) {
+    if (file_exists($possibleFile)) {
+        $file = $possibleFile;
+        break;
+    }
+}
+
+if (! $file) {
+    throw new RuntimeException('Unable to locate autoload.php file.');
+}
+
+$vendorPath = dirname($file);
+$vendorBinPath = dirname($file) . $ds . 'bin';
+$csFixerPath = $vendorBinPath . $ds . 'php-cs-fixer';
+
+$requiredDirectories = [
+    $vendorPath,
+    $vendorBinPath
+];
+
+foreach ($requiredDirectories as $requiredDirectory) {
+
+    if (! is_dir($requiredDirectory)) {
+        throw new RuntimeException("Unable to required directory [$requiredDirectory].");
+    }
+}
+
+require_once $file;
+
+/**
+ * The errors catch handling
+ * @return void
+ * @throws ErrorException
+ */
+(function () {
+    error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+    set_error_handler(static function ($severity, $message, $file, $line) {
+        if ($severity & error_reporting()) {
+            throw new ErrorException($message, 0, $severity, $file, $line);
+        }
+    });
+})();
+/**
+ * Check environment requirements
+ * @return void
+ */
+(function () {
+    if (defined('HHVM_VERSION_ID')) {
+        fwrite(STDERR, "HHVM is not supported.\n");
+
+        if (getenv('PHP_CS_FIXER_IGNORE_ENV')) {
+            fwrite(STDERR, "Ignoring environment requirements because `PHP_CS_FIXER_IGNORE_ENV` is set. Execution may be unstable.\n");
+        } else {
+            exit(1);
+        }
+    } elseif (!defined('PHP_VERSION_ID')) { // PHP_VERSION_ID is available as of PHP 5.2.7
+        fwrite(STDERR, 'PHP version no supported, please update. Current PHP version: '.PHP_VERSION.".\n");
+
+        exit(1);
+    } elseif (\PHP_VERSION_ID === 80000) {
+        fwrite(STDERR, "PHP CS Fixer is not able run on PHP 8.0.0 due to bug in PHP tokenizer (https://bugs.php.net/bug.php?id=80462).\n");
+        fwrite(STDERR, "Update PHP version to unblock execution.\n");
+
+        exit(1);
+    } elseif (
+        \PHP_VERSION_ID < 70400
+        || \PHP_VERSION_ID >= 80200
+    ) {
+        fwrite(STDERR, "PHP needs to be a minimum version of PHP 7.4.0 and maximum version of PHP 8.1.*.\n");
+        fwrite(STDERR, 'Current PHP version: '.PHP_VERSION.".\n");
+
+        if (getenv('PHP_CS_FIXER_IGNORE_ENV')) {
+            fwrite(STDERR, "Ignoring environment requirements because `PHP_CS_FIXER_IGNORE_ENV` is set. Execution may be unstable.\n");
+        } else {
+            fwrite(STDERR, "To ignore this requirement please set `PHP_CS_FIXER_IGNORE_ENV`.\n");
+            fwrite(STDERR, "If you use PHP version higher than supported, you may experience code modified in a wrong way.\n");
+            fwrite(STDERR, "Please report such cases at https://github.com/FriendsOfPHP/PHP-CS-Fixer .\n");
+
+            exit(1);
+        }
+    }
+
+    foreach (['json', 'tokenizer'] as $extension) {
+        if (!extension_loaded($extension)) {
+            fwrite(STDERR, sprintf("PHP extension ext-%s is missing from your system. Install or enable it.\n", $extension));
+
+            if (getenv('PHP_CS_FIXER_IGNORE_ENV')) {
+                fwrite(STDERR, "Ignoring environment requirements because `PHP_CS_FIXER_IGNORE_ENV` is set. Execution may be unstable.\n");
+            } else {
+                exit(1);
+            }
+        }
+    }
+})();
+/**
+ * Restart if xdebug is loaded,
+ * unless the environment variable
+ * PHP_CS_FIXER_ALLOW_XDEBUG is set.
+ * @return void
+ */
+(function () {
+    $xdebug = new XdebugHandler('PHP_CS_FIXER');
+    $xdebug->check();
+    unset($xdebug);
+})();
+
+ini_set('xdebug.max_nesting_level', 3000);
+ini_set('xdebug.var_display_max_children', -1);
+ini_set('xdebug.var_display_max_data', -1);
+ini_set('xdebug.var_display_max_depth', -1);
+
+
+try {
+    echo \Bfg\Comcode\CSFixer::fix('tests/TestedClass.php');
+} catch (ErrorException $e) {
+    echo "Pretty printer error: " . $e->getMessage();
+}

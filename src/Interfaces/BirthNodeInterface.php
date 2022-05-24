@@ -2,13 +2,13 @@
 
 namespace Bfg\Comcode\Interfaces;
 
-use PhpParser\Node\Stmt;
+use PhpParser\NodeAbstract;
 
 interface BirthNodeInterface
 {
     /**
      * STMT birth method
-     * @return Stmt
+     * @return NodeAbstract
      */
-    public function birth(): Stmt;
+    public function birth(): NodeAbstract;
 }

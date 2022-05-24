@@ -5,7 +5,24 @@ namespace Bfg\Comcode\Tests;
 use ArrayAccess;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class TestedClass extends Model implements Arrayable, ArrayAccess
 {
+    public const CREATED_AT = null;
+
+    protected $table = "test";
+
+    protected $tableInt = 1;
+    protected $tableClass = Model::class;
+    protected $tableBool = false;
+    protected $tableNull = null;
+    protected $tableArray = [1, 2, 3, 4, 5];
+    protected $tableNoDefaul;
+    protected Collection $tableTyped;
+
+    public function test()
+    {
+
+    }
 }

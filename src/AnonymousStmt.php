@@ -2,12 +2,12 @@
 
 namespace Bfg\Comcode;
 
-use PhpParser\Node\Stmt;
+use PhpParser\NodeAbstract;
 
-class AnonymousStmt extends Stmt
+class AnonymousStmt extends NodeAbstract
 {
     public function __construct(
-        public array $stmts = [],
+        public array $nodes = [],
         array $attributes = []
     ) {
         parent::__construct($attributes);

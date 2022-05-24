@@ -6,9 +6,11 @@ use Bfg\Comcode\Exceptions\CodeNotFound;
 use Bfg\Comcode\Exceptions\PhpParserError;
 use Bfg\Comcode\Subjects\ClassSubject;
 use Bfg\Comcode\Subjects\FileSubject;
+use ErrorException;
 use PhpParser\Error;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\NodeAbstract;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
 use ReflectionClass;
@@ -18,6 +20,7 @@ class PhpService
     /**
      * @param  string  $file
      * @return FileSubject
+     * @throws ErrorException
      */
     public function file(string $file): FileSubject
     {
@@ -29,6 +32,7 @@ class PhpService
     /**
      * @param  object|string  $class
      * @return ClassSubject
+     * @throws ErrorException
      */
     public function class(object|string $class): ClassSubject
     {
@@ -40,65 +44,30 @@ class PhpService
         )->class($class);
     }
 
-
     /**
-     * @param  string  $code
-     * @return Stmt[]|null
-     * @throws CodeNotFound
-     * @throws PhpParserError
+     * @param  string|Expr  $name
+     * @return PhpInlineTrap
      */
-    public static function parse(string $code): ?array
-    {
-        if (
-            !str_contains($code, "\n")
-            && str_contains($code, DIRECTORY_SEPARATOR)
-        ) {
-            if (
-                !is_file($code)
-                && is_file(base_path($code))
-            ) {
-                $code = base_path($code);
-            }
-
-            if (
-                !is_file($code)
-                && is_file(base_path($code.'.php'))
-            ) {
-                $code = base_path($code.'.php');
-            }
-
-            if (is_file($code)) {
-                $code = file_get_contents($code);
-            }
-        }
-
-        if (!$code) {
-            throw new CodeNotFound();
-        }
-
-        if (!str_starts_with($code, "<?php")) {
-            $code = "<?php\n".$code;
-        }
-
-        try {
-            return (new ParserFactory())
-                ->create(ParserFactory::PREFER_PHP7)
-                ->parse($code);
-        } catch (Error $exception) {
-            throw new PhpParserError(
-                message: $exception->getMessage(),
-                previous: $exception
-            );
-        }
+    public function var(
+        string|Expr $name
+    ): PhpInlineTrap {
+        return new PhpInlineTrap($name);
     }
 
     /**
-     * @param  array|Expr  $stmts
-     * @return string
+     * @return PhpInlineTrap
      */
-    public static function print(array|Expr $stmts): string
+    public function this(): PhpInlineTrap
     {
-        return (new Standard)
-            ->{is_array($stmts) ? 'prettyPrintFile' : 'prettyPrintExpr'}($stmts);
+        return $this->var('this');
+    }
+
+    public function func(
+        string $function,
+        ...$arguments
+    ): PhpInlineTrap {
+        return $this->var(
+            Node::callFunction($function, ...$arguments)
+        );
     }
 }

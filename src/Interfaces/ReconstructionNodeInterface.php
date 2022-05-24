@@ -5,7 +5,7 @@ namespace Bfg\Comcode\Interfaces;
 interface ReconstructionNodeInterface
 {
     /**
-     * STMT reconstruction method
+     * NODE reconstruction method
      * @return void
      */
     public function reconstruction(): void;

@@ -2,17 +2,23 @@
 
 namespace Bfg\Comcode\Subjects;
 
+use Bfg\Comcode\CSFixer;
 use Bfg\Comcode\FileParser;
 use Closure;
 
 class FileSubject
 {
+    public CSFixer $fixer;
+
     /**
      * @param  string  $file
+     * @throws \ErrorException
      */
     public function __construct(
        public string $file,
-    ) {}
+    ) {
+        $this->fixer = CSFixer::new($this);
+    }
 
     /**
      * CHILDHOOD FUNCTION
@@ -22,8 +28,10 @@ class FileSubject
     public function class(object|string $class = null): ClassSubject
     {
         return (new ClassSubject(
-            $class ?: (new FileParser)->getClassFullNameFromFile($this->file)
-        ))->setUp($this);
+            $this, $class
+                ?: (new FileParser)
+                    ->getClassFullNameFromFile($this->file)
+        ));
     }
 
     /**
@@ -46,11 +54,30 @@ class FileSubject
     }
 
     /**
-     * Discover individual environment
-     * @return void
+     * Update content in file
+     * @param  string|null  $content
+     * @return static
      */
-    protected function discoverStmtEnvironment(): void
+    public function update(string $content = null): static
     {
-        //
+        file_put_contents(
+            $this->file,
+            ! is_null($content) ? $content . "\n" : ""
+        );
+
+        return $this;
+    }
+
+    public function fix(): ?string
+    {
+        return $this->fixer->run();
+    }
+
+    /**
+     * @return string
+     */
+    public function content(): string
+    {
+        return file_get_contents($this->file) ?? '';
     }
 }

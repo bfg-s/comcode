@@ -1,0 +1,24 @@
+<?php
+
+namespace Tests;
+
+use Bfg\Comcode\Comcode;
+use Bfg\Comcode\SPrint;
+use Traversable;
+
+class TestedClass extends Comcode implements Traversable
+{
+    public array $table = ['aa'];
+    public string $aa = 'q';
+    private SPrint $users;
+    private $test;
+
+    protected function test()
+    {
+        return (fn ($t) => $t)($this->aa);
+    }
+
+    protected function test1()
+    {
+    }
+}

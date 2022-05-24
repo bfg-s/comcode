@@ -2,50 +2,54 @@
 
 namespace Bfg\Comcode\Subjects;
 
-use Bfg\Comcode\AnonymousStmt;
 use Bfg\Comcode\Comcode;
+use Bfg\Comcode\CSFixer;
 use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
 use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
 use Bfg\Comcode\PrettyPrinter;
-use Bfg\Comcode\QueryNodeBuilder;
+use Bfg\Comcode\QueryNode;
 use Bfg\Comcode\Query;
 use Bfg\Comcode\Traits\Conditionable;
+use ErrorException;
 use JetBrains\PhpStorm\NoReturn;
-use PhpParser\Node\Stmt;
+use PhpCsFixer\Config;
+use PhpCsFixer\Console\ConfigurationResolver;
+use PhpCsFixer\Error\ErrorsManager;
+use PhpCsFixer\Runner\Runner;
+use PhpCsFixer\ToolInfo;
+use PhpParser\NodeAbstract;
 
 abstract class SubjectAbstract implements \Stringable
 {
     use Conditionable;
 
-    public array $stmts = [];
+    public array $nodes = [];
 
-    public Stmt $stmt;
+    public NodeAbstract $node;
 
-    public FileSubject $fileSubject;
+    public function __construct(
+        public FileSubject $fileSubject
+    ) {
+        $this->nodes = Comcode::parsPhpFile($this->fileSubject->file);
+        $this->node = Comcode::anonymousStmt($this->nodes);
 
-    public function setUp(FileSubject $fileSubject): static
-    {
-        $this->fileSubject = $fileSubject;
-        $this->stmts = Comcode::parsPhpFile($this->fileSubject->file);
-        $this->stmt = Comcode::anonymousStmt($this->stmts);
         $this->discoverStmtEnvironment();
-        return $this;
     }
 
     /**
      * Create new query node content
      * @template QUERY_NODE
-     * @param  QUERY_NODE|QueryNodeBuilder  $nodeClass
+     * @param  QUERY_NODE|QueryNode  $nodeClass
      * @return QUERY_NODE
      */
     public function apply(
-        QueryNodeBuilder $nodeClass
-    ): QueryNodeBuilder {
+        QueryNode $nodeClass
+    ): QueryNode {
 
-        $nodeClass->subjectAbstract = $this;
+        $nodeClass->subject = $this;
 
-        $query = Query::new($this->stmts)->isA(
+        $query = Query::new($this->nodes)->isA(
             $nodeClass::nodeClass()
         )->filter(
             $nodeClass instanceof ClarificationNodeInterface
@@ -54,16 +58,16 @@ abstract class SubjectAbstract implements \Stringable
 
         $key = $query->firstKey();
 
-        $nodeClass->stmt = $query->first();
+        $nodeClass->node = $query->first();
 
         $nodeClass->isMatch()
             ? $nodeClass instanceof ReconstructionNodeInterface && $nodeClass->reconstruction()
-            : $nodeClass instanceof BirthNodeInterface && $nodeClass->stmt = $nodeClass->birth();
+            : $nodeClass instanceof BirthNodeInterface && $nodeClass->node = $nodeClass->birth();
 
         if (is_int($key)) {
-            $this->stmts[$key] = $nodeClass->stmt;
+            $this->nodes[$key] = $nodeClass->node;
         } else {
-            $this->stmts = [$nodeClass->stmt];
+            $this->nodes = [$nodeClass->node];
         }
 
         return $nodeClass;
@@ -71,28 +75,23 @@ abstract class SubjectAbstract implements \Stringable
 
     /**
      * Save nodes to file
-     * @return bool|int
+     * @return string|null
      */
-    public function save(): bool|int
+    public function save(): ?string
     {
-        return file_put_contents(
-            $this->fileSubject->file,
-            (string) $this
-        );
+        return $this->fileSubject->update($this)->fix();
     }
 
     /**
      * @return string
      */
-    public function fileGetContent(): string
+    public function content(): string
     {
-        return file_get_contents(
-            $this->fileSubject->file
-        ) ?? '';
+        return $this->fileSubject->content();
     }
 
     /**
-     * Discover individual stmt environment
+     * Discover individual node environment
      * @return void
      */
     abstract protected function discoverStmtEnvironment(): void;
@@ -107,18 +106,18 @@ abstract class SubjectAbstract implements \Stringable
     }
 
     /**
-     * Create stmt list from collection items
+     * Create node list from collection items
      * @return array
      */
     public function toStmt(): array
     {
-        return Comcode::undressNodes($this->stmts);
+        return Comcode::undressNodes($this->nodes);
     }
 
     #[NoReturn]
-    public function dd()
+    public function dd(bool $self = false)
     {
-        dd($this->__toString());
+        dd($self ? $this->node->nodes : $this->__toString());
     }
 
     /**
@@ -126,9 +125,9 @@ abstract class SubjectAbstract implements \Stringable
      */
     public function __toString()
     {
-        return (new PrettyPrinter)
-            ->prettyPrintFile(
-                $this->toStmt()
-            );
+        return Comcode::printStmt(
+            $this->toStmt(),
+            true
+        );
     }
 }
