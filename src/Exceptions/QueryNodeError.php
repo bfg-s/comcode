@@ -2,7 +2,9 @@
 
 namespace Bfg\Comcode\Exceptions;
 
-class QueryNodeError extends \Exception
+use Exception;
+
+class QueryNodeError extends Exception
 {
 
 }

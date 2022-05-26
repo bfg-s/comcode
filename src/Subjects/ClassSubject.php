@@ -10,13 +10,14 @@ use Bfg\Comcode\Nodes\ClassImplementNode;
 use Bfg\Comcode\Nodes\ClassMethodNode;
 use Bfg\Comcode\Nodes\ClassNode;
 use Bfg\Comcode\Nodes\ClassPropertyNode;
+use Bfg\Comcode\Nodes\ClassTraitNode;
 use Bfg\Comcode\Nodes\NamespaceNode;
 use Bfg\Comcode\Nodes\NamespaceUseNode;
 use Bfg\Comcode\Query;
 use ErrorException;
 
 /**
- * @method ClassExtendsNode extends(string $namespace)
+ * @method ClassExtendsNode extends (string $namespace)
  * @method ClassImplementNode implement(string $namespace)
  * @method ClassConstNode forgetConst(string $name, mixed $value = null)
  * @method ClassConstNode publicConst(string $name, mixed $value = null)
@@ -53,16 +54,6 @@ use ErrorException;
 class ClassSubject extends SubjectAbstract
 {
     /**
-     * @var ClassNode
-     */
-    protected ClassNode $classNode;
-
-    /**
-     * @var NamespaceNode
-     */
-    protected NamespaceNode $namespaceNode;
-
-    /**
      * @var array|<class-string>[]
      */
     protected static array $classNodes = [
@@ -72,6 +63,14 @@ class ClassSubject extends SubjectAbstract
         'property' => ClassPropertyNode::class,
         'method' => ClassMethodNode::class,
     ];
+    /**
+     * @var ClassNode
+     */
+    protected ClassNode $classNode;
+    /**
+     * @var NamespaceNode
+     */
+    protected NamespaceNode $namespaceNode;
 
     /**
      * @param  FileSubject  $fileSubject
@@ -89,10 +88,23 @@ class ClassSubject extends SubjectAbstract
      * @param  string  $namespace
      * @return NamespaceUseNode
      */
-    public function use(string $namespace): NamespaceUseNode
-    {
+    public function use(
+        string $namespace
+    ): NamespaceUseNode {
         return $this->namespaceNode->apply(
             new NamespaceUseNode($namespace)
+        );
+    }
+
+    /**
+     * @param  string  $namespace
+     * @return ClassTraitNode
+     */
+    public function trait(
+        string $namespace
+    ): ClassTraitNode {
+        return $this->classNode->apply(
+            new ClassTraitNode($namespace)
         );
     }
 
@@ -103,7 +115,7 @@ class ClassSubject extends SubjectAbstract
     {
         if (
             preg_match(
-                '/^forget('. implode('|', array_keys(static::$classNodes)) .')$/i',
+                '/^forget('.implode('|', array_keys(static::$classNodes)).')$/i',
                 $name,
                 $matches
             )
@@ -140,7 +152,7 @@ class ClassSubject extends SubjectAbstract
 
         if (
             preg_match(
-                '/^([a-zA-Z]+)?('. implode('|', array_keys(static::$classNodes)) .')$/i',
+                '/^([a-zA-Z]+)?('.implode('|', array_keys(static::$classNodes)).')$/i',
                 $name,
                 $matches
             )

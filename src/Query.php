@@ -3,8 +3,8 @@
 namespace Bfg\Comcode;
 
 use Bfg\Comcode\Traits\Conditionable;
-use PhpParser\NodeAbstract;
 use Bfg\Comcode\Traits\EngineHelpersTrait;
+use PhpParser\NodeAbstract;
 
 class Query
 {
@@ -21,7 +21,17 @@ class Query
      */
     public function __construct(
         public array $items = []
-    ) {}
+    ) {
+    }
+
+    /**
+     * @param  mixed  $item
+     * @return static
+     */
+    public static function new(mixed $item = []): static
+    {
+        return new static(is_array($item) ? $item : [$item]);
+    }
 
     /**
      * @param  string  $class
@@ -30,7 +40,7 @@ class Query
     public function isA(string $class): static
     {
         return $this->filter(
-            fn ($stmt) => is_a($stmt, $class)
+            fn($stmt) => is_a($stmt, $class)
         );
     }
 
@@ -41,7 +51,6 @@ class Query
     public function filter(callable $callback = null): static
     {
         if ($callback) {
-
             $result = [];
 
             foreach ($this->items as $key => $item) {
@@ -71,14 +80,5 @@ class Query
     public function firstKey()
     {
         return array_key_first($this->items);
-    }
-
-    /**
-     * @param  mixed  $item
-     * @return static
-     */
-    public static function new(mixed $item = []): static
-    {
-        return new static(is_array($item) ? $item : [$item]);
     }
 }

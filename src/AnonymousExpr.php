@@ -3,13 +3,14 @@
 namespace Bfg\Comcode;
 
 use Bfg\Comcode\Interfaces\AnonymousInterface;
+use PhpParser\Node\Expr;
 use PhpParser\NodeAbstract;
 
-class AnonymousStmt extends NodeAbstract implements
+class AnonymousExpr extends Expr implements
     AnonymousInterface
 {
     public function __construct(
-        public array $nodes = [],
+        public string|NodeAbstract|null $expr = null,
         array $attributes = []
     ) {
         parent::__construct($attributes);
@@ -17,7 +18,7 @@ class AnonymousStmt extends NodeAbstract implements
 
     public function getType(): string
     {
-        return 'anonymous';
+        return 'exanonymous';
     }
 
     public function getSubNodeNames(): array

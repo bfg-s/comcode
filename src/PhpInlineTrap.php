@@ -14,6 +14,7 @@ class PhpInlineTrap extends AnonymousStmt
      * @var Expr|null
      */
     public ?Expr $node;
+    public ?Expr $firstNode = null;
 
     protected ?Stmt $stmt = null;
     protected ?string $stmtStore = null;
@@ -25,25 +26,35 @@ class PhpInlineTrap extends AnonymousStmt
     ) {
         parent::__construct($this->nodes, $attributes);
 
-        $this->node = is_string($var)
+        $this->node = $this->firstNode = is_string($var)
             ? Node::var($var)
             : $var;
         $this->nodes[] = $this->node;
     }
 
-    /**
-     * @param  Stmt  $stmt
-     * @param  string  $store
-     * @return $this
-     * @internal
-     */
-    public function __bindExpression(
-        Stmt $stmt,
-        string $store = 'expr'
+    public function assign(
+        string|Expr|PhpInlineTrap $expr
     ): static {
-        $this->stmt = $stmt;
-        $this->stmtStore = $store;
+        $this->__assignNode($expr, 'assign');
         return $this;
+    }
+
+    protected function __assignNode(
+        string|Expr|PhpInlineTrap $expr,
+        string $mode
+    ): void {
+        if ($expr instanceof PhpInlineTrap) {
+            $expr = $expr->node;
+        }
+        $expr = is_string($expr)
+            ? php()->var($expr)->node
+            : $expr;
+        $this->node = call_user_func(
+            [Node::class, $mode],
+            $this->node,
+            $expr
+        );
+        $this->__setToStmt();
     }
 
     /**
@@ -65,22 +76,56 @@ class PhpInlineTrap extends AnonymousStmt
         }
     }
 
-    public function call(
-        string $method,
+    public function concat(
+        string|Expr|PhpInlineTrap $expr
+    ): static {
+        $this->__assignNode($expr, 'concat');
+        return $this;
+    }
+
+    public function plus(
+        string|Expr|PhpInlineTrap $expr
+    ): static {
+        $this->__assignNode($expr, 'plus');
+        return $this;
+    }
+
+    public function minus(
+        string|Expr|PhpInlineTrap $expr
+    ): static {
+        $this->__assignNode($expr, 'minus');
+        return $this;
+    }
+
+    public function func(
+        string $function,
         ...$arguments
     ): static {
+        return $this->__call($function, $arguments);
+    }
+
+    public function __call(
+        string $name,
+        array $arguments
+    ) {
         $this->node = Node::callMethod(
             $this->node,
-            $method,
+            $name,
             ...$arguments
         );
         $this->__setToStmt();
         return $this;
     }
 
-    public function get(
+    public function prop(
         string $property
     ): static {
+        return $this->__get($property);
+    }
+
+    public function __get(
+        string $property
+    ) {
         $this->node = Node::callProperty(
             $this->node,
             $property
@@ -89,13 +134,18 @@ class PhpInlineTrap extends AnonymousStmt
         return $this;
     }
 
-    public function __call(string $name, array $arguments)
-    {
-        return $this->call($name, ...$arguments);
-    }
-
-    public function __get(string $property)
-    {
-        return $this->get($property);
+    /**
+     * @param  Stmt  $stmt
+     * @param  string  $store
+     * @return $this
+     * @internal
+     */
+    public function __bindExpression(
+        Stmt $stmt,
+        string $store = 'expr'
+    ): static {
+        $this->stmt = $stmt;
+        $this->stmtStore = $store;
+        return $this;
     }
 }

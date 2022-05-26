@@ -2,6 +2,7 @@
 
 namespace Bfg\Comcode\Nodes;
 
+use Bfg\Comcode\Comcode;
 use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
 use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
@@ -9,14 +10,16 @@ use Bfg\Comcode\Node;
 use Bfg\Comcode\QueryNode;
 use Bfg\Comcode\Subjects\ClassSubject;
 use Bfg\Comcode\Subjects\SubjectAbstract;
-use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\PropertyProperty;
+use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\NodeAbstract;
 
-class NamespaceUseNode extends QueryNode implements
-    ClarificationNodeInterface, ReconstructionNodeInterface, BirthNodeInterface
+class ClassTraitNode extends QueryNode implements
+    ClarificationNodeInterface, BirthNodeInterface
 {
     /**
-     * @var Use_|null
+     * @var TraitUse|null
      */
     public ?NodeAbstract $node = null;
 
@@ -26,10 +29,10 @@ class NamespaceUseNode extends QueryNode implements
     public bool $prepend = true;
 
     /**
-     * @param  string  $name
+     * @param  string  $namespace
      */
     public function __construct(
-        public string $name
+        public string $namespace,
     ) {
     }
 
@@ -39,22 +42,19 @@ class NamespaceUseNode extends QueryNode implements
      */
     public static function nodeClass(): string
     {
-        return Use_::class;
+        return TraitUse::class;
     }
 
     /**
-     * @param  Use_|mixed  $stmt
+     * @param  TraitUse|mixed  $stmt
      * @return bool
      */
     public function clarification(mixed $stmt): bool
     {
-        foreach ($stmt->uses as $use) {
-            if (
-                $use->name->__toString()
-                == Node::name($this->name)->__toString()
-            ) {
-                return true;
-            }
+        if (
+            (string) $stmt->traits[0] == $this->namespace
+        ) {
+            return true;
         }
         return false;
     }
@@ -65,15 +65,6 @@ class NamespaceUseNode extends QueryNode implements
      */
     public function birth(): NodeAbstract
     {
-        return Node::use($this->name);
-    }
-
-    /**
-     * STMT reconstruction method
-     * @return void
-     */
-    public function reconstruction(): void
-    {
-        $this->node->name = Node::name($this->name);
+        return Node::trait($this->namespace);
     }
 }

@@ -2,7 +2,9 @@
 
 namespace Bfg\Comcode\Exceptions;
 
-class FileError extends \Exception
+use Exception;
+
+class FileError extends Exception
 {
 
 }

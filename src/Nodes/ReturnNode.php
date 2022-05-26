@@ -2,7 +2,7 @@
 
 namespace Bfg\Comcode\Nodes;
 
-use Bfg\Comcode\Comcode;
+use Bfg\Comcode\Interfaces\AlwaysLastNodeInterface;
 use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Node;
 use Bfg\Comcode\PhpInlineTrap;
@@ -12,7 +12,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeAbstract;
 
 class ReturnNode extends QueryNode implements
-    BirthNodeInterface
+    BirthNodeInterface, AlwaysLastNodeInterface
 {
     use CommonWhileExpressions;
 
@@ -20,6 +20,15 @@ class ReturnNode extends QueryNode implements
      * @var Return_|null
      */
     public ?NodeAbstract $node = null;
+
+    /**
+     * Get instance class of node type
+     * @return <class-string>
+     */
+    public static function nodeClass(): string
+    {
+        return Return_::class;
+    }
 
     /**
      * @return PhpInlineTrap
@@ -40,23 +49,5 @@ class ReturnNode extends QueryNode implements
     public function birth(): NodeAbstract
     {
         return Node::return();
-    }
-
-    /**
-     * Get instance class of node type
-     * @return <class-string>
-     */
-    public static function nodeClass(): string
-    {
-        return Return_::class;
-    }
-
-    /**
-     * Has modifies
-     * @return bool
-     */
-    public static function modified(): bool
-    {
-        return true;
     }
 }

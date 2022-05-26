@@ -5,6 +5,21 @@ namespace Bfg\Comcode;
 class FileParser
 {
     /**
+     * build and return an object of a class from its file path.
+     *
+     * @param $filePathName
+     * @return  mixed
+     */
+    public function getClassObjectFromFile($filePathName): mixed
+    {
+        $classString = $this->getClassFullNameFromFile($filePathName);
+
+        $object = new $classString;
+
+        return $object;
+    }
+
+    /**
      * get the class namespace\name form file path using token.
      *
      * @param $filePathName
@@ -19,18 +34,29 @@ class FileParser
     }
 
     /**
-     * build and return an object of a class from its file path.
+     * get the class name form file path using token.
      *
      * @param $filePathName
      * @return  mixed
      */
-    public function getClassObjectFromFile($filePathName): mixed
+    public function getClassNameFromFile($filePathName)
     {
-        $classString = $this->getClassFullNameFromFile($filePathName);
+        $php_code = file_get_contents($filePathName);
 
-        $object = new $classString;
+        $classes = [];
+        $tokens = token_get_all($php_code);
+        $count = count($tokens);
+        for ($i = 2; $i < $count; $i++) {
+            if ($tokens[$i - 2][0] == T_CLASS
+                && $tokens[$i - 1][0] == T_WHITESPACE
+                && $tokens[$i][0] == T_STRING
+            ) {
+                $class_name = $tokens[$i][1];
+                $classes[] = $class_name;
+            }
+        }
 
-        return $object;
+        return $classes[0] ?? '';
     }
 
     /**
@@ -64,36 +90,10 @@ class FileParser
             }
             $i++;
         }
-        if (! $namespace_ok) {
+        if (!$namespace_ok) {
             return null;
         } else {
             return $namespace;
         }
-    }
-
-    /**
-     * get the class name form file path using token.
-     *
-     * @param $filePathName
-     * @return  mixed
-     */
-    public function getClassNameFromFile($filePathName)
-    {
-        $php_code = file_get_contents($filePathName);
-
-        $classes = [];
-        $tokens = token_get_all($php_code);
-        $count = count($tokens);
-        for ($i = 2; $i < $count; $i++) {
-            if ($tokens[$i - 2][0] == T_CLASS
-                && $tokens[$i - 1][0] == T_WHITESPACE
-                && $tokens[$i][0] == T_STRING
-            ) {
-                $class_name = $tokens[$i][1];
-                $classes[] = $class_name;
-            }
-        }
-
-        return $classes[0] ?? '';
     }
 }

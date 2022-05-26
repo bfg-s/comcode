@@ -2,9 +2,12 @@
 
 namespace Bfg\Comcode;
 
+use Bfg\Comcode\Interfaces\AlwaysLastNodeInterface;
+use Bfg\Comcode\Interfaces\AnonymousInterface;
 use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
 use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
+use Bfg\Comcode\Nodes\RowNode;
 use Bfg\Comcode\Subjects\SubjectAbstract;
 use PhpParser\NodeAbstract;
 
@@ -18,7 +21,7 @@ abstract class QueryNode
     /**
      * @var QueryNode
      */
-    public QueryNode $parent;
+    public ?QueryNode $parent = null;
 
     /**
      * @var bool
@@ -35,6 +38,26 @@ abstract class QueryNode
      */
     public SubjectAbstract $subject;
 
+    public int $rowCount = 0;
+
+    public static function modified(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @param  string  $name
+     * @return RowNode
+     */
+    public function row(
+        string $name
+    ): RowNode {
+        $this->rowCount++;
+        return $this->apply(
+            new RowNode($name)
+        );
+    }
+
     /**
      * Create new query node content
      * @template QUERY_NODE
@@ -44,18 +67,23 @@ abstract class QueryNode
     public function apply(
         QueryNode $nodeClass
     ): QueryNode {
-
         $nodeClass->parent = $this;
 
         $nodeClass->subject = $this->subject;
 
-        $store = $nodeClass->store;
+        $store = $nodeClass->store !== 'stmts'
+            ? $nodeClass->store
+            : $this->store;
 
-        $query = Query::new($this->node?->{$store})
-            ->isA($nodeClass::nodeClass())
-            ->filter(
-                $nodeClass instanceof ClarificationNodeInterface
-                    ? [$nodeClass, 'clarification'] : null
+        $query = Query::new($this->node->{$store})
+            ->unless(
+                $nodeClass instanceof AnonymousInterface,
+                fn(Query $query) => $query
+                    ->isA($nodeClass::nodeClass())
+            )->when(
+                $nodeClass instanceof ClarificationNodeInterface,
+                fn(Query $query) => $query
+                    ->filter([$nodeClass, 'clarification'])
             );
 
         $key = $query->firstKey();
@@ -69,12 +97,27 @@ abstract class QueryNode
         if (property_exists($this->node, $store)) {
             if (is_array($this->node->{$store})) {
                 if (is_int($key)) {
-                    $this->node->{$store}[$key] = $nodeClass->node;
-                } else {
-                    if ($nodeClass->prepend) {
-                        array_unshift($this->node->{$store}, $nodeClass->node);
-                    } else {
+                    if ($nodeClass instanceof AlwaysLastNodeInterface) {
                         $this->node->{$store}[] = $nodeClass->node;
+                        unset($this->node->{$store}[$key]);
+                    } else {
+                        $this->node->{$store}[$key] = $nodeClass->node;
+                    }
+                } else {
+
+                    if (
+                        $nodeClass instanceof RowNode
+                        && $this->rowCount
+                    ) {
+                        $this->node->{$store} = $this->moveBefore(
+                            $this->node->{$store}, $this->rowCount-1, $nodeClass->node
+                        );
+                    } else {
+                        if ($nodeClass->prepend) {
+                            array_unshift($this->node->{$store}, $nodeClass->node);
+                        } else {
+                            $this->node->{$store}[] = $nodeClass->node;
+                        }
                     }
                 }
             } else {
@@ -85,6 +128,29 @@ abstract class QueryNode
         $nodeClass->mounted();
 
         return $nodeClass;
+    }
+
+    public static function new(...$arguments): static
+    {
+        return new static(...$arguments);
+    }
+
+    /**
+     * Get instance class of node type
+     * @return <class-string>
+     */
+    abstract public static function nodeClass(): string;
+
+    /**
+     * @return bool
+     */
+    public function isMatch(): bool
+    {
+        return $this->node && is_a($this->node, static::nodeClass());
+    }
+
+    public function mounted(): void
+    {
     }
 
     public function forget(
@@ -116,24 +182,19 @@ abstract class QueryNode
         return false;
     }
 
-    public function mounted(): void
-    {
+    public function comment(
+        string $text
+    ): static {
+        if ($this->node?->hasAttribute('comments')) {
+            $comments = $this->node->getComments();
+        }
 
+        $this->node?->setDocComment(
+            Node::doc($text)
+        );
+
+        return $this;
     }
-
-    /**
-     * @return bool
-     */
-    public function isMatch(): bool
-    {
-        return $this->node && is_a($this->node, static::nodeClass());
-    }
-
-    /**
-     * Get instance class of node type
-     * @return <class-string>
-     */
-    abstract public static function nodeClass(): string;
 
     /**
      * @param  string  $name
@@ -149,13 +210,44 @@ abstract class QueryNode
         return (string) $this->node;
     }
 
-    public static function new(...$arguments): static
-    {
-        return new static(...$arguments);
-    }
-
-    public static function modified(): bool
-    {
-        return false;
+    /**
+     * Change the order of an associated array, moving by key before another
+     *
+     * @param  array  $items
+     * @param  int  $key
+     * @param  mixed  $value
+     * @return array
+     */
+    protected function moveBefore(
+        array $items,
+        int $key,
+        mixed $value
+    ): array {
+        $key = max($key, 0);
+        $count = count($items);
+        $lastKey = array_key_last($items);
+        if (!$count) {
+            $items[] = $value;
+            return $items;
+        }
+        if (!is_null($lastKey) && $lastKey < $key) {
+            $items[$key] = $value;
+            return $items;
+        }
+        $result = [];
+        $iterations = 0;
+        foreach ($items as $itemKey => $item) {
+            if (
+                $iterations >= $key
+                && $itemKey <= $key
+                && $value
+            ) {
+                $result[] = $value;
+                $value = null;
+            }
+            $result[] = $item;
+            $iterations++;
+        }
+        return $result;
     }
 }

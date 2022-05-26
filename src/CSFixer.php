@@ -2,8 +2,8 @@
 
 namespace Bfg\Comcode;
 
+use ArrayIterator;
 use Bfg\Comcode\Subjects\FileSubject;
-use Bfg\Comcode\Subjects\SubjectAbstract;
 use ErrorException;
 use PhpCsFixer\Config;
 use PhpCsFixer\ConfigInterface;
@@ -18,17 +18,12 @@ use Traversable;
 
 class CSFixer
 {
-    private EventDispatcherInterface $eventDispatcher;
-
-    private ErrorsManager $errorsManager;
-
-    private ConfigInterface $defaultConfig;
-
-    private ToolInfoInterface $toolInfo;
-
-    private Runner $runner;
-
     protected static bool $init = false;
+    private EventDispatcherInterface $eventDispatcher;
+    private ErrorsManager $errorsManager;
+    private ConfigInterface $defaultConfig;
+    private ToolInfoInterface $toolInfo;
+    private Runner $runner;
 
     /**
      * @throws ErrorException
@@ -52,15 +47,15 @@ class CSFixer
         $resolver = new ConfigurationResolver(
             $this->defaultConfig,
             [
-                'config' => base_path('.php-cs-fixer.php'),
+                'config' => __DIR__.'/../.php-cs-fixer.php',
                 'path' => [$this->file->file],
                 'path-mode' => ConfigurationResolver::PATH_MODE_OVERRIDE,
                 'verbosity' => false,
                 'show-progress' => false,
                 'dry-run' => false,
                 'stop-on-violation' => false,
-                'allow-risky' => 'no',
-                'cache-file' =>  false,
+                'allow-risky' => 'yes',
+                'cache-file' => false,
                 'diff' => true,
                 'format' => 1,
                 'rules' => null,
@@ -76,7 +71,7 @@ class CSFixer
         $finder = $resolver->getFinder();
 
         $this->runner = new Runner(
-            new \ArrayIterator(iterator_to_array($finder)),
+            new ArrayIterator(iterator_to_array($finder)),
             $resolver->getFixers(),
             $resolver->getDiffer(),
             'none' !== $progressType ? $this->eventDispatcher : null,
@@ -90,6 +85,17 @@ class CSFixer
     }
 
     /**
+     * @param  FileSubject  $file
+     * @return static
+     * @throws ErrorException
+     */
+    public static function new(
+        FileSubject $file
+    ): static {
+        return new static($file);
+    }
+
+    /**
      * Run fixer process
      * @return string|null
      */
@@ -100,16 +106,5 @@ class CSFixer
         $file = array_key_first($result);
 
         return $file ? $result[$file]['diff'] : null;
-    }
-
-    /**
-     * @param  FileSubject  $file
-     * @return static
-     * @throws ErrorException
-     */
-    public static function new(
-        FileSubject $file
-    ): static {
-        return new static($file);
     }
 }

@@ -1,15 +1,16 @@
 <?php
 
+use Bfg\Comcode\Comcode;
 use Bfg\Comcode\PhpInlineTrap;
 use Bfg\Comcode\PhpService;
 use PhpParser\Node\Expr;
 
-if (! function_exists('php')) {
+if (!function_exists('php')) {
     /**
      * @param  string|Expr|null  $expression
      * @return PhpService|PhpInlineTrap
      */
-    function php (string|Expr $expression = null): PhpService|PhpInlineTrap
+    function php(string|Expr $expression = null): PhpService|PhpInlineTrap
     {
         $service = new PhpService;
         if ($expression) {
@@ -19,15 +20,14 @@ if (! function_exists('php')) {
     }
 }
 
-if (! function_exists('base_path')) {
-
-    function base_path ($path = ''): string
+if (!function_exists('base_path')) {
+    function base_path($path = ''): string
     {
         return getcwd().($path != '' ? DIRECTORY_SEPARATOR.$path : '');
     }
 }
 
-if (! function_exists('var_export54')) {
+if (!function_exists('var_export54')) {
     /**
      * @param $var
      * @param  bool|int  $inline
@@ -38,7 +38,7 @@ if (! function_exists('var_export54')) {
     {
         switch (gettype($var)) {
             case "string":
-                if (\Bfg\Comcode\Comcode::isCanBeClass($var)) {
+                if (Comcode::isCanBeClass($var)) {
                     return $var.'::class';
                 }
                 return '"'.addcslashes($var, "\\\$\"\r\n\t\v\f").'"';

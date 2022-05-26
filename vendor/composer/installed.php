@@ -5,7 +5,7 @@
         'type' => 'bfg-app',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '3bd862ba35976ac991dbb31af5d387235fc37383',
+        'reference' => 'e57fe85466d8ee8d6829e4fe261ca3c22fb5a742',
         'name' => 'bfg/comcode',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'bfg-app',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '3bd862ba35976ac991dbb31af5d387235fc37383',
+            'reference' => 'e57fe85466d8ee8d6829e4fe261ca3c22fb5a742',
             'dev_requirement' => false,
         ),
         'composer/pcre' => array(

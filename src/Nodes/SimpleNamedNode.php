@@ -30,7 +30,17 @@ abstract class SimpleNamedNode extends QueryNode implements
      */
     public function __construct(
         public string $name
-    ) {}
+    ) {
+    }
+
+    /**
+     * Get instance class of node type
+     * @return <class-string>
+     */
+    public static function nodeClass(): string
+    {
+        return Name::class;
+    }
 
     /**
      * @param  Name|mixed  $stmt
@@ -63,14 +73,5 @@ abstract class SimpleNamedNode extends QueryNode implements
     public function reconstruction(): void
     {
         $this->node = Node::name($this->name);
-    }
-
-    /**
-     * Get instance class of node type
-     * @return <class-string>
-     */
-    public static function nodeClass(): string
-    {
-        return Name::class;
     }
 }

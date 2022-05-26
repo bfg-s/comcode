@@ -2,9 +2,14 @@
 
 namespace Bfg\Comcode;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\AssignOp\Concat;
+use PhpParser\Node\Expr\AssignOp\Minus;
+use PhpParser\Node\Expr\AssignOp\Plus;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -19,25 +24,16 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\Node\VarLikeIdentifier;
 
 class Node
 {
-    public static function identifier(string $name): Identifier
-    {
-        return new Identifier($name);
-    }
-
     public static function varId(string $name): VarLikeIdentifier
     {
         return new VarLikeIdentifier($name);
-    }
-
-    public static function name(string $name): Name
-    {
-        return new Name(explode("\\", $name));
     }
 
     public static function namespace(string $name): Namespace_
@@ -47,22 +43,15 @@ class Node
         );
     }
 
+    public static function name(string $name): Name
+    {
+        return new Name(explode("\\", $name));
+    }
+
     public static function class(string $name): Class_
     {
         return new Class_(
             static::name($name)
-        );
-    }
-
-    public static function usesClass(UseUse $use): Use_
-    {
-        return new Use_([$use]);
-    }
-
-    public static function usesUseClass(string $namespace): UseUse
-    {
-        return new UseUse(
-            static::name($namespace)
         );
     }
 
@@ -134,40 +123,17 @@ class Node
         ], $modifier ? Comcode::detectPropertyModifier($modifier) : 0);
     }
 
+    public static function identifier(string $name): Identifier
+    {
+        return new Identifier($name);
+    }
+
     /**
      * @return Return_
      */
     public static function return(): Return_
     {
         return new Return_();
-    }
-
-    /**
-     * @param  string|Expr  $var
-     * @return Variable
-     */
-    public static function var(
-        string|Expr $var
-    ): Variable {
-        return new Variable($var);
-    }
-
-    /**
-     * @return Arg[]
-     */
-    public static function args(
-        array $arguments
-    ): array {
-        foreach ($arguments as $key => $argument) {
-            if (
-                $argument instanceof PhpInlineTrap
-            ) {
-                $argument = $argument->node;
-            }
-            $arguments[$key]
-                = Comcode::defineValueNode($argument);
-        }
-        return $arguments;
     }
 
     /**
@@ -185,6 +151,16 @@ class Node
                 : $expr,
             $property
         );
+    }
+
+    /**
+     * @param  string|Expr  $var
+     * @return Variable
+     */
+    public static function var(
+        string|Expr $var
+    ): Variable {
+        return new Variable($var);
     }
 
     /**
@@ -209,6 +185,29 @@ class Node
         return $node;
     }
 
+    /**
+     * @return Arg[]
+     */
+    public static function args(
+        array $arguments
+    ): array {
+        foreach ($arguments as $key => $argument) {
+            if (
+                $argument instanceof PhpInlineTrap
+            ) {
+                $argument = $argument->node;
+            }
+            $arguments[$key]
+                = Comcode::defineValueNode($argument);
+        }
+        return $arguments;
+    }
+
+    /**
+     * @param  string  $function
+     * @param ...$arguments
+     * @return FuncCall
+     */
     public static function callFunction(
         string $function,
         ...$arguments
@@ -217,5 +216,63 @@ class Node
             Node::name($function),
             Node::args($arguments)
         );
+    }
+
+    /**
+     * @param  string  $text
+     * @return Doc
+     */
+    public static function doc(
+        string $text = ""
+    ): Doc {
+        return new Doc($text);
+    }
+
+    /**
+     * @param  Expr|null  $expr
+     * @return Expression
+     */
+    public static function expression(
+        ?Expr $expr = null
+    ): Expression {
+        return new Expression(
+            $expr ?: Comcode::anonymousExpr()
+        );
+    }
+
+    public static function assign(
+        Expr $var,
+        string|Expr $expr
+    ): Assign {
+        return new Assign($var, $expr);
+    }
+
+    public static function concat(
+        Expr $var,
+        string|Expr $expr
+    ): Concat {
+        return new Concat($var, $expr);
+    }
+
+    public static function plus(
+        Expr $var,
+        string|Expr $expr
+    ): Plus {
+        return new Plus($var, $expr);
+    }
+
+    public static function minus(
+        Expr $var,
+        string|Expr $expr
+    ): Minus {
+        return new Minus($var, $expr);
+    }
+
+    public static function trait(
+        string $namespace
+    ): TraitUse {
+        return new TraitUse([
+            static::name($namespace)
+        ]);
     }
 }

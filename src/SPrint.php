@@ -14,7 +14,7 @@ class SPrint
     public function hasOne()
     {
         return (object) [
-            'where' => fn ($q) => $q
+            'where' => fn($q) => $q
         ];
     }
 }

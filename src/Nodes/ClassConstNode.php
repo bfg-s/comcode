@@ -22,11 +22,6 @@ class ClassConstNode extends QueryNode implements
     public ?NodeAbstract $node = null;
 
     /**
-     * @var QueryNode|NamespaceNode
-     */
-    public QueryNode|NamespaceNode $parent;
-
-    /**
      * @var SubjectAbstract|ClassSubject
      */
     public SubjectAbstract|ClassSubject $subject;
@@ -42,6 +37,24 @@ class ClassConstNode extends QueryNode implements
         public mixed $value = null,
     ) {
         $this->name = strtoupper($this->name);
+    }
+
+    /**
+     * Get instance class of node type
+     * @return <class-string>
+     */
+    public static function nodeClass(): string
+    {
+        return ClassConst::class;
+    }
+
+    /**
+     * Has modifies
+     * @return bool
+     */
+    public static function modified(): bool
+    {
+        return true;
     }
 
     /**
@@ -73,23 +86,5 @@ class ClassConstNode extends QueryNode implements
         $this->node->flags = $this->modifier ? Comcode::detectPropertyModifier(
             $this->modifier, $this->node->flags
         ) : 0;
-    }
-
-    /**
-     * Get instance class of node type
-     * @return <class-string>
-     */
-    public static function nodeClass(): string
-    {
-        return ClassConst::class;
-    }
-
-    /**
-     * Has modifies
-     * @return bool
-     */
-    public static function modified(): bool
-    {
-        return true;
     }
 }

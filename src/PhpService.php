@@ -2,33 +2,18 @@
 
 namespace Bfg\Comcode;
 
-use Bfg\Comcode\Exceptions\CodeNotFound;
-use Bfg\Comcode\Exceptions\PhpParserError;
 use Bfg\Comcode\Subjects\ClassSubject;
 use Bfg\Comcode\Subjects\FileSubject;
 use ErrorException;
-use PhpParser\Error;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Stmt\Expression;
-use PhpParser\NodeAbstract;
-use PhpParser\ParserFactory;
-use PhpParser\PrettyPrinter\Standard;
+use PhpParser\Node\Stmt;
 use ReflectionClass;
 
+/**
+ * @property-read Stmt $null
+ */
 class PhpService
 {
-    /**
-     * @param  string  $file
-     * @return FileSubject
-     * @throws ErrorException
-     */
-    public function file(string $file): FileSubject
-    {
-        return new FileSubject(
-            Comcode::fileReservation($file)
-        );
-    }
-
     /**
      * @param  object|string  $class
      * @return ClassSubject
@@ -45,13 +30,15 @@ class PhpService
     }
 
     /**
-     * @param  string|Expr  $name
-     * @return PhpInlineTrap
+     * @param  string  $file
+     * @return FileSubject
+     * @throws ErrorException
      */
-    public function var(
-        string|Expr $name
-    ): PhpInlineTrap {
-        return new PhpInlineTrap($name);
+    public function file(string $file): FileSubject
+    {
+        return new FileSubject(
+            Comcode::fileReservation($file)
+        );
     }
 
     /**
@@ -62,6 +49,16 @@ class PhpService
         return $this->var('this');
     }
 
+    /**
+     * @param  string|Expr  $name
+     * @return PhpInlineTrap
+     */
+    public function var(
+        string|Expr $name
+    ): PhpInlineTrap {
+        return new PhpInlineTrap($name);
+    }
+
     public function func(
         string $function,
         ...$arguments
@@ -69,5 +66,19 @@ class PhpService
         return $this->var(
             Node::callFunction($function, ...$arguments)
         );
+    }
+
+    public function real(
+        mixed $value = null
+    ): ?Expr {
+        return Comcode::defineValueNode($value);
+    }
+
+    public function __get(string $name)
+    {
+        if ($name == 'null') {
+            return Comcode::defineValueNode(null);
+        }
+        return null;
     }
 }

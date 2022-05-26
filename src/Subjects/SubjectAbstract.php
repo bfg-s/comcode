@@ -3,24 +3,17 @@
 namespace Bfg\Comcode\Subjects;
 
 use Bfg\Comcode\Comcode;
-use Bfg\Comcode\CSFixer;
 use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
 use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
-use Bfg\Comcode\PrettyPrinter;
-use Bfg\Comcode\QueryNode;
 use Bfg\Comcode\Query;
+use Bfg\Comcode\QueryNode;
 use Bfg\Comcode\Traits\Conditionable;
-use ErrorException;
 use JetBrains\PhpStorm\NoReturn;
-use PhpCsFixer\Config;
-use PhpCsFixer\Console\ConfigurationResolver;
-use PhpCsFixer\Error\ErrorsManager;
-use PhpCsFixer\Runner\Runner;
-use PhpCsFixer\ToolInfo;
 use PhpParser\NodeAbstract;
+use Stringable;
 
-abstract class SubjectAbstract implements \Stringable
+abstract class SubjectAbstract implements Stringable
 {
     use Conditionable;
 
@@ -38,6 +31,21 @@ abstract class SubjectAbstract implements \Stringable
     }
 
     /**
+     * Discover individual node environment
+     * @return void
+     */
+    abstract protected function discoverStmtEnvironment(): void;
+
+    /**
+     * @param  mixed  ...$params
+     * @return $this
+     */
+    public static function create(...$params): static
+    {
+        return new static(...$params);
+    }
+
+    /**
      * Create new query node content
      * @template QUERY_NODE
      * @param  QUERY_NODE|QueryNode  $nodeClass
@@ -46,7 +54,6 @@ abstract class SubjectAbstract implements \Stringable
     public function apply(
         QueryNode $nodeClass
     ): QueryNode {
-
         $nodeClass->subject = $this;
 
         $query = Query::new($this->nodes)->isA(
@@ -90,30 +97,6 @@ abstract class SubjectAbstract implements \Stringable
         return $this->fileSubject->content();
     }
 
-    /**
-     * Discover individual node environment
-     * @return void
-     */
-    abstract protected function discoverStmtEnvironment(): void;
-
-    /**
-     * @param  mixed  ...$params
-     * @return $this
-     */
-    public static function create(...$params): static
-    {
-        return new static(...$params);
-    }
-
-    /**
-     * Create node list from collection items
-     * @return array
-     */
-    public function toStmt(): array
-    {
-        return Comcode::undressNodes($this->nodes);
-    }
-
     #[NoReturn]
     public function dd(bool $self = false)
     {
@@ -129,5 +112,14 @@ abstract class SubjectAbstract implements \Stringable
             $this->toStmt(),
             true
         );
+    }
+
+    /**
+     * Create node list from collection items
+     * @return array
+     */
+    public function toStmt(): array
+    {
+        return Comcode::undressNodes($this->nodes);
     }
 }

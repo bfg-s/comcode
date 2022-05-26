@@ -35,6 +35,23 @@ return $config
         'unary_operator_spaces' => true,
         'binary_operator_spaces' => true,
         'whitespace_after_comma_in_array' => true,
-        'single_trait_insert_per_statement' => false,
+        'single_trait_insert_per_statement' => true,
+
+
+
+        'simplified_if_return' => true,
+        'use_arrow_functions' => true,
+        'fully_qualified_strict_types' => true,
+        'return_type_declaration' => true,
+        'void_return' => true,
+        'get_class_to_class_keyword' => true,
+        'explicit_indirect_variable' => true,
+
+
+
+
+
+        'function_to_constant' => false,
+        'return_assignment' => false,
     ])
     ->setLineEnding("\n");

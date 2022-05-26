@@ -21,11 +21,6 @@ class NamespaceNode extends QueryNode implements
     public ?NodeAbstract $node = null;
 
     /**
-     * @var SubjectAbstract|ClassSubject
-     */
-    public SubjectAbstract|ClassSubject $subject;
-
-    /**
      * @param  string  $name
      */
     public function __construct(
@@ -34,6 +29,15 @@ class NamespaceNode extends QueryNode implements
         $this->name = str_contains($this->name, '\\')
             ? Comcode::namespaceBasename($this->name)
             : $this->name;
+    }
+
+    /**
+     * Get instance class of node type
+     * @return <class-string>
+     */
+    public static function nodeClass(): string
+    {
+        return Namespace_::class;
     }
 
     /**
@@ -52,14 +56,5 @@ class NamespaceNode extends QueryNode implements
     public function reconstruction(): void
     {
         $this->node->name = Node::name($this->name);
-    }
-
-    /**
-     * Get instance class of node type
-     * @return <class-string>
-     */
-    public static function nodeClass(): string
-    {
-        return Namespace_::class;
     }
 }

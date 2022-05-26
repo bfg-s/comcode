@@ -2,9 +2,10 @@
 
 namespace Bfg\Comcode\Exceptions;
 
+use Exception;
 use Throwable;
 
-class CodeNotFound extends \Exception
+class CodeNotFound extends Exception
 {
     public function __construct(
         int $code = 3,

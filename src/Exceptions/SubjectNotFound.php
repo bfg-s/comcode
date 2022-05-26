@@ -2,9 +2,10 @@
 
 namespace Bfg\Comcode\Exceptions;
 
+use Exception;
 use Throwable;
 
-class SubjectNotFound extends \Exception
+class SubjectNotFound extends Exception
 {
     public function __construct(
         string $subject,

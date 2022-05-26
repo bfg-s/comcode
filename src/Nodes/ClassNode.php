@@ -21,17 +21,6 @@ class ClassNode extends QueryNode
     public ?NodeAbstract $node = null;
 
     /**
-     * @var SubjectAbstract|ClassSubject
-     */
-    public SubjectAbstract|ClassSubject $subject;
-
-    /**
-     * @var QueryNode|NamespaceNode
-     */
-    public QueryNode|NamespaceNode $parent;
-
-
-    /**
      * @param  string  $name
      */
     public function __construct(
@@ -40,6 +29,15 @@ class ClassNode extends QueryNode
         $this->name = str_contains($this->name, '\\')
             ? Comcode::classBasename($this->name)
             : $this->name;
+    }
+
+    /**
+     * Get instance class of node type
+     * @return <class-string>
+     */
+    public static function nodeClass(): string
+    {
+        return Class_::class;
     }
 
     public function extends(string $namespace): static
@@ -64,7 +62,6 @@ class ClassNode extends QueryNode
         string|array $name,
         mixed $default = null
     ): static {
-
         $this->apply(
             new ClassPropertyNode('public', $name, $default)
         );
@@ -88,14 +85,5 @@ class ClassNode extends QueryNode
     public function reconstruction(): void
     {
         $this->node->name->name = $this->name;
-    }
-
-    /**
-     * Get instance class of node type
-     * @return <class-string>
-     */
-    public static function nodeClass(): string
-    {
-        return Class_::class;
     }
 }

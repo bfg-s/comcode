@@ -4,7 +4,7 @@ namespace Bfg\Comcode\Subjects;
 
 use Bfg\Comcode\CSFixer;
 use Bfg\Comcode\FileParser;
-use Closure;
+use ErrorException;
 
 class FileSubject
 {
@@ -12,10 +12,10 @@ class FileSubject
 
     /**
      * @param  string  $file
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function __construct(
-       public string $file,
+        public string $file,
     ) {
         $this->fixer = CSFixer::new($this);
     }
@@ -24,24 +24,15 @@ class FileSubject
      * CHILDHOOD FUNCTION
      * @param  object|string|null  $class
      * @return ClassSubject
+     * @throws ErrorException
      */
     public function class(object|string $class = null): ClassSubject
     {
         return (new ClassSubject(
             $this, $class
-                ?: (new FileParser)
-                    ->getClassFullNameFromFile($this->file)
+            ?: (new FileParser)
+                ->getClassFullNameFromFile($this->file)
         ));
-    }
-
-    /**
-     * CHILDHOOD FUNCTIONS
-     * @param  Closure|string  $function
-     * @return FunctionSubject
-     */
-    public function functions(Closure|string $function): FunctionSubject
-    {
-        return new FunctionSubject($function, $this);
     }
 
     /**
@@ -62,7 +53,7 @@ class FileSubject
     {
         file_put_contents(
             $this->file,
-            ! is_null($content) ? $content . "\n" : ""
+            !is_null($content) ? $content."\n" : ""
         );
 
         return $this;

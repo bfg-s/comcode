@@ -25,17 +25,7 @@ class ClassMethodNode extends QueryNode implements
     public ?NodeAbstract $node = null;
 
     /**
-     * @var QueryNode|NamespaceNode
-     */
-    public QueryNode|NamespaceNode $parent;
-
-    /**
-     * @var SubjectAbstract|ClassSubject
-     */
-    public SubjectAbstract|ClassSubject $subject;
-
-    /**
-     * @param  string  $modifier
+     * @param  string|null  $modifier
      * @param  string|array  $name
      */
     public function __construct(
@@ -44,6 +34,38 @@ class ClassMethodNode extends QueryNode implements
     ) {
         $this->name = is_string($this->name) && str_contains($this->name, ':')
             ? explode(':', $this->name) : $this->name;
+    }
+
+    /**
+     * Get instance class of node type
+     * @return <class-string>
+     */
+    public static function nodeClass(): string
+    {
+        return ClassMethod::class;
+    }
+
+    /**
+     * Has modifies
+     * @return bool
+     */
+    public static function modified(): bool
+    {
+        return true;
+    }
+
+    public function return()
+    {
+        return $this->apply(
+            new ReturnNode()
+        );
+    }
+
+    public function forgetReturn(): bool
+    {
+        return $this->forget(
+            new ReturnNode()
+        );
     }
 
     /**
@@ -85,21 +107,7 @@ class ClassMethodNode extends QueryNode implements
         );
     }
 
-    /**
-     * Get instance class of node type
-     * @return <class-string>
-     */
-    public static function nodeClass(): string
+    public function mounted(): void
     {
-        return ClassMethod::class;
-    }
-
-    /**
-     * Has modifies
-     * @return bool
-     */
-    public static function modified(): bool
-    {
-        return true;
     }
 }

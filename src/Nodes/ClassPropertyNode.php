@@ -23,21 +23,6 @@ class ClassPropertyNode extends QueryNode implements
     public ?NodeAbstract $node = null;
 
     /**
-     * @var QueryNode|NamespaceNode
-     */
-    public QueryNode|NamespaceNode $parent;
-
-    /**
-     * @var bool
-     */
-    //public bool $prepend = true;
-
-    /**
-     * @var SubjectAbstract|ClassSubject
-     */
-    public SubjectAbstract|ClassSubject $subject;
-
-    /**
      * @param  string|null  $modifier
      * @param  string|array  $name
      * @param  mixed|null  $default
@@ -49,6 +34,24 @@ class ClassPropertyNode extends QueryNode implements
     ) {
         $this->name = is_string($this->name) && str_contains($this->name, ':')
             ? explode(':', $this->name) : $this->name;
+    }
+
+    /**
+     * Get instance class of node type
+     * @return <class-string>
+     */
+    public static function nodeClass(): string
+    {
+        return Property::class;
+    }
+
+    /**
+     * Has modifies
+     * @return bool
+     */
+    public static function modified(): bool
+    {
+        return true;
     }
 
     /**
@@ -84,30 +87,12 @@ class ClassPropertyNode extends QueryNode implements
         $name = (is_array($this->name) ? $this->name[1] : $this->name);
         $type = (is_array($this->name) ? $this->name[0] : null);
         $this->node->props[0]->name = Node::varId($name);
-        $this->node->props[0]->default = ! is_null($this->default)
+        $this->node->props[0]->default = !is_null($this->default)
             ? Comcode::defineValueNode($this->default)
             : null;
         $this->node->type = $type ? Node::name($type) : null;
         $this->node->flags = Comcode::detectPropertyModifier(
             $this->modifier, $this->node->flags
         );
-    }
-
-    /**
-     * Get instance class of node type
-     * @return <class-string>
-     */
-    public static function nodeClass(): string
-    {
-        return Property::class;
-    }
-
-    /**
-     * Has modifies
-     * @return bool
-     */
-    public static function modified(): bool
-    {
-        return true;
     }
 }
