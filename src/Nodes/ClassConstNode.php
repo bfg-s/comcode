@@ -72,7 +72,11 @@ class ClassConstNode extends QueryNode implements
      */
     public function birth(): NodeAbstract
     {
-        return Node::const($this->modifier, $this->name, $this->value);
+        return Node::const(
+            $this->modifier,
+            $this->name,
+            $this->value
+        );
     }
 
     /**

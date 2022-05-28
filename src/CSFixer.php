@@ -18,11 +18,34 @@ use Traversable;
 
 class CSFixer
 {
+    /**
+     * @var bool
+     */
     protected static bool $init = false;
+
+    /**
+     * @var EventDispatcherInterface|EventDispatcher
+     */
     private EventDispatcherInterface $eventDispatcher;
+
+    /**
+     * @var ErrorsManager
+     */
     private ErrorsManager $errorsManager;
+
+    /**
+     * @var ConfigInterface|Config
+     */
     private ConfigInterface $defaultConfig;
+
+    /**
+     * @var ToolInfoInterface|ToolInfo
+     */
     private ToolInfoInterface $toolInfo;
+
+    /**
+     * @var Runner
+     */
     private Runner $runner;
 
     /**

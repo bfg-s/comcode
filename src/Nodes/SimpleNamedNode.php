@@ -2,13 +2,12 @@
 
 namespace Bfg\Comcode\Nodes;
 
+use Bfg\Comcode\Comcode;
 use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
 use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
 use Bfg\Comcode\Node;
 use Bfg\Comcode\QueryNode;
-use Bfg\Comcode\Subjects\ClassSubject;
-use Bfg\Comcode\Subjects\SubjectAbstract;
 use PhpParser\Node\Name;
 use PhpParser\NodeAbstract;
 
@@ -21,9 +20,9 @@ abstract class SimpleNamedNode extends QueryNode implements
     public ?NodeAbstract $node = null;
 
     /**
-     * @var SubjectAbstract|ClassSubject
+     * @var ClassNode|null
      */
-    public SubjectAbstract|ClassSubject $subject;
+    public ?QueryNode $parent;
 
     /**
      * @param  string  $name
@@ -40,6 +39,15 @@ abstract class SimpleNamedNode extends QueryNode implements
     public static function nodeClass(): string
     {
         return Name::class;
+    }
+
+    /**
+     * @return void
+     */
+    public function mounting(): void
+    {
+        $this->name
+            = Comcode::useIfClass($this->name);
     }
 
     /**

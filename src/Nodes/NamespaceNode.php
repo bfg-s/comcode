@@ -7,14 +7,17 @@ use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
 use Bfg\Comcode\Node;
 use Bfg\Comcode\QueryNode;
-use Bfg\Comcode\Subjects\ClassSubject;
-use Bfg\Comcode\Subjects\SubjectAbstract;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeAbstract;
 
 class NamespaceNode extends QueryNode implements
     ReconstructionNodeInterface, BirthNodeInterface
 {
+    /**
+     * @var NamespaceNode|null
+     */
+    public static ?NamespaceNode $lastNode = null;
+
     /**
      * @var Namespace_|null
      */
@@ -29,6 +32,7 @@ class NamespaceNode extends QueryNode implements
         $this->name = str_contains($this->name, '\\')
             ? Comcode::namespaceBasename($this->name)
             : $this->name;
+        NamespaceNode::$lastNode = $this;
     }
 
     /**
@@ -38,6 +42,18 @@ class NamespaceNode extends QueryNode implements
     public static function nodeClass(): string
     {
         return Namespace_::class;
+    }
+
+    /**
+     * @param  string  $namespace
+     * @return NamespaceUseNode
+     */
+    public function use(
+        string $namespace
+    ): NamespaceUseNode {
+        return $this->apply(
+            new NamespaceUseNode($namespace)
+        );
     }
 
     /**

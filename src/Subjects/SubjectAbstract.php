@@ -17,10 +17,19 @@ abstract class SubjectAbstract implements Stringable
 {
     use Conditionable;
 
+    /**
+     * @var array
+     */
     public array $nodes = [];
 
+    /**
+     * @var NodeAbstract|\Bfg\Comcode\AnonymousStmt
+     */
     public NodeAbstract $node;
 
+    /**
+     * @param  FileSubject  $fileSubject
+     */
     public function __construct(
         public FileSubject $fileSubject
     ) {
@@ -97,9 +106,13 @@ abstract class SubjectAbstract implements Stringable
         return $this->fileSubject->content();
     }
 
-    #[NoReturn]
-    public function dd(bool $self = false)
-    {
+    /**
+     * @param  bool  $self
+     * @return void
+     */
+    #[NoReturn] public function dd(
+        bool $self = false
+    ): void {
         dd($self ? $this->node->nodes : $this->__toString());
     }
 

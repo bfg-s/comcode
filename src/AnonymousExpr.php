@@ -9,6 +9,10 @@ use PhpParser\NodeAbstract;
 class AnonymousExpr extends Expr implements
     AnonymousInterface
 {
+    /**
+     * @param  string|NodeAbstract|null  $expr
+     * @param  array  $attributes
+     */
     public function __construct(
         public string|NodeAbstract|null $expr = null,
         array $attributes = []
@@ -16,11 +20,17 @@ class AnonymousExpr extends Expr implements
         parent::__construct($attributes);
     }
 
+    /**
+     * @return string
+     */
     public function getType(): string
     {
         return 'exanonymous';
     }
 
+    /**
+     * @return array
+     */
     public function getSubNodeNames(): array
     {
         return [];

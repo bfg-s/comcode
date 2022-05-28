@@ -4303,9 +4303,6 @@
         "myclabs/deep-copy",
         "phar-io/manifest",
         "phar-io/version",
-        "phpdocumentor/reflection-common",
-        "phpdocumentor/reflection-docblock",
-        "phpdocumentor/type-resolver",
         "phpspec/prophecy",
         "phpunit/php-code-coverage",
         "phpunit/php-file-iterator",
@@ -4329,7 +4326,6 @@
         "sebastian/resource-operations",
         "sebastian/type",
         "sebastian/version",
-        "theseer/tokenizer",
-        "webmozart/assert"
+        "theseer/tokenizer"
     ]
 }

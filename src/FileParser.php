@@ -23,7 +23,7 @@ class FileParser
      * get the class namespace\name form file path using token.
      *
      * @param $filePathName
-     * @return string
+     * @return string|null
      */
     public function getClassFullNameFromFile($filePathName): ?string
     {
@@ -39,7 +39,7 @@ class FileParser
      * @param $filePathName
      * @return  mixed
      */
-    public function getClassNameFromFile($filePathName)
+    public function getClassNameFromFile($filePathName): mixed
     {
         $php_code = file_get_contents($filePathName);
 
@@ -65,7 +65,7 @@ class FileParser
      * @param $filePathName
      * @return  null|string
      */
-    public function getClassNamespaceFromFile($filePathName)
+    public function getClassNamespaceFromFile($filePathName): ?string
     {
         $src = file_get_contents($filePathName);
 

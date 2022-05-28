@@ -2,6 +2,7 @@
 
 namespace Bfg\Comcode;
 
+use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
 use Bfg\Comcode\Traits\Conditionable;
 use Bfg\Comcode\Traits\EngineHelpersTrait;
 use PhpParser\NodeAbstract;
@@ -25,23 +26,20 @@ class Query
     }
 
     /**
-     * @param  mixed  $item
-     * @return static
+     * @param  NodeAbstract  $node
+     * @param  QueryNode  $queryNode
+     * @return Query
      */
-    public static function new(mixed $item = []): static
-    {
-        return new static(is_array($item) ? $item : [$item]);
-    }
-
-    /**
-     * @param  string  $class
-     * @return $this
-     */
-    public function isA(string $class): static
-    {
-        return $this->filter(
-            fn($stmt) => is_a($stmt, $class)
-        );
+    public static function find(
+        NodeAbstract $node,
+        QueryNode $queryNode
+    ): Query {
+        $queryNode->mounting();
+        return static::new((array) $node->{$queryNode->store})->isA($queryNode::nodeClass())
+            ->filter(
+                $queryNode instanceof ClarificationNodeInterface
+                    ? [$queryNode, 'clarification'] : null
+            );
     }
 
     /**
@@ -63,6 +61,26 @@ class Query
         }
 
         return $this;
+    }
+
+    /**
+     * @param  string  $class
+     * @return $this
+     */
+    public function isA(string $class): static
+    {
+        return $this->filter(
+            fn($stmt) => is_a($stmt, $class)
+        );
+    }
+
+    /**
+     * @param  mixed  $item
+     * @return static
+     */
+    public static function new(mixed $item = []): static
+    {
+        return new static(is_array($item) ? $item : [$item]);
     }
 
     /**

@@ -8,6 +8,9 @@ use ErrorException;
 
 class FileSubject
 {
+    /**
+     * @var CSFixer
+     */
     public CSFixer $fixer;
 
     /**
@@ -26,8 +29,9 @@ class FileSubject
      * @return ClassSubject
      * @throws ErrorException
      */
-    public function class(object|string $class = null): ClassSubject
-    {
+    public function class(
+        object|string $class = null
+    ): ClassSubject {
         return (new ClassSubject(
             $this, $class
             ?: (new FileParser)
@@ -59,6 +63,9 @@ class FileSubject
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function fix(): ?string
     {
         return $this->fixer->run();

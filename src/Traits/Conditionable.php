@@ -37,12 +37,11 @@ trait Conditionable
 
     /**
      * @param  callable|null  $callback
-     * @param  callable|null  $default
      * @return $this
      */
-    public function and(callable $callback = null, callable $default = null): static
+    public function and(callable $callback = null): static
     {
-        return $this->when(true, $callback, $default);
+        return $this->when(true, $callback);
     }
 
     /**

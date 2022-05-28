@@ -4,6 +4,7 @@ namespace Bfg\Comcode\Subjects;
 
 use Bfg\Comcode\Exceptions\QueryNodeError;
 use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
+use Bfg\Comcode\Node;
 use Bfg\Comcode\Nodes\ClassConstNode;
 use Bfg\Comcode\Nodes\ClassExtendsNode;
 use Bfg\Comcode\Nodes\ClassImplementNode;
@@ -14,11 +15,13 @@ use Bfg\Comcode\Nodes\ClassTraitNode;
 use Bfg\Comcode\Nodes\NamespaceNode;
 use Bfg\Comcode\Nodes\NamespaceUseNode;
 use Bfg\Comcode\Query;
-use ErrorException;
+use Bfg\Comcode\QueryNode;
 
 /**
  * @method ClassExtendsNode extends (string $namespace)
+ * @method ClassExtendsNode forgetExtends (string $namespace)
  * @method ClassImplementNode implement(string $namespace)
+ * @method ClassImplementNode forgetImplement(string $namespace)
  * @method ClassConstNode forgetConst(string $name, mixed $value = null)
  * @method ClassConstNode publicConst(string $name, mixed $value = null)
  * @method ClassConstNode protectedConst(string $name, mixed $value = null)
@@ -63,19 +66,20 @@ class ClassSubject extends SubjectAbstract
         'property' => ClassPropertyNode::class,
         'method' => ClassMethodNode::class,
     ];
+
     /**
      * @var ClassNode
      */
-    protected ClassNode $classNode;
+    public ClassNode $classNode;
+
     /**
      * @var NamespaceNode
      */
-    protected NamespaceNode $namespaceNode;
+    public NamespaceNode $namespaceNode;
 
     /**
      * @param  FileSubject  $fileSubject
      * @param  object|string  $class
-     * @throws ErrorException
      */
     public function __construct(
         public FileSubject $fileSubject,
@@ -109,6 +113,39 @@ class ClassSubject extends SubjectAbstract
     }
 
     /**
+     * @param  string  $namespace
+     * @return bool
+     */
+    public function forgetTrait(
+        string $namespace
+    ): bool {
+        return $this->classNode->forget(
+            new ClassTraitNode($namespace)
+        );
+    }
+
+    /**
+     * @param  string|callable  $text
+     * @return $this
+     */
+    public function comment(
+        string|callable $text
+    ): static {
+        if (is_callable($text)) {
+            $comment = $this->node?->getDocComment();
+            $doc = new DocSubject();
+            call_user_func($text, $doc, $comment, $this);
+            $text = $doc->render();
+        }
+
+        $this->classNode->node?->setDocComment(
+            Node::doc($text)
+        );
+
+        return $this;
+    }
+
+    /**
      * @throws QueryNodeError
      */
     public function __call(string $name, array $arguments)
@@ -121,10 +158,12 @@ class ClassSubject extends SubjectAbstract
             )
         ) {
             $nodeName = strtolower($matches[1]);
+            /** @var QueryNode $node */
             $node = static::$classNodes[$nodeName]::modified()
                 ? new static::$classNodes[$nodeName](null, ...$arguments)
                 : new static::$classNodes[$nodeName](...$arguments);
             $store = $node->store;
+            $node->mounting();
             $query = Query::new((array) $this->classNode->node->{$store})
                 ->isA($node::nodeClass())
                 ->filter(
@@ -175,14 +214,21 @@ class ClassSubject extends SubjectAbstract
     }
 
     /**
-     * @param  callable  $callback
-     * @return $this
+     * Get content of class file
+     * @return string
      */
-    public function body(callable $callback): static
+    public function content(): string
     {
-        call_user_func($callback, $this->classNode, $this);
+        return $this->fileSubject->content();
+    }
 
-        return $this;
+    /**
+     * Delete class file
+     * @return bool
+     */
+    public function delete(): bool
+    {
+        return $this->fileSubject->delete();
     }
 
     /**

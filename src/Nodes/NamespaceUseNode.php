@@ -7,8 +7,6 @@ use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
 use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
 use Bfg\Comcode\Node;
 use Bfg\Comcode\QueryNode;
-use Bfg\Comcode\Subjects\ClassSubject;
-use Bfg\Comcode\Subjects\SubjectAbstract;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeAbstract;
 

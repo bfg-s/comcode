@@ -8,15 +8,24 @@ use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
 use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
 use Bfg\Comcode\Nodes\RowNode;
+use Bfg\Comcode\Subjects\DocSubject;
 use Bfg\Comcode\Subjects\SubjectAbstract;
+use Bfg\Comcode\Traits\Conditionable;
 use PhpParser\NodeAbstract;
 
 abstract class QueryNode
 {
+    use Conditionable;
+
     /**
      * @var NodeAbstract|null
      */
     public ?NodeAbstract $node = null;
+
+    /**
+     * @var NodeAbstract|null
+     */
+    public ?NodeAbstract $original = null;
 
     /**
      * @var QueryNode
@@ -38,8 +47,14 @@ abstract class QueryNode
      */
     public SubjectAbstract $subject;
 
+    /**
+     * @var int
+     */
     public int $rowCount = 0;
 
+    /**
+     * @return bool
+     */
     public static function modified(): bool
     {
         return false;
@@ -71,11 +86,9 @@ abstract class QueryNode
 
         $nodeClass->subject = $this->subject;
 
-        $store = $nodeClass->store !== 'stmts'
-            ? $nodeClass->store
-            : $this->store;
+        $store = $nodeClass->store;
 
-        $query = Query::new($this->node->{$store})
+        $query = Query::new((array) $this->node->{$store})
             ->unless(
                 $nodeClass instanceof AnonymousInterface,
                 fn(Query $query) => $query
@@ -89,6 +102,10 @@ abstract class QueryNode
         $key = $query->firstKey();
 
         $nodeClass->node = $query->first();
+
+        $nodeClass->original = clone $nodeClass->node;
+
+        $nodeClass->mounting();
 
         $nodeClass->isMatch()
             ? $nodeClass instanceof ReconstructionNodeInterface && $nodeClass->reconstruction()
@@ -104,13 +121,12 @@ abstract class QueryNode
                         $this->node->{$store}[$key] = $nodeClass->node;
                     }
                 } else {
-
                     if (
                         $nodeClass instanceof RowNode
                         && $this->rowCount
                     ) {
                         $this->node->{$store} = $this->moveBefore(
-                            $this->node->{$store}, $this->rowCount-1, $nodeClass->node
+                            $this->node->{$store}, $this->rowCount - 1, $nodeClass->node
                         );
                     } else {
                         if ($nodeClass->prepend) {
@@ -130,8 +146,13 @@ abstract class QueryNode
         return $nodeClass;
     }
 
-    public static function new(...$arguments): static
-    {
+    /**
+     * @param ...$arguments
+     * @return static
+     */
+    public static function new(
+        ...$arguments
+    ): static {
         return new static(...$arguments);
     }
 
@@ -142,72 +163,18 @@ abstract class QueryNode
     abstract public static function nodeClass(): string;
 
     /**
+     * @return void
+     */
+    public function mounting(): void
+    {
+    }
+
+    /**
      * @return bool
      */
     public function isMatch(): bool
     {
         return $this->node && is_a($this->node, static::nodeClass());
-    }
-
-    public function mounted(): void
-    {
-    }
-
-    public function forget(
-        QueryNode $nodeClass
-    ): bool {
-        $store = $nodeClass->store;
-        $query = Query::new((array) $this->node->{$store})
-            ->isA($nodeClass::nodeClass())
-            ->filter(
-                $nodeClass instanceof ClarificationNodeInterface
-                    ? [$nodeClass, 'clarification'] : null
-            );
-
-        $key = $query->firstKey();
-
-        if (property_exists($this->node, $store)) {
-            if (is_array($this->node->{$store})) {
-                if (is_int($key)) {
-                    $arr = $this->node->{$store};
-                    unset($arr[$key]);
-                    $this->node->{$store} = array_values($arr);
-                    return true;
-                }
-            } else {
-                $this->node->{$store} = null;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public function comment(
-        string $text
-    ): static {
-        if ($this->node?->hasAttribute('comments')) {
-            $comments = $this->node->getComments();
-        }
-
-        $this->node?->setDocComment(
-            Node::doc($text)
-        );
-
-        return $this;
-    }
-
-    /**
-     * @param  string  $name
-     * @return null
-     */
-    public function __get(string $name)
-    {
-        return $this->node?->{$name};
-    }
-
-    public function __toString(): string
-    {
-        return (string) $this->node;
     }
 
     /**
@@ -249,5 +216,102 @@ abstract class QueryNode
             $iterations++;
         }
         return $result;
+    }
+
+    /**
+     * @return void
+     */
+    public function mounted(): void
+    {
+    }
+
+    /**
+     * @param  string  $name
+     * @return bool
+     */
+    public function forgetRow(
+        string $name
+    ): bool {
+        $this->rowCount--;
+        return $this->forget(
+            new RowNode($name)
+        );
+    }
+
+    /**
+     * @param  QueryNode  $nodeClass
+     * @return bool
+     */
+    public function forget(
+        QueryNode $nodeClass
+    ): bool {
+        $store = $nodeClass->store;
+        $query = Query::find($this->node, $nodeClass);
+        $key = $query->firstKey();
+
+        if (property_exists($this->node, $store)) {
+            if (is_array($this->node->{$store})) {
+                if (is_int($key)) {
+                    $arr = $this->node->{$store};
+                    unset($arr[$key]);
+                    $this->node->{$store} = array_values($arr);
+                    return true;
+                }
+            } else {
+                $this->node->{$store} = null;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param  QueryNode  $nodeClass
+     * @return bool
+     */
+    public function exists(
+        QueryNode $nodeClass
+    ): bool {
+        return Query::find($this->node, $nodeClass)
+            ->isNotEmpty();
+    }
+
+    /**
+     * @param  string|callable  $text
+     * @return $this
+     */
+    public function comment(
+        string|callable $text
+    ): static {
+        if (is_callable($text)) {
+            $comment = $this->node?->getDocComment();
+            $doc = new DocSubject();
+            call_user_func($text, $doc, $comment, $this);
+            $text = $doc->render();
+        }
+
+        $this->node?->setDocComment(
+            Node::doc((string) $text)
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param  string  $name
+     * @return null
+     */
+    public function __get(
+        string $name
+    ) {
+        return $this->node?->{$name};
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return (string) $this->node;
     }
 }

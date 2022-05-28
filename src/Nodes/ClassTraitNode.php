@@ -5,13 +5,8 @@ namespace Bfg\Comcode\Nodes;
 use Bfg\Comcode\Comcode;
 use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
-use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
 use Bfg\Comcode\Node;
 use Bfg\Comcode\QueryNode;
-use Bfg\Comcode\Subjects\ClassSubject;
-use Bfg\Comcode\Subjects\SubjectAbstract;
-use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\NodeAbstract;
 
@@ -29,6 +24,11 @@ class ClassTraitNode extends QueryNode implements
     public bool $prepend = true;
 
     /**
+     * @var ClassNode|null
+     */
+    public ?QueryNode $parent;
+
+    /**
      * @param  string  $namespace
      */
     public function __construct(
@@ -43,6 +43,15 @@ class ClassTraitNode extends QueryNode implements
     public static function nodeClass(): string
     {
         return TraitUse::class;
+    }
+
+    /**
+     * @return void
+     */
+    public function mounting(): void
+    {
+        $this->namespace
+            = Comcode::useIfClass($this->namespace);
     }
 
     /**

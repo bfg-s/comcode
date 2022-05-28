@@ -21,6 +21,11 @@ class ClassNode extends QueryNode
     public ?NodeAbstract $node = null;
 
     /**
+     * @var ClassSubject
+     */
+    public SubjectAbstract $subject;
+
+    /**
      * @param  string  $name
      */
     public function __construct(
@@ -40,33 +45,54 @@ class ClassNode extends QueryNode
         return Class_::class;
     }
 
-    public function extends(string $namespace): static
-    {
-        $this->apply(
+    /**
+     * @param  string  $namespace
+     * @return NamespaceUseNode
+     */
+    public function use(
+        string $namespace
+    ): NamespaceUseNode {
+        return $this->subject->namespaceNode->apply(
+            new NamespaceUseNode($namespace)
+        );
+    }
+
+    /**
+     * @param  string  $namespace
+     * @return $this
+     */
+    public function extends(
+        string $namespace
+    ): static {
+        return $this->apply(
             new ClassExtendsNode($namespace)
         );
-
-        return $this;
     }
 
-    public function implement(string $namespace): static
-    {
-        $this->apply(
+    /**
+     * @param  string  $namespace
+     * @return $this
+     */
+    public function implement(
+        string $namespace
+    ): static {
+        return $this->apply(
             new ClassImplementNode($namespace)
         );
-
-        return $this;
     }
 
+    /**
+     * @param  string|array  $name
+     * @param  mixed|null  $default
+     * @return $this
+     */
     public function publicProperty(
         string|array $name,
         mixed $default = null
     ): static {
-        $this->apply(
+        return $this->apply(
             new ClassPropertyNode('public', $name, $default)
         );
-
-        return $this;
     }
 
     /**

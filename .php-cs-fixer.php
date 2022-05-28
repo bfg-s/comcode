@@ -4,9 +4,16 @@ $config = new PhpCsFixer\Config();
 
 return $config
     ->setRules([
-        '@PSR12' => true,
+        //'@PSR12' => true,
         '@PHP81Migration' => true,
         '@PhpCsFixer' => true,
+
+
+        'no_leading_import_slash' => true,
+        'no_unused_imports' => true,
+
+
+
         'new_with_braces' => false,
         'array_indentation' => true,
         'array_syntax' => ['syntax' => 'short'],
@@ -24,7 +31,6 @@ return $config
         'lowercase_cast' => true,
         'no_multiline_whitespace_around_double_arrow' => true,
         'no_spaces_around_offset' => true,
-        'no_unused_imports' => true,
         'no_whitespace_before_comma_in_array' => true,
         'no_whitespace_in_blank_line' => true,
         'object_operator_without_whitespace' => true,
@@ -43,7 +49,6 @@ return $config
         'use_arrow_functions' => true,
         'fully_qualified_strict_types' => true,
         'return_type_declaration' => true,
-        'void_return' => true,
         'get_class_to_class_keyword' => true,
         'explicit_indirect_variable' => true,
 

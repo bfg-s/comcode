@@ -5,7 +5,7 @@
         'type' => 'bfg-app',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'e57fe85466d8ee8d6829e4fe261ca3c22fb5a742',
+        'reference' => 'bb15b7a15ee399f54c0e9654209e8422a56232b8',
         'name' => 'bfg/comcode',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'bfg-app',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'e57fe85466d8ee8d6829e4fe261ca3c22fb5a742',
+            'reference' => 'bb15b7a15ee399f54c0e9654209e8422a56232b8',
             'dev_requirement' => false,
         ),
         'composer/pcre' => array(
@@ -134,7 +134,7 @@
             'install_path' => __DIR__ . '/../phpdocumentor/reflection-common',
             'aliases' => array(),
             'reference' => '1d01c49d4ed62f25aa84a747ad35d5a16924662b',
-            'dev_requirement' => true,
+            'dev_requirement' => false,
         ),
         'phpdocumentor/reflection-docblock' => array(
             'pretty_version' => '5.3.0',
@@ -143,7 +143,7 @@
             'install_path' => __DIR__ . '/../phpdocumentor/reflection-docblock',
             'aliases' => array(),
             'reference' => '622548b623e81ca6d78b721c5e029f4ce664f170',
-            'dev_requirement' => true,
+            'dev_requirement' => false,
         ),
         'phpdocumentor/type-resolver' => array(
             'pretty_version' => '1.6.1',
@@ -152,7 +152,7 @@
             'install_path' => __DIR__ . '/../phpdocumentor/type-resolver',
             'aliases' => array(),
             'reference' => '77a32518733312af16a44300404e945338981de3',
-            'dev_requirement' => true,
+            'dev_requirement' => false,
         ),
         'phpspec/prophecy' => array(
             'pretty_version' => 'v1.15.0',
@@ -593,7 +593,7 @@
             'install_path' => __DIR__ . '/../webmozart/assert',
             'aliases' => array(),
             'reference' => '6964c76c7804814a842473e0c8fd15bab0f18e25',
-            'dev_requirement' => true,
+            'dev_requirement' => false,
         ),
     ),
 );

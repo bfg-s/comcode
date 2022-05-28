@@ -3,50 +3,54 @@
 namespace Bfg\Comcode\Traits;
 
 use Bfg\Comcode\Comcode;
+use Bfg\Comcode\InlineTrap;
 use Bfg\Comcode\Node;
-use Bfg\Comcode\PhpInlineTrap;
 use PhpParser\Node\Expr;
 
 trait CommonWhileExpressions
 {
     /**
-     * @return PhpInlineTrap
+     * @return InlineTrap
      */
-    public function this(): PhpInlineTrap
+    public function this(): InlineTrap
     {
         return $this->var('this');
     }
 
     /**
      * @param  string|Expr  $name
-     * @return PhpInlineTrap
+     * @return InlineTrap
      */
     public function var(
         string|Expr $name
-    ): PhpInlineTrap {
+    ): InlineTrap {
         $this->node->expr
-            = new PhpInlineTrap($name);
+            = new InlineTrap($name);
         return $this->node->expr
-            ->__bindExpression($this->node);
+            ->__bindExpression($this, $this->node);
     }
 
     /**
      * @param  string  $function
      * @param ...$arguments
-     * @return PhpInlineTrap
+     * @return InlineTrap
      */
     public function func(
         string $function,
         ...$arguments
-    ): PhpInlineTrap {
+    ): InlineTrap {
         return $this->var(
             Node::callFunction($function, ...$arguments)
         );
     }
 
+    /**
+     * @param  mixed|null  $value
+     * @return InlineTrap
+     */
     public function real(
         mixed $value = null
-    ): PhpInlineTrap {
+    ): InlineTrap {
         return $this->var(
             Comcode::defineValueNode($value)
         );

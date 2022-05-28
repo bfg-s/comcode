@@ -8,8 +8,6 @@ use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
 use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
 use Bfg\Comcode\Node;
 use Bfg\Comcode\QueryNode;
-use Bfg\Comcode\Subjects\ClassSubject;
-use Bfg\Comcode\Subjects\SubjectAbstract;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\NodeAbstract;
@@ -21,6 +19,11 @@ class ClassPropertyNode extends QueryNode implements
      * @var Property|null
      */
     public ?NodeAbstract $node = null;
+
+    /**
+     * @var ClassNode|null
+     */
+    public ?QueryNode $parent;
 
     /**
      * @param  string|null  $modifier
@@ -43,6 +46,17 @@ class ClassPropertyNode extends QueryNode implements
     public static function nodeClass(): string
     {
         return Property::class;
+    }
+
+    /**
+     * @return void
+     */
+    public function mounting(): void
+    {
+        if (is_array($this->name)) {
+
+            $this->name[0] = Comcode::useIfClass($this->name[0]);
+        }
     }
 
     /**

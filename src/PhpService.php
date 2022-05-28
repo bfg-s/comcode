@@ -42,38 +42,51 @@ class PhpService
     }
 
     /**
-     * @return PhpInlineTrap
+     * @return InlineTrap
      */
-    public function this(): PhpInlineTrap
+    public function this(): InlineTrap
     {
         return $this->var('this');
     }
 
     /**
      * @param  string|Expr  $name
-     * @return PhpInlineTrap
+     * @return InlineTrap
      */
     public function var(
         string|Expr $name
-    ): PhpInlineTrap {
-        return new PhpInlineTrap($name);
+    ): InlineTrap {
+        return new InlineTrap($name);
     }
 
+    /**
+     * @param  string  $function
+     * @param ...$arguments
+     * @return InlineTrap
+     */
     public function func(
         string $function,
         ...$arguments
-    ): PhpInlineTrap {
+    ): InlineTrap {
         return $this->var(
             Node::callFunction($function, ...$arguments)
         );
     }
 
+    /**
+     * @param  mixed|null  $value
+     * @return Expr|null
+     */
     public function real(
         mixed $value = null
     ): ?Expr {
         return Comcode::defineValueNode($value);
     }
 
+    /**
+     * @param  string  $name
+     * @return Expr|null
+     */
     public function __get(string $name)
     {
         if ($name == 'null') {

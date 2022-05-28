@@ -3,6 +3,7 @@
 namespace Bfg\Comcode\Tests;
 
 use Bfg\Comcode\Comcode;
+use Bfg\Comcode\Interfaces\AlwaysLastNodeInterface;
 use Bfg\Comcode\Subjects\ClassSubject;
 use ErrorException;
 use JetBrains\PhpStorm\NoReturn;
@@ -10,27 +11,62 @@ use Traversable;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
+    public ?ClassSubject $class = null;
+
     protected function assertClassContains(
         string|array $needle,
-        ?ClassSubject $subject = null
     ) {
-        $subject = $subject ?: $this->class();
+        $assert = false;
+        $subject = $this->class()->content();
         foreach ((array) $needle as $item) {
-            if (! str_contains($subject, $item)) {
-                $this->fail($subject.' = '.$item);
+            $item = str_contains($item, '*') ? $item : "*$item*";
+            if (! Comcode::is($item, $subject)) {
+                $this->fail($subject.' != '.$item);
+            } else {
+                $assert = true;
             }
         }
+        $this->assertTrue($assert);
+    }
+
+    protected function assertClassNotContains(
+        string|array $needle,
+    ) {
+        $assert = false;
+        $subject = $this->class()->content();
+        foreach ((array) $needle as $item) {
+            $item = str_contains($item, '*') ? $item : "*$item*";
+            if (Comcode::is($item, $subject)) {
+                $this->fail($subject.' == '.$item);
+            } else {
+                $assert = true;
+            }
+        }
+        $this->assertTrue($assert);
+    }
+
+    /**
+     * @return $this
+     */
+    protected function resetClass(): static
+    {
+        if (is_file($file = __DIR__ . '/TestedClass.php')) {
+            unlink($file);
+        }
+
+        $this->class = null;
+
+        return $this;
     }
 
     protected function class(): ClassSubject
     {
-        $class = php()->class(\Tests\TestedClass::class);
-        $class->use(Comcode::class);
-        $class->use(Traversable::class);
-
-        $class->extends('Comcode');
-        $class->implement('Traversable');
-        return $class;
+        if (!$this->class) {
+            $this->class = php()->class(\Tests\TestedClass::class);
+            $this->class->extends(Comcode::class);
+            $this->class->implement(AlwaysLastNodeInterface::class);
+        }
+        return $this->class;
     }
 
     /**

@@ -1,397 +1,105 @@
 PHPUnit 9.5.10 by Sebastian Bergmann and contributors.
 
-array:1 [
-  0 => PhpParser\Node\Stmt\Namespace_ {#1732
-    +name: PhpParser\Node\Name {#1817
-      +parts: array:1 [
-        0 => "Tests"
-      ]
-    }
-    +stmts: array:8 [
-      4 => PhpParser\Node\Stmt\Expression {#1745
-        +expr: PhpParser\Node\Expr\Assign {#1744
-          +var: PhpParser\Node\Expr\Variable {#1742
-            +name: "test"
-          }
-          +expr: PhpParser\Node\Scalar\LNumber {#1743
-            +value: 1
-            #attributes: array:3 [
-              "startLine" => 9
-              "endLine" => 9
-              "kind" => 10
-            ]
-          }
-        }
-      }
-      5 => PhpParser\Node\Stmt\Function_ {#1747
-        +byRef: false
-        +name: PhpParser\Node\Identifier {#1746
-          +name: "test"
-        }
-        +params: []
-        +returnType: null
-        +stmts: []
-        +attrGroups: []
-        +namespacedName: null
-      }
-      6 => PhpParser\Node\Stmt\Expression {#1750
-        +expr: PhpParser\Node\Expr\FuncCall {#1749
-          +name: PhpParser\Node\Name {#1748
-            +parts: array:1 [
-              0 => "test"
-            ]
-          }
-          +args: []
-        }
-      }
-      7 => PhpParser\Node\Stmt\Class_ {#1814
-        +flags: 0
-        +extends: PhpParser\Node\Name {#1820
-          +parts: array:1 [
-            0 => "Comcode"
-          ]
-        }
-        +implements: array:1 [
-          0 => PhpParser\Node\Name {#1752
-            +parts: array:1 [
-              0 => "Traversable"
-            ]
-          }
-        ]
-        +name: PhpParser\Node\Identifier {#1751
-          +name: "TestedClass"
-        }
-        +stmts: array:9 [
-          0 => PhpParser\Node\Stmt\ClassConst {#1757
-            +flags: 2
-            +consts: array:1 [
-              0 => PhpParser\Node\Const_ {#1756
-                +name: PhpParser\Node\Identifier {#1753
-                  +name: "TEST2"
+"1 -:- methidWithProps"
+PhpParser\Node\Stmt\Return_ {#3199
+  +expr: PhpParser\Node\Expr\PropertyFetch {#1917
+    +var: PhpParser\Node\Expr\MethodCall {#1915
+      +var: PhpParser\Node\Expr\PropertyFetch {#1913
+        +var: PhpParser\Node\Expr\PropertyFetch {#1911
+          +var: PhpParser\Node\Expr\MethodCall {#1909
+            +var: PhpParser\Node\Expr\MethodCall {#1877
+              +var: PhpParser\Node\Expr\PropertyFetch {#1875
+                +var: PhpParser\Node\Expr\Variable {#1873
+                  +name: "this"
                 }
-                +value: PhpParser\Node\Scalar\DNumber {#1754
-                  +value: 2.2
+                +name: PhpParser\Node\Identifier {#1874
+                  +name: "ttt"
                 }
-                +namespacedName: null
               }
-            ]
-            +attrGroups: []
-          }
-          1 => PhpParser\Node\Stmt\Property {#1764
-            +flags: 1
-            +props: array:1 [
-              0 => PhpParser\Node\Stmt\PropertyProperty {#1763
-                +name: PhpParser\Node\VarLikeIdentifier {#1755
-                  +name: "table"
+              +name: PhpParser\Node\Identifier {#1876
+                +name: "meth"
+              }
+              +args: []
+            }
+            +name: PhpParser\Node\Identifier {#1878
+              +name: "methidWithProps"
+            }
+            +args: array:4 [
+              0 => PhpParser\Node\Arg {#1880
+                +name: null
+                +value: PhpParser\Node\Scalar\LNumber {#1879
+                  +value: 1
                 }
-                +default: PhpParser\Node\Expr\Array_ {#2997
-                  +items: array:1 [
-                    0 => PhpParser\Node\Expr\ArrayItem {#2996
-                      +key: null
-                      +value: PhpParser\Node\Scalar\String_ {#2995
-                        +value: "aa"
-                        #attributes: array:3 [
-                          "startLine" => 3
-                          "endLine" => 3
-                          "kind" => 2
-                        ]
+                +byRef: false
+                +unpack: false
+              }
+              1 => PhpParser\Node\Arg {#1882
+                +name: null
+                +value: PhpParser\Node\Expr\Variable {#1881
+                  +name: "zazazazazazaza"
+                }
+                +byRef: false
+                +unpack: false
+              }
+              2 => PhpParser\Node\Arg {#1884
+                +name: null
+                +value: PhpParser\Node\Scalar\LNumber {#1883
+                  +value: 3
+                }
+                +byRef: false
+                +unpack: false
+              }
+              3 => PhpParser\Node\Arg {#1908
+                +name: null
+                +value: PhpParser\Node\Expr\Closure {#1907
+                  +static: false
+                  +byRef: false
+                  +params: array:1 [
+                    0 => PhpParser\Node\Param {#1889
+                      +type: PhpParser\Node\Identifier {#1886
+                        +name: "string"
                       }
                       +byRef: false
-                      +unpack: false
-                    }
-                  ]
-                  #attributes: array:3 [
-                    "startLine" => 3
-                    "endLine" => 3
-                    "kind" => 2
-                  ]
-                }
-              }
-            ]
-            +type: PhpParser\Node\Name {#1762
-              +parts: array:1 [
-                0 => "array"
-              ]
-            }
-            +attrGroups: []
-          }
-          2 => PhpParser\Node\Stmt\Property {#1768
-            +flags: 4
-            +props: array:1 [
-              0 => PhpParser\Node\Stmt\PropertyProperty {#1767
-                +name: PhpParser\Node\VarLikeIdentifier {#1758
-                  +name: "users"
-                }
-                +default: null
-              }
-            ]
-            +type: PhpParser\Node\Name {#1766
-              +parts: array:1 [
-                0 => "SPrint"
-              ]
-            }
-            +attrGroups: []
-          }
-          3 => PhpParser\Node\Stmt\Property {#1771
-            +flags: 4
-            +props: array:1 [
-              0 => PhpParser\Node\Stmt\PropertyProperty {#1770
-                +name: PhpParser\Node\VarLikeIdentifier {#1765
-                  +name: "test"
-                }
-                +default: null
-              }
-            ]
-            +type: null
-            +attrGroups: []
-          }
-          4 => PhpParser\Node\Stmt\ClassMethod {#1775
-            +flags: 1
-            +byRef: false
-            +name: PhpParser\Node\Identifier {#1772
-              +name: "myFunction"
-            }
-            +params: []
-            +returnType: null
-            +stmts: array:1 [
-              0 => PhpParser\Node\Stmt\Return_ {#1774
-                +expr: PhpParser\Node\Scalar\LNumber {#1773
-                  +value: 123
-                  #attributes: array:3 [
-                    "startLine" => 24
-                    "endLine" => 24
-                    "kind" => 10
-                  ]
-                }
-              }
-            ]
-            +attrGroups: []
-          }
-          5 => PhpParser\Node\Stmt\ClassMethod {#1787
-            +flags: 1
-            +byRef: false
-            +name: PhpParser\Node\Identifier {#3005
-              +name: "test4"
-            }
-            +params: []
-            +returnType: null
-            +stmts: array:1 [
-              0 => PhpParser\Node\Stmt\Return_ {#1786
-                +expr: PhpParser\Node\Expr\PropertyFetch {#1781
-                  +var: PhpParser\Node\Expr\PropertyFetch {#1783
-                    +var: PhpParser\Node\Expr\MethodCall {#1785
-                      +var: PhpParser\Node\Expr\Variable {#3006
-                        +name: "this"
+                      +variadic: false
+                      +var: PhpParser\Node\Expr\Variable {#1885
+                        +name: "test"
                       }
-                      +name: PhpParser\Node\Identifier {#1784
-                        +name: "test3"
-                      }
-                      +args: []
-                    }
-                    +name: PhpParser\Node\Identifier {#1782
-                      +name: "myProperty"
-                    }
-                  }
-                  +name: PhpParser\Node\Identifier {#1780
-                    +name: "next"
-                  }
-                }
-                #attributes: array:3 [
-                  "startLine" => 31
-                  "comments" => array:1 [
-                    0 => PhpParser\Comment {#1778
-                      #text: "// Hello for return text"
-                      #startLine: 30
-                      #startFilePos: 431
-                      #startTokenPos: 123
-                      #endLine: 30
-                      #endFilePos: 454
-                      #endTokenPos: 123
-                    }
-                  ]
-                  "endLine" => 31
-                ]
-              }
-            ]
-            +attrGroups: []
-            #attributes: array:3 [
-              "startLine" => 28
-              "comments" => array:1 [
-                0 => PhpParser\Comment {#1776
-                  #text: "// Hello text"
-                  #startLine: 27
-                  #startFilePos: 375
-                  #startTokenPos: 111
-                  #endLine: 27
-                  #endFilePos: 387
-                  #endTokenPos: 111
-                }
-              ]
-              "endLine" => 32
-            ]
-          }
-          6 => PhpParser\Node\Stmt\ClassMethod {#1797
-            +flags: 2
-            +byRef: false
-            +name: PhpParser\Node\Identifier {#1788
-              +name: "test2"
-            }
-            +params: []
-            +returnType: null
-            +stmts: array:1 [
-              0 => PhpParser\Node\Stmt\Return_ {#1796
-                +expr: PhpParser\Node\Expr\MethodCall {#1795
-                  +var: PhpParser\Node\Expr\MethodCall {#1793
-                    +var: PhpParser\Node\Expr\PropertyFetch {#1791
-                      +var: PhpParser\Node\Expr\Variable {#1789
-                        +name: "this"
-                      }
-                      +name: PhpParser\Node\Identifier {#1790
-                        +name: "users"
-                      }
-                    }
-                    +name: PhpParser\Node\Identifier {#1792
-                      +name: "hasOne"
-                    }
-                    +args: []
-                  }
-                  +name: PhpParser\Node\Identifier {#1794
-                    +name: "where"
-                  }
-                  +args: []
-                }
-              }
-            ]
-            +attrGroups: []
-          }
-          7 => PhpParser\Node\Stmt\ClassMethod {#1811
-            +flags: 2
-            +byRef: false
-            +name: PhpParser\Node\Identifier {#1812
-              +name: "test3"
-            }
-            +params: []
-            +returnType: null
-            +stmts: array:3 [
-              0 => PhpParser\Node\Stmt\Expression {#1803
-                +expr: PhpParser\Node\Expr\Assign {#1802
-                  +var: PhpParser\Node\Expr\Variable {#1800
-                    +name: "test"
-                    #attributes: array:3 [
-                      "startLine" => 42
-                      "comments" => array:1 [
-                        0 => PhpParser\Comment\Doc {#1799
-                          #text: "/** Clarification line */"
-                          #startLine: 41
-                          #startFilePos: 649
-                          #startTokenPos: 177
-                          #endLine: 41
-                          #endFilePos: 673
-                          #endTokenPos: 177
+                      +default: PhpParser\Node\Expr\ConstFetch {#1888
+                        +name: PhpParser\Node\Name {#1887
+                          +parts: array:1 [
+                            0 => "null"
+                          ]
                         }
-                      ]
-                      "endLine" => 42
-                    ]
-                  }
-                  +expr: PhpParser\Node\Scalar\LNumber {#1801
-                    +value: 1
-                    #attributes: array:3 [
-                      "startLine" => 42
-                      "endLine" => 42
-                      "kind" => 10
-                    ]
-                  }
-                  #attributes: array:3 [
-                    "startLine" => 42
-                    "comments" => array:1 [
-                      0 => PhpParser\Comment\Doc {#1799}
-                    ]
-                    "endLine" => 42
+                      }
+                      +flags: 0
+                      +attrGroups: []
+                    }
                   ]
+                  +uses: []
+                  +returnType: null
+                  +stmts: array:4 []
+                  +attrGroups: []
                 }
-                #attributes: array:3 [
-                  "startLine" => 42
-                  "comments" => array:1 [
-                    0 => PhpParser\Comment\Doc {#1799}
-                  ]
-                  "endLine" => 42
-                ]
-              }
-              1 => PhpParser\Node\Stmt\Expression {#1808
-                +expr: PhpParser\Node\Expr\MethodCall {#1807
-                  +var: PhpParser\Node\Expr\Variable {#1805
-                    +name: "this"
-                    #attributes: array:3 [
-                      "startLine" => 44
-                      "comments" => array:1 [
-                        0 => PhpParser\Comment {#1804
-                          #text: "// Call the tablet line"
-                          #startLine: 43
-                          #startFilePos: 702
-                          #startTokenPos: 186
-                          #endLine: 43
-                          #endFilePos: 724
-                          #endTokenPos: 186
-                        }
-                      ]
-                      "endLine" => 44
-                    ]
-                  }
-                  +name: PhpParser\Node\Identifier {#1806
-                    +name: "test3"
-                  }
-                  +args: []
-                  #attributes: array:3 [
-                    "startLine" => 44
-                    "comments" => array:1 [
-                      0 => PhpParser\Comment {#1804}
-                    ]
-                    "endLine" => 44
-                  ]
-                }
-                #attributes: array:3 [
-                  "startLine" => 44
-                  "comments" => array:1 [
-                    0 => PhpParser\Comment {#1804}
-                  ]
-                  "endLine" => 44
-                ]
-              }
-              2 => PhpParser\Node\Stmt\Echo_ {#1810
-                +exprs: array:1 [
-                  0 => PhpParser\Node\Scalar\LNumber {#1809
-                    +value: 123
-                    #attributes: array:3 [
-                      "startLine" => 45
-                      "endLine" => 45
-                      "kind" => 10
-                    ]
-                  }
-                ]
+                +byRef: false
+                +unpack: false
               }
             ]
-            +attrGroups: []
           }
-          8 => PhpParser\Node\Stmt\ClassMethod {#1813
-            +flags: 2
-            +byRef: false
-            +name: PhpParser\Node\Identifier {#1769
-              +name: "test1"
-            }
-            +params: []
-            +returnType: null
-            +stmts: []
-            +attrGroups: []
+          +name: PhpParser\Node\Identifier {#1910
+            +name: "final"
           }
-        ]
-        +attrGroups: []
-        +namespacedName: null
+        }
+        +name: PhpParser\Node\Identifier {#1912
+          +name: "my"
+        }
       }
-    ]
-    #attributes: array:3 [
-      "startLine" => 3
-      "endLine" => 51
-      "kind" => 1
-    ]
+      +name: PhpParser\Node\Identifier {#1914
+        +name: "muuuu"
+      }
+      +args: []
+    }
+    +name: PhpParser\Node\Identifier {#1916
+      +name: "proppppp"
+    }
   }
-]
+}

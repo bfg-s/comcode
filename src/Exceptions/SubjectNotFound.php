@@ -7,6 +7,11 @@ use Throwable;
 
 class SubjectNotFound extends Exception
 {
+    /**
+     * @param  string  $subject
+     * @param  int  $code
+     * @param  Throwable|null  $previous
+     */
     public function __construct(
         string $subject,
         int $code = 1,

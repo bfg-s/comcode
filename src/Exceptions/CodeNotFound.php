@@ -7,6 +7,10 @@ use Throwable;
 
 class CodeNotFound extends Exception
 {
+    /**
+     * @param  int  $code
+     * @param  Throwable|null  $previous
+     */
     public function __construct(
         int $code = 3,
         ?Throwable $previous = null

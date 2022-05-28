@@ -8,9 +8,8 @@ use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
 use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
 use Bfg\Comcode\Node;
 use Bfg\Comcode\QueryNode;
-use Bfg\Comcode\Subjects\ClassSubject;
-use Bfg\Comcode\Subjects\SubjectAbstract;
 use Bfg\Comcode\Traits\CommonWhileExpressions;
+use Bfg\Comcode\Traits\FuncCommonTrait;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeAbstract;
 
@@ -18,6 +17,7 @@ class ClassMethodNode extends QueryNode implements
     ClarificationNodeInterface, ReconstructionNodeInterface, BirthNodeInterface
 {
     use CommonWhileExpressions;
+    use FuncCommonTrait;
 
     /**
      * @var ClassMethod|null
@@ -37,6 +37,17 @@ class ClassMethodNode extends QueryNode implements
     }
 
     /**
+     * @return void
+     */
+    public function mounting(): void
+    {
+        if (is_array($this->name)) {
+
+            $this->name[0] = Comcode::useIfClass($this->name[0]);
+        }
+    }
+
+    /**
      * Get instance class of node type
      * @return <class-string>
      */
@@ -52,20 +63,6 @@ class ClassMethodNode extends QueryNode implements
     public static function modified(): bool
     {
         return true;
-    }
-
-    public function return()
-    {
-        return $this->apply(
-            new ReturnNode()
-        );
-    }
-
-    public function forgetReturn(): bool
-    {
-        return $this->forget(
-            new ReturnNode()
-        );
     }
 
     /**
@@ -105,9 +102,5 @@ class ClassMethodNode extends QueryNode implements
         $this->node->flags = Comcode::detectPropertyModifier(
             $this->modifier, $this->node->flags
         );
-    }
-
-    public function mounted(): void
-    {
     }
 }
