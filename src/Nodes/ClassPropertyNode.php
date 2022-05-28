@@ -49,23 +49,22 @@ class ClassPropertyNode extends QueryNode implements
     }
 
     /**
-     * @return void
-     */
-    public function mounting(): void
-    {
-        if (is_array($this->name)) {
-
-            $this->name[0] = Comcode::useIfClass($this->name[0]);
-        }
-    }
-
-    /**
      * Has modifies
      * @return bool
      */
     public static function modified(): bool
     {
         return true;
+    }
+
+    /**
+     * @return void
+     */
+    public function mounting(): void
+    {
+        if (is_array($this->name)) {
+            $this->name[0] = Comcode::useIfClass($this->name[0]);
+        }
     }
 
     /**

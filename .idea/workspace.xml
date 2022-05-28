@@ -2,65 +2,58 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fc050a27-ff90-42ec-b3ba-a3eee233dcab" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Nodes/ClosureNode.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Subjects/DocSubject.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Traits/FuncCommonTrait.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/CCClassConstTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/CCClassExtendsTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/CCClassImplementTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/CCClassMethodTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/CCClassPropertyTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/CCClassTraitTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/CCClosureTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/CCReturnTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/CCRowTest.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.php-cs-fixer.php" beforeDir="false" afterPath="$PROJECT_DIR$/.php-cs-fixer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.phpunit.result.cache" beforeDir="false" afterPath="$PROJECT_DIR$/.phpunit.result.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/comcode" beforeDir="false" afterPath="$PROJECT_DIR$/bin/comcode" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AnonymousExpr.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AnonymousExpr.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AnonymousStmt.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AnonymousStmt.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CSFixer.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/CSFixer.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Comcode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Comcode.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Exceptions/CodeNotFound.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exceptions/CodeNotFound.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Exceptions/FileError.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exceptions/FileError.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Exceptions/PhpParserError.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exceptions/PhpParserError.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Exceptions/QueryNodeError.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exceptions/QueryNodeError.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Exceptions/SubjectNotFound.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exceptions/SubjectNotFound.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FileParser.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/FileParser.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/HigherOrderWhenProxy.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/HigherOrderWhenProxy.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/ClarificationNodeInterface.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/ClarificationNodeInterface.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/InlineTrap.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/InlineTrap.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Interfaces/BirthNodeInterface.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/BirthNodeInterface.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Node.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Node.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/ClassConstNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/ClassConstNode.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Nodes/ClassExtendsNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/ClassExtendsNode.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Nodes/ClassImplementNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/ClassImplementNode.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/ClassMethodNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/ClassMethodNode.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/ClassNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/ClassNode.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/ClassPropertyNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/ClassPropertyNode.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/ClassTraitNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/ClassTraitNode.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Nodes/NamespaceNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/NamespaceNode.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Nodes/NamespaceUseNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/NamespaceUseNode.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Nodes/ClosureNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/ClosureNode.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/ReturnNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/ReturnNode.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Nodes/RowNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/RowNode.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/SimpleNamedNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/SimpleNamedNode.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PhpInlineTrap.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/InlineTrap.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/PhpService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PhpService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PrettyPrinter.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PrettyPrinter.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Query.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Query.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/QueryNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/QueryNode.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SPrint.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ServiceProvider.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Subjects/ClassSubject.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Subjects/ClassSubject.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Subjects/FileSubject.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Subjects/FileSubject.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Subjects/FunctionSubject.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Subjects/SubjectAbstract.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Subjects/SubjectAbstract.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Traits/CommonWhileExpressions.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Traits/CommonWhileExpressions.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Traits/Conditionable.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Traits/Conditionable.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Traits/FuncCommonTrait.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Traits/FuncCommonTrait.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/helpers.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/helpers.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/t.txt" beforeDir="false" afterPath="$PROJECT_DIR$/t.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/CCClassBaseTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CCClassBaseTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/CCClassContentTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CCClassTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/t.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CCClassExtendsTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CCClassExtendsTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CCClassImplementTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CCClassImplementTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CCClassPropertyTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CCClassPropertyTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CCClassTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CCClassTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CCClosureTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CCClosureTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CCNodesTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CCNodesTest.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/TestCase.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/TestCase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/TestedClass.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tt.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tt.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/installed.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/installed.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/installed.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/installed.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tt.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/autoload.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/autoload.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/bin/php-cs-fixer" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/bin/php-cs-fixer" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/bin/php-parse" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/bin/php-parse" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/bin/phpunit" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/bin/phpunit" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/bin/var-dump-server" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/bin/var-dump-server" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,7 +180,7 @@
       <workItem from="1653179301638" duration="97527000" />
       <workItem from="1653487570754" duration="130000" />
       <workItem from="1653487718755" duration="19012000" />
-      <workItem from="1653584686186" duration="67009000" />
+      <workItem from="1653584686186" duration="68800000" />
     </task>
     <servers />
   </component>

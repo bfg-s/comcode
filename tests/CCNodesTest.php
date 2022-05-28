@@ -121,7 +121,7 @@ class CCNodesTest extends TestCase
     public function test_node_args()
     {
         $this->assertNodePrintLike(
-            Node::args(['test','test']),
+            Node::args(['test', 'test']),
             "'test'\n'test'"
         );
     }

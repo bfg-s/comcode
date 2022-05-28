@@ -4,7 +4,6 @@ namespace Bfg\Comcode\Tests;
 
 use Bfg\Comcode\Interfaces\AlwaysLastNodeInterface;
 use Bfg\Comcode\Interfaces\AnonymousInterface;
-use Traversable;
 
 class CCClassImplementTest extends TestCase
 {

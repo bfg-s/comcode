@@ -2,7 +2,11 @@
     "name": "bfg/comcode",
     "description": "",
     "type": "bfg-app",
-    "keywords": ["laravel", "extension", "comcode"],
+    "keywords": [
+        "laravel",
+        "extension",
+        "comcode"
+    ],
     "license": "MIT",
     "authors": [
         {

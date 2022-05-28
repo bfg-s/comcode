@@ -37,7 +37,6 @@ trait FuncCommonTrait
             new ReturnNode()
         );
         if ($node) {
-
             return $result->var($node);
         }
         return $result;

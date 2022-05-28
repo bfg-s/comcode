@@ -7,8 +7,6 @@ use Bfg\Comcode\Node;
 use Bfg\Comcode\Nodes\ClosureNode;
 use Bfg\Comcode\Subjects\DocSubject;
 use Bfg\Comcode\Traits\Conditionable;
-use PhpParser\Node\Stmt\Property;
-use Traversable;
 
 class CCClassTest extends TestCase
 {
@@ -53,7 +51,6 @@ class CCClassTest extends TestCase
                 $q->row('inner test row 2')->var('param1')->concat(php()->real(' and false text'));
                 $q->return('param1');
             })->method()->property->someMethod()->methodWithProps(function (ClosureNode $q) {
-
                 $q->row('inner test row 1.1')->var('param1')->assign(php()->real(100));
                 $q->row('inner test row 1.2')->var('param1')->plus(php()->real(200));
 
@@ -61,7 +58,7 @@ class CCClassTest extends TestCase
                     $node->row('inner test row 1.2.1')->var('name')->concat(php()->real(' Xsaven'));
                     $node->expectParams('name')->return('name');
                 });
-            }, fn (ClosureNode $node) => $node->expectParams('name')->return()->var('name'));
+            }, fn(ClosureNode $node) => $node->expectParams('name')->return()->var('name'));
 
         $method2->return('wait');
 
@@ -161,5 +158,7 @@ class CCClassTest extends TestCase
         $this->assertClassContains('$text += 400;');
         $this->assertClassContains('$text += 100;');
         $this->assertClassContains('return max($text);');
+
+        //$class->delete();
     }
 }

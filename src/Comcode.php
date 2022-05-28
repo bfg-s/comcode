@@ -479,7 +479,6 @@ class Comcode
             $pattern = str_replace('\*', '.*', $pattern);
 
             if (preg_match('#^'.$pattern.'\z#um', $value) === 1) {
-
                 return true;
             }
         }

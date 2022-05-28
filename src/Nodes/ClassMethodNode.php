@@ -37,17 +37,6 @@ class ClassMethodNode extends QueryNode implements
     }
 
     /**
-     * @return void
-     */
-    public function mounting(): void
-    {
-        if (is_array($this->name)) {
-
-            $this->name[0] = Comcode::useIfClass($this->name[0]);
-        }
-    }
-
-    /**
      * Get instance class of node type
      * @return <class-string>
      */
@@ -63,6 +52,16 @@ class ClassMethodNode extends QueryNode implements
     public static function modified(): bool
     {
         return true;
+    }
+
+    /**
+     * @return void
+     */
+    public function mounting(): void
+    {
+        if (is_array($this->name)) {
+            $this->name[0] = Comcode::useIfClass($this->name[0]);
+        }
     }
 
     /**

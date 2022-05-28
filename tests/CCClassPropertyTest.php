@@ -41,7 +41,7 @@ class CCClassPropertyTest extends TestCase
     public function test_class_protected_property_array()
     {
         $class = $this->class();
-        $class->protectedProperty('test1', [1,2,3]);
+        $class->protectedProperty('test1', [1, 2, 3]);
         $class->save();
         $this->assertClassContains('protected $test1 = [1, 2, 3];');
         $class->forgetProperty('test1');
@@ -53,8 +53,8 @@ class CCClassPropertyTest extends TestCase
     public function test_class_protected_property_typed_array()
     {
         $class = $this->class();
-        $class->protectedProperty(['array', 'test1'], [1,2,3]);
-        $class->protectedProperty([QueryNode::class, 'test2'], [1,2,3]);
+        $class->protectedProperty(['array', 'test1'], [1, 2, 3]);
+        $class->protectedProperty([QueryNode::class, 'test2'], [1, 2, 3]);
         $class->save();
         $this->assertClassContains('use Bfg\Comcode\QueryNode;');
         $this->assertClassContains('protected array $test1 = [1, 2, 3];');

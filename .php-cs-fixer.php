@@ -13,7 +13,6 @@ return $config
         'no_unused_imports' => true,
 
 
-
         'new_with_braces' => false,
         'array_indentation' => true,
         'array_syntax' => ['syntax' => 'short'],
@@ -44,16 +43,12 @@ return $config
         'single_trait_insert_per_statement' => true,
 
 
-
         'simplified_if_return' => true,
         'use_arrow_functions' => true,
         'fully_qualified_strict_types' => true,
         'return_type_declaration' => true,
         'get_class_to_class_keyword' => true,
         'explicit_indirect_variable' => true,
-
-
-
 
 
         'function_to_constant' => false,
