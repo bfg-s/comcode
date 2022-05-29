@@ -37,13 +37,6 @@
             "Bfg\\Comcode\\Tests\\": "tests/"
         }
     },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Bfg\\Comcode\\ServiceProvider"
-            ]
-        }
-    },
     "bin": [
         "bin/comcode"
     ]
