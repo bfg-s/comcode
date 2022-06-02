@@ -3,7 +3,6 @@
     "description": "",
     "type": "bfg-app",
     "keywords": [
-        "laravel",
         "extension",
         "comcode"
     ],
