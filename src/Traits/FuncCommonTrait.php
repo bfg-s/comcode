@@ -51,4 +51,18 @@ trait FuncCommonTrait
             new ReturnNode()
         );
     }
+
+    public function existsReturn(): bool
+    {
+        return $this->exists(
+            new ReturnNode()
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function notExistsReturn(): bool {
+        return ! $this->existsReturn();
+    }
 }

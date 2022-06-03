@@ -53,11 +53,6 @@ abstract class QueryNode
     public int $rowCount = 0;
 
     /**
-     * @var bool
-     */
-    protected bool $insertAnyWay = true;
-
-    /**
      * @return bool
      */
     public static function modified(): bool
@@ -78,11 +73,38 @@ abstract class QueryNode
         );
     }
 
-    public function ifNotExists()
-    {
-        $this->insertAnyWay = false;
+    /**
+     * @param  string  $name
+     * @return bool
+     */
+    public function forgetRow(
+        string $name
+    ): bool {
+        return $this->forget(
+            new RowNode($name)
+        );
+    }
 
-        return $this;
+    /**
+     * @param  string  $name
+     * @return bool
+     */
+    public function existsRow(
+        string $name
+    ): bool {
+        return $this->exists(
+            new RowNode($name)
+        );
+    }
+
+    /**
+     * @param  string  $name
+     * @return bool
+     */
+    public function notExistsRow(
+        string $name
+    ): bool {
+        return ! $this->existsRow($name);
     }
 
     /**
@@ -123,10 +145,7 @@ abstract class QueryNode
             ? $nodeClass instanceof ReconstructionNodeInterface && $nodeClass->reconstruction()
             : $nodeClass instanceof BirthNodeInterface && $nodeClass->node = $nodeClass->birth();
 
-        if (
-            ($this->insertAnyWay || ! $nodeClass->isMatch())
-            && property_exists($this->node, $store)
-        ) {
+        if (property_exists($this->node, $store)) {
             if (is_array($this->node->{$store})) {
                 if (is_int($key)) {
                     if ($nodeClass instanceof AlwaysLastNodeInterface) {
@@ -155,8 +174,6 @@ abstract class QueryNode
                 $this->node->{$store} = $nodeClass->node;
             }
         }
-
-        $this->insertAnyWay = true;
 
         $nodeClass->mounted();
 
