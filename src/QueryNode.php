@@ -80,6 +80,7 @@ abstract class QueryNode
     public function forgetRow(
         string $name
     ): bool {
+        $this->rowCount--;
         return $this->forget(
             new RowNode($name)
         );
@@ -257,19 +258,6 @@ abstract class QueryNode
      */
     public function mounted(): void
     {
-    }
-
-    /**
-     * @param  string  $name
-     * @return bool
-     */
-    public function forgetRow(
-        string $name
-    ): bool {
-        $this->rowCount--;
-        return $this->forget(
-            new RowNode($name)
-        );
     }
 
     /**
