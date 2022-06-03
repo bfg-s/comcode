@@ -53,6 +53,11 @@ abstract class QueryNode
     public int $rowCount = 0;
 
     /**
+     * @var bool
+     */
+    protected bool $insertAnyWay = true;
+
+    /**
      * @return bool
      */
     public static function modified(): bool
@@ -71,6 +76,13 @@ abstract class QueryNode
         return $this->apply(
             new RowNode($name)
         );
+    }
+
+    public function ifNotExists()
+    {
+        $this->insertAnyWay = false;
+
+        return $this;
     }
 
     /**
@@ -111,7 +123,10 @@ abstract class QueryNode
             ? $nodeClass instanceof ReconstructionNodeInterface && $nodeClass->reconstruction()
             : $nodeClass instanceof BirthNodeInterface && $nodeClass->node = $nodeClass->birth();
 
-        if (property_exists($this->node, $store)) {
+        if (
+            ($this->insertAnyWay || ! $nodeClass->isMatch())
+            && property_exists($this->node, $store)
+        ) {
             if (is_array($this->node->{$store})) {
                 if (is_int($key)) {
                     if ($nodeClass instanceof AlwaysLastNodeInterface) {
@@ -140,6 +155,8 @@ abstract class QueryNode
                 $this->node->{$store} = $nodeClass->node;
             }
         }
+
+        $this->insertAnyWay = true;
 
         $nodeClass->mounted();
 
