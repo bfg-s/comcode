@@ -2,6 +2,7 @@
 
 namespace Bfg\Comcode;
 
+use Bfg\Comcode\Subjects\ClassSubject;
 use PhpParser\Comment\Doc;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
@@ -34,12 +35,14 @@ use PhpParser\Node\VarLikeIdentifier;
 class Node
 {
     /**
+     * @param  ClassSubject  $classSubject
      * @param $var
      * @param  mixed|null  $default
-     * @param $type
+     * @param  null  $type
      * @return Param
      */
     public static function param(
+        ClassSubject $classSubject,
         $var,
         mixed $default = null,
         $type = null
@@ -49,7 +52,7 @@ class Node
             !is_null($default) ? (
             $default instanceof Expr ? $default : Comcode::defineValueNode($default)
             ) : null,
-            $type ? static::name(Comcode::useIfClass($type)) : null
+            $type ? static::name(Comcode::useIfClass($type, $classSubject)) : null
         );
     }
 
@@ -147,17 +150,19 @@ class Node
     /**
      * @param  string  $modifier
      * @param  string|array  $name
+     * @param  ClassSubject|null  $classSubject
      * @return ClassMethod
      */
     public static function method(
         string $modifier,
         string|array $name,
+        ?ClassSubject $classSubject = null,
     ): ClassMethod {
         $type = is_array($name) ? $name[0] : null;
         $name = is_array($name) ? $name[1] : $name;
         return new ClassMethod($name, [
             'flags' => Comcode::detectPropertyModifier($modifier),
-            'returnType' => Comcode::useIfClass($type)
+            'returnType' => Comcode::useIfClass($type, $classSubject)
         ]);
     }
 

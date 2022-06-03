@@ -63,7 +63,10 @@ class ClassPropertyNode extends QueryNode implements
     public function mounting(): void
     {
         if (is_array($this->name)) {
-            $this->name[0] = Comcode::useIfClass($this->name[0]);
+            $this->name[0] = Comcode::useIfClass(
+                $this->name[0],
+                $this->subject
+            );
         }
     }
 

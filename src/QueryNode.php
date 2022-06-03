@@ -246,6 +246,8 @@ abstract class QueryNode
         QueryNode $nodeClass
     ): bool {
         $store = $nodeClass->store;
+        $nodeClass->subject = $this->subject;
+        $nodeClass->mounting();
         $query = Query::find($this->node, $nodeClass);
         $key = $query->firstKey();
 
@@ -285,7 +287,7 @@ abstract class QueryNode
     ): static {
         if (is_callable($text)) {
             $comment = $this->node?->getDocComment();
-            $doc = new DocSubject();
+            $doc = new DocSubject($this->subject);
             call_user_func($text, $doc, $comment, $this);
             $text = $doc->render();
         }

@@ -28,6 +28,14 @@ class DocSubject
     protected array $docs = [];
 
     /**
+     * @param  ClassSubject|null  $classSubject
+     */
+    public function __construct(
+        public ?ClassSubject $classSubject = null,
+    ) {
+    }
+
+    /**
      * Add doc name.
      *
      * @param  string  $name
@@ -208,7 +216,7 @@ class DocSubject
      */
     public function tagMethod(string $type, string $method, string $description = null): static
     {
-        $type = Comcode::useIfClass($type);
+        $type = Comcode::useIfClass($type, $this->classSubject);
 
         $this->docs['method'][] = $type.' '.$method.($description ? ' '.$description : '');
 
@@ -240,7 +248,7 @@ class DocSubject
      */
     public function tagParam(string $type, string $param = '', string $description = null): static
     {
-        $type = Comcode::useIfClass($type);
+        $type = Comcode::useIfClass($type, $this->classSubject);
 
         $this->docs['param'][] = $type.(!empty($param) ? ' $'.$param : '').($description ? ' '.$description : '');
 
@@ -258,7 +266,7 @@ class DocSubject
      */
     public function tagProperty(string $type, string $param = '', string $description = null): static
     {
-        $type = Comcode::useIfClass($type);
+        $type = Comcode::useIfClass($type, $this->classSubject);
 
         $this->docs['property'][] = $type.(!empty($param) ? ' $'.$param : '').($description ? ' '.$description : '');
 
@@ -276,7 +284,7 @@ class DocSubject
      */
     public function tagPropertyRead(string $type, string $param = '', string $description = null): static
     {
-        $type = Comcode::useIfClass($type);
+        $type = Comcode::useIfClass($type, $this->classSubject);
 
         $this->docs['property-read'][] = $type.(!empty($param) ? ' $'.$param : '').($description ? ' '.$description : '');
 
@@ -294,7 +302,7 @@ class DocSubject
      */
     public function tagPropertyWrite(string $type, string $param = '', string $description = null): static
     {
-        $type = Comcode::useIfClass($type);
+        $type = Comcode::useIfClass($type, $this->classSubject);
 
         $this->docs['property-write'][] = $type.(!empty($param) ? ' $'.$param : '').($description ? ' '.$description : '');
 
@@ -311,7 +319,7 @@ class DocSubject
      */
     public function tagReturn(string $type, string $description = null): static
     {
-        $type = Comcode::useIfClass($type);
+        $type = Comcode::useIfClass($type, $this->classSubject);
 
         $this->docs['return'][] = $type.($description ? ' '.$description : '');
 
@@ -418,7 +426,7 @@ class DocSubject
      */
     public function tagVar($type, string $param = null, string $description = null): static
     {
-        $type = Comcode::useIfClass($type);
+        $type = Comcode::useIfClass($type, $this->classSubject);
 
         $this->docs['var'][] = $type.($param ? ' $'.$param : '').($description ? ' '.$description : '');
 
@@ -460,7 +468,7 @@ class DocSubject
      */
     public function tagThrows(string $type, string $description = null): static
     {
-        $type = Comcode::useIfClass($type);
+        $type = Comcode::useIfClass($type, $this->classSubject);
 
         $this->docs['throws'][] = $type.($description ? ' '.$description : '');
 

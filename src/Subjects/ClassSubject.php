@@ -133,7 +133,7 @@ class ClassSubject extends SubjectAbstract
     ): static {
         if (is_callable($text)) {
             $comment = $this->node?->getDocComment();
-            $doc = new DocSubject();
+            $doc = new DocSubject($this);
             call_user_func($text, $doc, $comment, $this);
             $text = $doc->render();
         }
@@ -163,14 +163,9 @@ class ClassSubject extends SubjectAbstract
                 ? new static::$classNodes[$nodeName](null, ...$arguments)
                 : new static::$classNodes[$nodeName](...$arguments);
             $store = $node->store;
+            $node->subject = $this;
             $node->mounting();
-            $query = Query::new((array) $this->classNode->node->{$store})
-                ->isA($node::nodeClass())
-                ->filter(
-                    $node instanceof ClarificationNodeInterface
-                        ? [$node, 'clarification'] : null
-                );
-
+            $query = Query::find($this->classNode->node, $node);
             $key = $query->firstKey();
 
             if (property_exists($this->classNode->node, $store)) {

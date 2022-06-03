@@ -19,8 +19,8 @@ trait FuncCommonTrait
         foreach ($parameters as $key => $parameter) {
             $this->node->params[$key]
                 = is_array($parameter)
-                ? Node::param(...$parameter)
-                : Node::param($parameter);
+                ? Node::param($this->subject, ...$parameter)
+                : Node::param($this->subject, $parameter);
         }
 
         return $this;

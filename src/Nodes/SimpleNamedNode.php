@@ -47,7 +47,7 @@ abstract class SimpleNamedNode extends QueryNode implements
     public function mounting(): void
     {
         $this->name
-            = Comcode::useIfClass($this->name);
+            = Comcode::useIfClass($this->name, $this->subject);
     }
 
     /**

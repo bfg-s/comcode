@@ -49,7 +49,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         foreach ((array) $needle as $item) {
             $item = str_contains($item, '*') ? $item : "*$item*";
             if (!Comcode::is($item, $subject)) {
-                $this->fail($subject.' != '.$item);
+                $this->fail($subject."\nNot exists: ".$item);
             } else {
                 $assert = true;
             }
@@ -75,7 +75,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         foreach ((array) $needle as $item) {
             $item = str_contains($item, '*') ? $item : "*$item*";
             if (Comcode::is($item, $subject)) {
-                $this->fail($subject.' == '.$item);
+                $this->fail($subject."\nExists: ".$item);
             } else {
                 $assert = true;
             }

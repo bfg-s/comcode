@@ -3,6 +3,7 @@
 namespace Bfg\Comcode;
 
 use Bfg\Comcode\Nodes\NamespaceNode;
+use Bfg\Comcode\Subjects\ClassSubject;
 use Illuminate\Support\Arr;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -413,18 +414,19 @@ class Comcode
 
     /**
      * @param  mixed  $name
+     * @param  ClassSubject|null  $classSubject
      * @return mixed
      */
     public static function useIfClass(
         mixed $name,
+        ?ClassSubject $classSubject = null,
     ): mixed {
-        $classNode = NamespaceNode::$lastNode;
         if (
-            $classNode
+            $classSubject
             && is_string($name)
             && static::isCanBeClass($name)
         ) {
-            $classNode->use($name);
+            $classSubject->use($name);
 
             return static::classBasename($name);
         }

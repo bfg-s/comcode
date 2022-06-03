@@ -51,7 +51,7 @@ class ClassTraitNode extends QueryNode implements
     public function mounting(): void
     {
         $this->namespace
-            = Comcode::useIfClass($this->namespace);
+            = Comcode::useIfClass($this->namespace, $this->subject);
     }
 
     /**

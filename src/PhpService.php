@@ -16,17 +16,27 @@ class PhpService
 {
     /**
      * @param  object|string  $class
+     * @param  string|null  $file
      * @return ClassSubject
      * @throws ErrorException
      */
-    public function class(object|string $class): ClassSubject
+    public function class(object|string $class, string $file = null): ClassSubject
     {
-        return $this->file(
-            class_exists($class)
-                ? (new ReflectionClass($class))->getFileName()
-                : Comcode::fileReservation(
-                str_replace("\\", DIRECTORY_SEPARATOR, lcfirst($class)).'.php')
-        )->class($class);
+        if (class_exists($class)) {
+            $file = (new ReflectionClass($class))->getFileName();
+            $file = is_file($file) ? $file : null;
+        }
+
+        $file = $file ?: Comcode::fileReservation(
+            str_replace(
+                "\\",
+                DIRECTORY_SEPARATOR,
+                lcfirst(trim($class, "\\"))
+            ).'.php'
+        );
+
+        return $this->file($file)
+            ->class($class);
     }
 
     /**
