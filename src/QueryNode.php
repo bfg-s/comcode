@@ -269,7 +269,6 @@ abstract class QueryNode
     ): bool {
         $store = $nodeClass->store;
         $nodeClass->subject = $this->subject;
-        $nodeClass->mounting();
         $query = Query::find($this->node, $nodeClass);
         $key = $query->firstKey();
 
@@ -297,7 +296,6 @@ abstract class QueryNode
         QueryNode $nodeClass
     ): bool {
         $nodeClass->subject = $this->subject;
-        $nodeClass->mounting();
         return Query::find($this->node, $nodeClass)
             ->isNotEmpty();
     }
