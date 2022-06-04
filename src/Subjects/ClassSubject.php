@@ -187,7 +187,7 @@ class ClassSubject extends SubjectAbstract
                 $matches
             )
         ) {
-            return $this->classNode->exists(
+            return ! $this->classNode->exists(
                 $this->detectInsideNodeByMathes($matches, $arguments)
             );
         } else if (
