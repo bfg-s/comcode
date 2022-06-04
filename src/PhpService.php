@@ -22,11 +22,6 @@ class PhpService
      */
     public function class(object|string $class, string $file = null): ClassSubject
     {
-        if (class_exists($class)) {
-            $file = (new ReflectionClass($class))->getFileName();
-            $file = is_file($file) ? $file : null;
-        }
-
         $file = $file ?: Comcode::fileReservation(
             str_replace(
                 "\\",
