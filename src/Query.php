@@ -13,11 +13,6 @@ class Query
     use Conditionable;
 
     /**
-     * @var bool
-     */
-    protected bool $content = false;
-
-    /**
      * @param  array  $items
      */
     public function __construct(
@@ -35,11 +30,16 @@ class Query
         QueryNode $queryNode
     ): Query {
         $queryNode->mounting();
-        return static::new((array) $node->{$queryNode->store})->isA($queryNode::nodeClass())
+        return static::new($node->{$queryNode->store})->isA($queryNode::nodeClass())
             ->filter(
                 $queryNode instanceof ClarificationNodeInterface
                     ? [$queryNode, 'clarification'] : null
             );
+    }
+
+    public function dd()
+    {
+        dd($this->items);
     }
 
     /**

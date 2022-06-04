@@ -296,6 +296,8 @@ abstract class QueryNode
     public function exists(
         QueryNode $nodeClass
     ): bool {
+        $nodeClass->subject = $this->subject;
+        $nodeClass->mounting();
         return Query::find($this->node, $nodeClass)
             ->isNotEmpty();
     }
@@ -319,6 +321,22 @@ abstract class QueryNode
         );
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function existsComment(): bool
+    {
+        return (bool) $this->node?->getDocComment();
+    }
+
+    /**
+     * @return bool
+     */
+    public function notExistsComment(): bool
+    {
+        return ! $this->existsComment();
     }
 
     /**

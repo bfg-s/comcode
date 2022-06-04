@@ -19,20 +19,27 @@ use Bfg\Comcode\QueryNode;
 
 /**
  * @method ClassExtendsNode extends (string $namespace)
- * @method ClassExtendsNode forgetExtends (string $namespace)
+ * @method bool forgetExtends (string $namespace)
+ * @method bool existsExtends (string $namespace)
+ * @method bool notExistsExtends (string $namespace)
  * @method ClassImplementNode implement(string $namespace)
- * @method ClassImplementNode forgetImplement(string $namespace)
- * @method ClassConstNode forgetConst(string $name, mixed $value = null)
+ * @method bool forgetImplement(string $namespace)
+ * @method bool existsImplement(string $namespace)
+ * @method bool notExistsImplement(string $namespace)
  * @method ClassConstNode publicConst(string $name, mixed $value = null)
  * @method ClassConstNode protectedConst(string $name, mixed $value = null)
  * @method ClassConstNode privateConst(string $name, mixed $value = null)
- * @method ClassPropertyNode forgetProperty(string|array $name, mixed $default = null)
+ * @method bool forgetConst(string $name, mixed $value = null)
+ * @method bool existsConst(string $name, mixed $value = null)
+ * @method bool notExistsConst(string $name, mixed $value = null)
  * @method ClassPropertyNode publicProperty(string|array $name, mixed $default = null)
  * @method ClassPropertyNode publicStaticProperty(string|array $name, mixed $default = null)
  * @method ClassPropertyNode protectedProperty(string|array $name, mixed $default = null)
  * @method ClassPropertyNode protectedStaticProperty(string|array $name, mixed $default = null)
  * @method ClassPropertyNode privateProperty(string|array $name, mixed $default = null)
- * @method ClassMethodNode forgetMethod(string|array $name)
+ * @method bool forgetProperty(string|array $name, mixed $default = null)
+ * @method bool existsProperty(string|array $name, mixed $default = null)
+ * @method bool notExistsProperty(string|array $name, mixed $default = null)
  * @method ClassMethodNode publicMethod(string|array $name)
  * @method ClassMethodNode publicStaticMethod(string|array $name)
  * @method ClassMethodNode protectedMethod(string|array $name)
@@ -53,6 +60,9 @@ use Bfg\Comcode\QueryNode;
  * @method ClassMethodNode abstractFinalProtectedMethod(string|array $name)
  * @method ClassMethodNode abstractFinalProtectedStaticMethod(string|array $name)
  * @method ClassMethodNode abstractFinalPrivateMethod(string|array $name)
+ * @method bool forgetMethod(string|array $name)
+ * @method bool existsMethod(string|array $name)
+ * @method bool notExistsMethod(string|array $name)
  */
 class ClassSubject extends SubjectAbstract
 {
@@ -157,55 +167,74 @@ class ClassSubject extends SubjectAbstract
                 $matches
             )
         ) {
-            $nodeName = strtolower($matches[1]);
-            /** @var QueryNode $node */
-            $node = static::$classNodes[$nodeName]::modified()
-                ? new static::$classNodes[$nodeName](null, ...$arguments)
-                : new static::$classNodes[$nodeName](...$arguments);
-            $store = $node->store;
-            $node->subject = $this;
-            $node->mounting();
-            $query = Query::find($this->classNode->node, $node);
-            $key = $query->firstKey();
-
-            if (property_exists($this->classNode->node, $store)) {
-                if (is_array($this->classNode->node->{$store})) {
-                    if (is_int($key)) {
-                        $arr = $this->classNode->node->{$store};
-                        unset($arr[$key]);
-                        $this->classNode->node->{$store} = array_values($arr);
-                        return true;
-                    }
-                } else {
-                    $this->classNode->node->{$store} = null;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        if (
+            return $this->classNode->forget(
+                $this->detectInsideNodeByMathes($matches, $arguments)
+            );
+        } else if (
+            preg_match(
+                '/^exists('.implode('|', array_keys(static::$classNodes)).')$/i',
+                $name,
+                $matches
+            )
+        ) {
+            return $this->classNode->exists(
+                $this->detectInsideNodeByMathes($matches, $arguments)
+            );
+        } else if (
+            preg_match(
+                '/^notExists('.implode('|', array_keys(static::$classNodes)).')$/i',
+                $name,
+                $matches
+            )
+        ) {
+            return $this->classNode->exists(
+                $this->detectInsideNodeByMathes($matches, $arguments)
+            );
+        } else if (
             preg_match(
                 '/^([a-zA-Z]+)?('.implode('|', array_keys(static::$classNodes)).')$/i',
                 $name,
                 $matches
             )
         ) {
-            $modifier = $matches[1] ?? null;
-            $modifier = $modifier
-                ? str_replace(
-                    '_',
-                    ' ',
-                    strtolower(preg_replace('/([A-Z])/', '_$1', $modifier))
-                ) : null;
-            $nodeName = strtolower($matches[2]);
-            $node = $modifier
-                ? new static::$classNodes[$nodeName]($modifier, ...$arguments)
-                : new static::$classNodes[$nodeName](...$arguments);
-            return $this->classNode->apply($node);
+            return $this->classNode->apply(
+                $this->detectInsideNodeByMathesWithModifier($matches, $arguments)
+            );
         }
 
         throw new QueryNodeError("Node controller [$name] not fond!");
+    }
+
+    protected function detectInsideNodeByMathes(
+        array $matches,
+        array $arguments,
+    ): QueryNode {
+        $nodeName = strtolower($matches[1]);
+        /** @var QueryNode $node */
+        $node = static::$classNodes[$nodeName]::modified()
+            ? new static::$classNodes[$nodeName](null, ...$arguments)
+            : new static::$classNodes[$nodeName](...$arguments);
+        $node->subject = $this;
+        return $node;
+    }
+
+    protected function detectInsideNodeByMathesWithModifier(
+        array $matches,
+        array $arguments,
+    ): QueryNode {
+        $modifier = $matches[1] ?? null;
+        $modifier = $modifier
+            ? str_replace(
+                '_',
+                ' ',
+                strtolower(preg_replace('/([A-Z])/', '_$1', $modifier))
+            ) : null;
+        $nodeName = strtolower($matches[2]);
+        $node = $modifier
+            ? new static::$classNodes[$nodeName]($modifier, ...$arguments)
+            : new static::$classNodes[$nodeName](...$arguments);
+        $node->subject = $this;
+        return $node;
     }
 
     /**
