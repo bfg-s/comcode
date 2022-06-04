@@ -63,7 +63,13 @@ abstract class SimpleNamedNode extends QueryNode implements
             return true;
         }
 
-        return false;
+        return (
+                $stmt->__toString()
+                == Node::name($this->name)->__toString()
+            ) || (
+                $stmt->__toString()
+                == Comcode::classBasename($this->name)
+            );
     }
 
     /**

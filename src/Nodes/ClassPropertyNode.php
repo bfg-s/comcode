@@ -76,13 +76,8 @@ class ClassPropertyNode extends QueryNode implements
      */
     public function clarification(mixed $stmt): bool
     {
-        if (
-            (string) $stmt->props[0]->name
-            == (is_array($this->name) ? $this->name[1] : $this->name)
-        ) {
-            return true;
-        }
-        return false;
+        return ((string) $stmt->props[0]->name
+                == (is_array($this->name) ? $this->name[1] : $this->name));
     }
 
     /**
