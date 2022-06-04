@@ -272,6 +272,9 @@ class Comcode
     {
         switch (gettype($var)) {
             case "string":
+                if (str_ends_with($var, '::class')) {
+                    return $var;
+                }
                 if (Comcode::isCanBeClass($var)) {
                     return $var.'::class';
                 }
