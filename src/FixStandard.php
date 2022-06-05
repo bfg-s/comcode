@@ -16,12 +16,12 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Traversable;
 
-class CSFixer
+class FixStandard
 {
     /**
-     * @var bool
+     * @var array
      */
-    protected static bool $init = false;
+    protected static array $touchedFiles = [];
 
     /**
      * @var EventDispatcherInterface|EventDispatcher
@@ -54,6 +54,7 @@ class CSFixer
     public function __construct(
         protected FileSubject $file
     ) {
+        static::$touchedFiles[$this->file->file] = $this->file->file;
         $this->eventDispatcher = new EventDispatcher();
         $this->errorsManager = new ErrorsManager();
         $this->defaultConfig = new Config();
@@ -122,12 +123,42 @@ class CSFixer
      * Run fixer process
      * @return string|null
      */
-    public function run(): ?string
+    public function fix(): ?string
     {
-        $result = $this->runner->fix();
+        $csResult = $this->runner->fix();
+        return (bool) ($csResult[array_key_first($csResult)]['diff'] ?? null);
+    }
 
-        $file = array_key_first($result);
+    /**
+     * @return void
+     */
+    public function standard(): void
+    {
+        static::execEcs([$this->file->file]);
+    }
 
-        return $file ? $result[$file]['diff'] : null;
+    public static function standardTouched(): void
+    {
+        static::$touchedFiles
+            = array_filter(static::$touchedFiles, 'is_file');
+
+        if (static::$touchedFiles) {
+
+            static::execEcs(
+                static::$touchedFiles
+            );
+        }
+    }
+
+    protected static function execEcs(array $files)
+    {
+        exec(implode(" ", [
+            'vendor/bin/ecs',
+            'check',
+            implode(' ', $files),
+            '--config ' . __DIR__ . '/../ecs.php',
+            '--fix',
+            '--quiet',
+        ]));
     }
 }

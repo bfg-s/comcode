@@ -14,6 +14,16 @@ use ReflectionClass;
  */
 class PhpService
 {
+    public static function boot(): void
+    {
+        if (
+            (! defined('APP_ENV') || APP_ENV !== 'testing')
+            && (\PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg')
+        ) {
+            register_shutdown_function([FixStandard::class, 'standardTouched']);
+        }
+    }
+
     /**
      * @param  object|string  $class
      * @param  string|null  $file
@@ -22,6 +32,12 @@ class PhpService
      */
     public function class(object|string $class, string $file = null): ClassSubject
     {
+        if (class_exists($class)) {
+            $file = (new ReflectionClass($class))->getFileName();
+            $file = is_file($file) ? $file : null;
+            $file = file_get_contents($file) ? $file : null;
+        }
+
         $file = $file ?: Comcode::fileReservation(
             str_replace(
                 "\\",

@@ -2,16 +2,16 @@
 
 namespace Bfg\Comcode\Subjects;
 
-use Bfg\Comcode\CSFixer;
+use Bfg\Comcode\FixStandard;
 use Bfg\Comcode\FileParser;
 use ErrorException;
 
 class FileSubject
 {
     /**
-     * @var CSFixer
+     * @var FixStandard
      */
-    public CSFixer $fixer;
+    public FixStandard $fixer;
 
     /**
      * @param  string  $file
@@ -20,14 +20,13 @@ class FileSubject
     public function __construct(
         public string $file,
     ) {
-        $this->fixer = CSFixer::new($this);
+        $this->fixer = FixStandard::new($this);
     }
 
     /**
      * CHILDHOOD FUNCTION
      * @param  object|string|null  $class
      * @return ClassSubject
-     * @throws ErrorException
      */
     public function class(
         object|string $class = null
@@ -64,11 +63,23 @@ class FileSubject
     }
 
     /**
-     * @return string|null
+     * @return $this
      */
-    public function fix(): ?string
+    public function fix(): static
     {
-        return $this->fixer->run();
+        $this->fixer->fix();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function standard(): static
+    {
+        $this->fixer->standard();
+
+        return $this;
     }
 
     /**

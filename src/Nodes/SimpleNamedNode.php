@@ -56,13 +56,6 @@ abstract class SimpleNamedNode extends QueryNode implements
      */
     public function clarification(mixed $stmt): bool
     {
-        if (
-            $stmt->__toString()
-            == Node::name($this->name)->__toString()
-        ) {
-            return true;
-        }
-
         return (
                 $stmt->__toString()
                 == Node::name($this->name)->__toString()

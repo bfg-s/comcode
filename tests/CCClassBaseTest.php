@@ -47,4 +47,27 @@ class CCClassBaseTest extends TestCase
 
         $this->class()->delete();
     }
+
+    public function test_easy_coding_upgrade()
+    {
+        $this->resetClass()->class();
+
+        $method = $this->class()->publicMethod('rules');
+
+        $method->return()->real([
+            'name' => ['test','test','test','test','test'],
+            'name1' => ['test','test','test','test','test'],
+            'name2' => ['test','test','test','test','test'],
+        ]);
+
+        $this->class()->save()->standard();
+
+        $this->assertClassContains('        return [');
+        $this->assertClassContains("            'name' => ['test', 'test', 'test', 'test', 'test'],");
+        $this->assertClassContains("            'name1' => ['test', 'test', 'test', 'test', 'test'],");
+        $this->assertClassContains("            'name2' => ['test', 'test', 'test', 'test', 'test']");
+        $this->assertClassContains('        ];');
+
+//        $this->class()->delete();
+    }
 }

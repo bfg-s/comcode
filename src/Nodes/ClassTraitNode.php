@@ -60,12 +60,13 @@ class ClassTraitNode extends QueryNode implements
      */
     public function clarification(mixed $stmt): bool
     {
-        if (
-            (string) $stmt->traits[0] == $this->namespace
-        ) {
-            return true;
-        }
-        return false;
+        return (
+                (string) $stmt->traits[0]
+                == $this->namespace
+            ) || (
+                (string) $stmt->traits[0]
+                == Comcode::classBasename($this->namespace)
+            );
     }
 
     /**

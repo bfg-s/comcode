@@ -4,6 +4,10 @@ use Bfg\Comcode\InlineTrap;
 use Bfg\Comcode\PhpService;
 use PhpParser\Node\Expr;
 
+(function () {
+    PhpService::boot();
+})();
+
 if (!function_exists('php')) {
     /**
      * @param  string|Expr|null  $expression

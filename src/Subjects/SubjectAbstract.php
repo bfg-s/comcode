@@ -91,11 +91,13 @@ abstract class SubjectAbstract implements Stringable
 
     /**
      * Save nodes to file
-     * @return string|null
+     * @return FileSubject
      */
-    public function save(): ?string
+    public function save(): FileSubject
     {
-        return $this->fileSubject->update($this)->fix();
+        $this->fileSubject->update($this)->fix();
+
+        return $this->fileSubject;
     }
 
     /**

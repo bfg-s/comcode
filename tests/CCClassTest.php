@@ -12,14 +12,14 @@ class CCClassTest extends TestCase
 {
     public function test_class_content()
     {
-        $class = $this->resetClass()->class();
+        $class = $this->class();
 
         $class->trait(Conditionable::class);
 
         $class->protectedConst('const1', 1);
         $class->protectedConst('const2', 1.1);
         $class->protectedConst('const3', false);
-        $class->protectedConst('const3', ['success', 'error', 'warning']);
+        $class->protectedConst('const3', ['success', 'error', 'warning', 'error', 'warning', 'error', 'warning']);
 
         $class->publicProperty('array:tables', ['users', 'migrations']);
         $class->protectedProperty('settings', false);
@@ -38,11 +38,11 @@ class CCClassTest extends TestCase
 
         $method2->comment(function (DocSubject $doc) {
             $doc->name('Method 2');
-            $doc->name('And him Description');
+            $doc->description('And him Description');
             $doc->tagReturn('string');
         });
 
-        $method2->expectParams(['wait', Comcode::defineValueNode(null), Node::class]);
+        $method2->expectParams(['wait', Comcode::defineValueNode(null), Node::class], 'attributes');
 
         $method2->row('test row 1')
             ->var('wait')->assign('this')->methodWithProps(1, function (ClosureNode $q) {
@@ -63,7 +63,9 @@ class CCClassTest extends TestCase
         $method2->return('wait');
 
         $method3 = $class->protectedMethod('method3');
-        $method3->comment('// Simple comment for method 3');
+        $method3->comment('/**
+                * Simple comment for method 3
+                */');
 
         $method3->row('test row 1')
             ->var('text')
@@ -113,7 +115,7 @@ class CCClassTest extends TestCase
 
         $method3->return()->func('max', php('text'));
 
-        $class->save();
+        $class->save()->standard();
 
         $this->assertClassContains('<?php*');
         $this->assertClassContains('namespace Tests;');
@@ -127,13 +129,13 @@ class CCClassTest extends TestCase
         $this->assertClassContains('use Conditionable;');
         $this->assertClassContains('protected const CONST1 = 1;');
         $this->assertClassContains('protected const CONST2 = 1.1;');
-        $this->assertClassContains("protected const CONST3 = ['success', 'error', 'warning'];");
+        $this->assertClassContains("*protected const CONST3 = [*'success',*'error',*'warning',*'error',*'warning',*'error',*'warning'*];*");
         $this->assertClassContains("public array \$tables = ['users', 'migrations'];");
         $this->assertClassContains('protected $settings = false;');
         $this->assertClassContains('private Comcode $engine;');
         $this->assertClassContains('And him Description.');
-        $this->assertClassContains('public function method2(Node $wait = null)');
-        $this->assertClassContains("\$wait = \$this->methodWithProps(1, function (string \$param1 = 'default text')");
+        $this->assertClassContains('    public function method2(Node $wait = null, $attributes)');
+        $this->assertClassContains("*\$wait = \$this->methodWithProps(1, function (*string \$param1 = 'default text'*) {*");
         $this->assertClassContains("\$param1 .= ' and true text';");
         $this->assertClassContains("\$param1 .= ' and false text';");
         $this->assertClassContains('return $param1;');
@@ -147,7 +149,7 @@ class CCClassTest extends TestCase
         $this->assertClassContains('return $wait;');
         $this->assertClassContains('protected function method1()');
         $this->assertClassContains("return 'text';");
-        $this->assertClassContains('// Simple comment for method 3');
+        $this->assertClassContains('Simple comment for method 3');
         $this->assertClassContains('protected function method3()');
         $this->assertClassContains('$text = $this->property;');
         $this->assertClassContains('$text += 2;');
@@ -159,6 +161,6 @@ class CCClassTest extends TestCase
         $this->assertClassContains('$text += 100;');
         $this->assertClassContains('return max($text);');
 
-        //$class->delete();
+//        $class->delete();
     }
 }
