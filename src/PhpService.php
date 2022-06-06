@@ -32,12 +32,6 @@ class PhpService
      */
     public function class(object|string $class, string $file = null): ClassSubject
     {
-        if (class_exists($class)) {
-            $file = (new ReflectionClass($class))->getFileName();
-            $file = is_file($file) ? $file : null;
-            $file = file_get_contents($file) ? $file : null;
-        }
-
         $file = $file ?: Comcode::fileReservation(
             str_replace(
                 "\\",
@@ -45,6 +39,10 @@ class PhpService
                 lcfirst(trim($class, "\\"))
             ).'.php'
         );
+
+        if ((!$file || !is_file($file)) && class_exists($class)) {
+            $file = (new ReflectionClass($class))->getFileName();
+        }
 
         return $this->file($file)
             ->class($class);
