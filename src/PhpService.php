@@ -16,12 +16,12 @@ class PhpService
 {
     public static function boot(): void
     {
-        if (
-            (! defined('APP_ENV') || APP_ENV !== 'testing')
-            && (\PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg')
-        ) {
-            register_shutdown_function([FixStandard::class, 'standardTouched']);
-        }
+//        if (
+//            (! defined('APP_ENV') || APP_ENV !== 'testing')
+//            && (\PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg')
+//        ) {
+//            register_shutdown_function([FixStandard::class, 'standardTouched']);
+//        }
     }
 
     /**
