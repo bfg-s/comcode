@@ -12,9 +12,9 @@ return static function (ECSConfig $ecsConfig): void {
         SetList::SPACES,
     ]);
 
-//    $ecsConfig->ruleWithConfiguration(LineLengthFixer::class, [
-//        LineLengthFixer::LINE_LENGTH => 80,
-//    ]);
+    $ecsConfig->ruleWithConfiguration(LineLengthFixer::class, [
+        LineLengthFixer::LINE_LENGTH => 80,
+    ]);
 
     $ecsConfig->rules([
         StandaloneLineInMultilineArrayFixer::class,
