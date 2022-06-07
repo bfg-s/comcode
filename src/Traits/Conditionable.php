@@ -41,7 +41,9 @@ trait Conditionable
      */
     public function and(callable $callback = null): static
     {
-        return $this->when(true, $callback);
+        $this->when(true, $callback);
+
+        return $this;
     }
 
     /**
