@@ -150,6 +150,14 @@ class FixStandard
         }
     }
 
+    /**
+     * @return array
+     */
+    public static function touchedFiles(): array
+    {
+        return static::$touchedFiles;
+    }
+
     protected static function execEcs(array $files)
     {
         exec(implode(" ", [
