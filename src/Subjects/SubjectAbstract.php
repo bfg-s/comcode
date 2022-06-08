@@ -83,7 +83,11 @@ abstract class SubjectAbstract implements Stringable
         if (is_int($key)) {
             $this->nodes[$key] = $nodeClass->node;
         } else {
-            $this->nodes = [$nodeClass->node];
+            if ($nodeClass->prepend) {
+                array_unshift($this->nodes, $nodeClass->node);
+            } else {
+                $this->nodes[] = $nodeClass->node;
+            }
         }
 
         return $nodeClass;

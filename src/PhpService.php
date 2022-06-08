@@ -2,6 +2,7 @@
 
 namespace Bfg\Comcode;
 
+use Bfg\Comcode\Subjects\AnonymousClassSubject;
 use Bfg\Comcode\Subjects\ClassSubject;
 use Bfg\Comcode\Subjects\FileSubject;
 use ErrorException;
@@ -46,15 +47,15 @@ class PhpService
     }
 
     /**
-     * @param  string  $namespace
+     * @param  string|null  $namespace
      * @param  string  $file
-     * @return ClassSubject
+     * @return AnonymousClassSubject
      * @throws ErrorException
      */
     public function anonymousClass(
-        string $namespace,
+        ?string $namespace,
         string $file
-    ): ClassSubject {
+    ): AnonymousClassSubject {
         return $this->file($file)
             ->anonymousClass($namespace);
     }

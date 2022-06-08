@@ -49,14 +49,13 @@ class ClassNode extends QueryNode
 
     /**
      * @param  string  $namespace
-     * @return NamespaceUseNode
+     * @return void
      */
     public function use(
         string $namespace
-    ): NamespaceUseNode {
-        return $this->subject->namespaceNode->apply(
-            new NamespaceUseNode($namespace)
-        );
+    ): void {
+        $this->subject
+            ->use($namespace);
     }
 
     /**

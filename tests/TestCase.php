@@ -77,6 +77,18 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $class;
     }
 
+    /**
+     * @throws \ErrorException
+     */
+    protected function anonymousClassNoNamespace(): AnonymousClassSubject
+    {
+        $class = php()->anonymousClass(null, 'tests/anonymous.php');
+        $class->extends(Comcode::class);
+        $class->implement(AlwaysLastNodeInterface::class);
+
+        return $class;
+    }
+
     protected function assertClassNotContains(
         string|array $needle,
     ) {

@@ -10,9 +10,18 @@ use Bfg\Comcode\Traits\Conditionable;
 
 class CCAnonymousClassTest extends TestCase
 {
-    public function test_anonymous_class_content()
+    public function test_anonymous_class_content_no_namespace()
     {
-        $class = $this->anonymousClass();
+        $this->test_anonymous_class_content(true);
+    }
+
+    public function test_anonymous_class_content(bool $noNamespace = false)
+    {
+        if ($noNamespace) {
+            $class = $this->anonymousClassNoNamespace();
+        } else {
+            $class = $this->anonymousClass();
+        }
 
         $class->trait(Conditionable::class);
 
@@ -120,12 +129,14 @@ class CCAnonymousClassTest extends TestCase
         $this->class = $class;
 
         $this->assertClassContains('<?php*');
-        $this->assertClassContains('namespace Tests;');
+        if (! $noNamespace) {
+            $this->assertClassContains('namespace Tests;');
+        }
         $this->assertClassContains('use Bfg\Comcode\Comcode;');
         $this->assertClassContains('use Bfg\Comcode\Interfaces\AlwaysLastNodeInterface;');
         $this->assertClassContains('use Bfg\Comcode\Node;');
         $this->assertClassContains('use Bfg\Comcode\Traits\Conditionable;');
-        $this->assertClassContains('return new class() extends Comcode implements AlwaysLastNodeInterface {');
+        $this->assertClassContains('return new class extends Comcode implements AlwaysLastNodeInterface {');
         $this->assertClassContains('use Conditionable;');
         $this->assertClassContains('protected const CONST1 = 1;');
         $this->assertClassContains('protected const CONST2 = 1.1;');

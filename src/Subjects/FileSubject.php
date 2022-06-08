@@ -40,16 +40,14 @@ class FileSubject
 
     /**
      * CHILDHOOD FUNCTION
-     * @param  string  $namespace
+     * @param  string|null  $namespace
      * @return AnonymousClassSubject
      */
     public function anonymousClass(
-        string $namespace
+        ?string $namespace
     ): AnonymousClassSubject {
         return (new AnonymousClassSubject(
-            $this, $namespace
-            ?: (new FileParser)
-                ->getClassFullNameFromFile($this->file)
+            $this, $namespace ?: ''
         ));
     }
 

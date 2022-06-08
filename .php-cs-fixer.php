@@ -69,6 +69,7 @@ return $config
         'no_spaces_inside_parenthesis' => true,
         'no_whitespace_in_blank_line' => true,
         'types_spaces' => ['space' => 'none'],
+        'new_with_braces' => false,
 
 
 
