@@ -70,7 +70,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function anonymousClass(): AnonymousClassSubject
     {
-        $class = php()->anonymousClass('Tests', 'tests/anonymous.php');
+        $class = php()->anonymousClass('tests/anonymous.php', 'Tests');
         $class->extends(Comcode::class);
         $class->implement(AlwaysLastNodeInterface::class);
 
@@ -82,7 +82,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function anonymousClassNoNamespace(): AnonymousClassSubject
     {
-        $class = php()->anonymousClass(null, 'tests/anonymous.php');
+        $class = php()->anonymousClass( 'tests/anonymous.php');
         $class->extends(Comcode::class);
         $class->implement(AlwaysLastNodeInterface::class);
 

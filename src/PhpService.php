@@ -53,8 +53,8 @@ class PhpService
      * @throws ErrorException
      */
     public function anonymousClass(
-        ?string $namespace,
-        string $file
+        string $file,
+        ?string $namespace = null,
     ): AnonymousClassSubject {
         return $this->file($file)
             ->anonymousClass($namespace);

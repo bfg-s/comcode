@@ -44,7 +44,7 @@ class FileSubject
      * @return AnonymousClassSubject
      */
     public function anonymousClass(
-        ?string $namespace
+        ?string $namespace = null
     ): AnonymousClassSubject {
         return (new AnonymousClassSubject(
             $this, $namespace ?: ''
