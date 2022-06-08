@@ -4,6 +4,7 @@ namespace Bfg\Comcode\Tests;
 
 use Bfg\Comcode\Comcode;
 use Bfg\Comcode\Interfaces\AlwaysLastNodeInterface;
+use Bfg\Comcode\Subjects\AnonymousClassSubject;
 use Bfg\Comcode\Subjects\ClassSubject;
 use JetBrains\PhpStorm\NoReturn;
 
@@ -65,6 +66,15 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $this->class->implement(AlwaysLastNodeInterface::class);
         }
         return $this->class;
+    }
+
+    protected function anonymousClass(): AnonymousClassSubject
+    {
+        $class = php()->anonymousClass('Tests', 'tests/anonymous.php');
+        $class->extends(Comcode::class);
+        $class->implement(AlwaysLastNodeInterface::class);
+
+        return $class;
     }
 
     protected function assertClassNotContains(

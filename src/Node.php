@@ -99,15 +99,13 @@ class Node
     }
 
     /**
-     * @param  string  $name
+     * @param  string|null  $name
      * @return Class_
      */
     public static function class(
-        string $name
+        ?string $name
     ): Class_ {
-        return new Class_(
-            static::name($name)
-        );
+        return new Class_($name);
     }
 
     /**

@@ -12,8 +12,8 @@ use Bfg\Comcode\Traits\CommonWhileExpressions;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeAbstract;
 
-class ReturnNode extends QueryNode implements
-    BirthNodeInterface, AlwaysLastNodeInterface, ReconstructionNodeInterface
+class ExpressionNode extends QueryNode implements
+    BirthNodeInterface, ReconstructionNodeInterface
 {
     use CommonWhileExpressions;
 
@@ -22,25 +22,20 @@ class ReturnNode extends QueryNode implements
      */
     public ?NodeAbstract $node = null;
 
+    public function __construct(
+        public string $class,
+        public string $store = 'stmts',
+        public array $args = [],
+    ) {
+    }
+
     /**
      * Get instance class of node type
      * @return <class-string>
      */
     public function nodeClass(): string
     {
-        return Return_::class;
-    }
-
-    /**
-     * @return InlineTrap
-     */
-    public function this(): InlineTrap
-    {
-        $this->node->expr
-            = new InlineTrap('this');
-
-        return $this->node->expr
-            ->__bindExpression($this, $this->node);
+        return $this->class;
     }
 
     /**
@@ -49,7 +44,7 @@ class ReturnNode extends QueryNode implements
      */
     public function birth(): NodeAbstract
     {
-        return Node::return();
+        return new $this->class(...$this->args);
     }
 
     /**

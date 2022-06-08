@@ -16,22 +16,19 @@ class PhpService
 {
     public static function boot(): void
     {
-//        if (
-//            (! defined('APP_ENV') || APP_ENV !== 'testing')
-//            && (\PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg')
-//        ) {
-//            register_shutdown_function([FixStandard::class, 'standardTouched']);
-//        }
+
     }
 
     /**
-     * @param  object|string  $class
+     * @param  string  $class
      * @param  string|null  $file
      * @return ClassSubject
      * @throws ErrorException
      */
-    public function class(object|string $class, string $file = null): ClassSubject
-    {
+    public function class(
+        string $class,
+        string $file = null
+    ): ClassSubject {
         $file = $file ?: Comcode::fileReservation(
             str_replace(
                 "\\",
@@ -46,6 +43,20 @@ class PhpService
 
         return $this->file($file)
             ->class($class);
+    }
+
+    /**
+     * @param  string  $namespace
+     * @param  string  $file
+     * @return ClassSubject
+     * @throws ErrorException
+     */
+    public function anonymousClass(
+        string $namespace,
+        string $file
+    ): ClassSubject {
+        return $this->file($file)
+            ->anonymousClass($namespace);
     }
 
     /**

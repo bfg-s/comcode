@@ -66,7 +66,7 @@ abstract class SubjectAbstract implements Stringable
         $nodeClass->subject = $this;
 
         $query = Query::new($this->nodes)->isA(
-            $nodeClass::nodeClass()
+            $nodeClass->nodeClass()
         )->filter(
             $nodeClass instanceof ClarificationNodeInterface
                 ? [$nodeClass, 'clarification'] : null

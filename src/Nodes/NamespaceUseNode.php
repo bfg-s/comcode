@@ -35,7 +35,7 @@ class NamespaceUseNode extends QueryNode implements
      * Get instance class of node type
      * @return <class-string>
      */
-    public static function nodeClass(): string
+    public function nodeClass(): string
     {
         return Use_::class;
     }

@@ -30,7 +30,7 @@ class Query
         QueryNode $queryNode
     ): Query {
         $queryNode->mounting();
-        return static::new($node->{$queryNode->store})->isA($queryNode::nodeClass())
+        return static::new($node->{$queryNode->store})->isA($queryNode->nodeClass())
             ->filter(
                 $queryNode instanceof ClarificationNodeInterface
                     ? [$queryNode, 'clarification'] : null

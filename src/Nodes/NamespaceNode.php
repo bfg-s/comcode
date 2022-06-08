@@ -14,11 +14,6 @@ class NamespaceNode extends QueryNode implements
     ReconstructionNodeInterface, BirthNodeInterface
 {
     /**
-     * @var NamespaceNode|null
-     */
-    public static ?NamespaceNode $lastNode = null;
-
-    /**
      * @var Namespace_|null
      */
     public ?NodeAbstract $node = null;
@@ -32,14 +27,13 @@ class NamespaceNode extends QueryNode implements
         $this->name = str_contains($this->name, '\\')
             ? Comcode::namespaceBasename($this->name)
             : $this->name;
-        NamespaceNode::$lastNode = $this;
     }
 
     /**
      * Get instance class of node type
      * @return <class-string>
      */
-    public static function nodeClass(): string
+    public function nodeClass(): string
     {
         return Namespace_::class;
     }

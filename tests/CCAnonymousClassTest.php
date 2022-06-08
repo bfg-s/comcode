@@ -8,11 +8,11 @@ use Bfg\Comcode\Nodes\ClosureNode;
 use Bfg\Comcode\Subjects\DocSubject;
 use Bfg\Comcode\Traits\Conditionable;
 
-class CCClassTest extends TestCase
+class CCAnonymousClassTest extends TestCase
 {
-    public function test_class_content()
+    public function test_anonymous_class_content()
     {
-        $class = $this->class();
+        $class = $this->anonymousClass();
 
         $class->trait(Conditionable::class);
 
@@ -117,15 +117,15 @@ class CCClassTest extends TestCase
 
         $class->save()->standard();
 
+        $this->class = $class;
+
         $this->assertClassContains('<?php*');
         $this->assertClassContains('namespace Tests;');
         $this->assertClassContains('use Bfg\Comcode\Comcode;');
         $this->assertClassContains('use Bfg\Comcode\Interfaces\AlwaysLastNodeInterface;');
         $this->assertClassContains('use Bfg\Comcode\Node;');
         $this->assertClassContains('use Bfg\Comcode\Traits\Conditionable;');
-        $this->assertClassContains('Description of test class.');
-        $this->assertClassContains('@method static get()');
-        $this->assertClassContains('class TestedClass extends Comcode implements AlwaysLastNodeInterface');
+        $this->assertClassContains('return new class() extends Comcode implements AlwaysLastNodeInterface {');
         $this->assertClassContains('use Conditionable;');
         $this->assertClassContains('protected const CONST1 = 1;');
         $this->assertClassContains('protected const CONST2 = 1.1;');

@@ -7,6 +7,8 @@ use Bfg\Comcode\Interfaces\AnonymousInterface;
 use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
 use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
+use Bfg\Comcode\Nodes\AnonymousClassNode;
+use Bfg\Comcode\Nodes\ExpressionNode;
 use Bfg\Comcode\Nodes\RowNode;
 use Bfg\Comcode\Subjects\DocSubject;
 use Bfg\Comcode\Subjects\SubjectAbstract;
@@ -123,11 +125,11 @@ abstract class QueryNode
 
         $store = $nodeClass->store;
 
-        $query = Query::new((array) $this->node->{$store})
+        $query = Query::new($this->node->{$store})
             ->unless(
                 $nodeClass instanceof AnonymousInterface,
                 fn(Query $query) => $query
-                    ->isA($nodeClass::nodeClass())
+                    ->isA($nodeClass->nodeClass())
             )->when(
                 $nodeClass instanceof ClarificationNodeInterface,
                 fn(Query $query) => $query
@@ -195,7 +197,7 @@ abstract class QueryNode
      * Get instance class of node type
      * @return <class-string>
      */
-    abstract public static function nodeClass(): string;
+    abstract public function nodeClass(): string;
 
     /**
      * @return void
@@ -209,7 +211,7 @@ abstract class QueryNode
      */
     public function isMatch(): bool
     {
-        return $this->node && is_a($this->node, static::nodeClass());
+        return $this->node && is_a($this->node, $this->nodeClass());
     }
 
     /**

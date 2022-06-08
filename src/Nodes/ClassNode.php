@@ -29,18 +29,20 @@ class ClassNode extends QueryNode
      * @param  string  $name
      */
     public function __construct(
-        public string $name
+        public ?string $name
     ) {
-        $this->name = str_contains($this->name, '\\')
-            ? Comcode::classBasename($this->name)
-            : $this->name;
+        if ($this->name) {
+            $this->name = str_contains($this->name, '\\')
+                ? Comcode::classBasename($this->name)
+                : $this->name;
+        }
     }
 
     /**
      * Get instance class of node type
      * @return <class-string>
      */
-    public static function nodeClass(): string
+    public function nodeClass(): string
     {
         return Class_::class;
     }
@@ -78,20 +80,6 @@ class ClassNode extends QueryNode
     ): static {
         return $this->apply(
             new ClassImplementNode($namespace)
-        );
-    }
-
-    /**
-     * @param  string|array  $name
-     * @param  mixed|null  $default
-     * @return $this
-     */
-    public function publicProperty(
-        string|array $name,
-        mixed $default = null
-    ): static {
-        return $this->apply(
-            new ClassPropertyNode('public', $name, $default)
         );
     }
 

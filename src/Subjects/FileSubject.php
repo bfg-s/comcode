@@ -25,14 +25,29 @@ class FileSubject
 
     /**
      * CHILDHOOD FUNCTION
-     * @param  object|string|null  $class
+     * @param  string|null  $class
      * @return ClassSubject
      */
     public function class(
-        object|string $class = null
+        string $class = null
     ): ClassSubject {
         return (new ClassSubject(
             $this, $class
+            ?: (new FileParser)
+                ->getClassFullNameFromFile($this->file)
+        ));
+    }
+
+    /**
+     * CHILDHOOD FUNCTION
+     * @param  string  $namespace
+     * @return AnonymousClassSubject
+     */
+    public function anonymousClass(
+        string $namespace
+    ): AnonymousClassSubject {
+        return (new AnonymousClassSubject(
+            $this, $namespace
             ?: (new FileParser)
                 ->getClassFullNameFromFile($this->file)
         ));
