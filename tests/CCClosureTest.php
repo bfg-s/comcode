@@ -16,7 +16,7 @@ class CCClosureTest extends TestCase
                 $node->expectParams('q')
                     ->return()
                     ->var('q')
-                    ->and(
+                    ->ands(
                         fn(ClosureNode $node) => $node->return('this')
                             ->myTestMethod()
                             ->andProperty
@@ -24,12 +24,12 @@ class CCClosureTest extends TestCase
             });
         $method->return('test')->filter(fn(ClosureNode $node) => $node->return()->real(111));
         $this->class()->save();
-        $this->assertClassContains('*// test row 1*$test = $this->testCall(function ($q) {*// test row 1.1*$q = $q->first();*return $q->and(fn () => $this->myTestMethod()->andProperty);*});*return $test->filter(fn () => 111);*');
+        $this->assertClassContains('*// test row 1*$test = $this->testCall(function ($q) {*// test row 1.1*$q = $q->first();*return $q->ands(fn () => $this->myTestMethod()->andProperty);*});*return $test->filter(fn () => 111);*');
 
         $method->forgetRow('test row 1');
         $method->forgetReturn();
         $this->class()->save();
-        $this->assertClassNotContains('*// test row 1*$test = $this->testCall(function ($q) {*// test row 1.1*$q = $q->first();*return $q->and(fn () => $this->myTestMethod()->andProperty);*});*return $test->filter(fn () => 111);*');
+        $this->assertClassNotContains('*// test row 1*$test = $this->testCall(function ($q) {*// test row 1.1*$q = $q->first();*return $q->ands(fn () => $this->myTestMethod()->andProperty);*});*return $test->filter(fn () => 111);*');
         $this->class()->delete();
     }
 }

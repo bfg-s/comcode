@@ -3,6 +3,7 @@
 namespace Bfg\Comcode;
 
 use Bfg\Comcode\Nodes\ClosureNode;
+use Bfg\Comcode\Traits\Conditionable;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
@@ -13,6 +14,8 @@ use PhpParser\NodeAbstract;
  */
 class InlineTrap extends AnonymousStmt
 {
+    use Conditionable;
+
     /**
      * @var Expr|null
      */
