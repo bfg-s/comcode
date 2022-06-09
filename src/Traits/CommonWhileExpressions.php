@@ -45,6 +45,29 @@ trait CommonWhileExpressions
     }
 
     /**
+     * @param  string  $class
+     * @param  string  $name
+     * @param  mixed  ...$arguments
+     * @return InlineTrap
+     */
+    public function staticCall(
+        string $class,
+        string $name,
+        ...$arguments
+    ): InlineTrap {
+        $class = Comcode::useIfClass(
+            $class,
+            $this->subject
+        );
+        $this->node->expr = new InlineTrap(
+            $name
+        );
+        return $this->node->expr
+            ->__bindExpression($this, $this->node)
+            ->staticCall($class, ...$arguments);
+    }
+
+    /**
      * @param  mixed|null  $value
      * @return InlineTrap
      */

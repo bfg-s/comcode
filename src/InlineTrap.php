@@ -4,6 +4,7 @@ namespace Bfg\Comcode;
 
 use Bfg\Comcode\Nodes\ClosureNode;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeAbstract;
 
@@ -135,6 +136,95 @@ class InlineTrap extends AnonymousStmt
     }
 
     /**
+     * @param  string  $class
+     * @param  array  $arguments
+     * @return $this
+     */
+    public function staticCall(
+        string $class,
+        ...$arguments
+    ): static {
+        return $this->__call($class.'::', $arguments);
+    }
+
+    /**
+     * @param  string  $name
+     * @param  array  $arguments
+     * @return $this
+     */
+    public function __call(
+        string $name,
+        array $arguments
+    ) {
+        $static = false;
+        if (str_ends_with($name, '::')) {
+            $name = substr($name, 0, -2);
+            $this->node = Node::callStaticMethod(
+                $name,
+                $this->node instanceof Variable
+                    ? (string) $this->node->name
+                    : $this->node,
+            );
+            $static = true;
+        } else {
+            $this->node = Node::callMethod(
+                $this->node,
+                $name,
+            );
+        }
+
+        foreach ($arguments as $key => $argument) {
+            if (is_callable($argument)) {
+                /** @var Expr\MethodCall|null $searchResult */
+                $searchResult = Comcode::findStmtByName(
+                    $this->queryNode->original,
+                    $name,
+                    $this->node::class
+                );
+
+                $inn = Comcode::maxInlineInner($searchResult) - $this->iterations - 1;
+
+//                if ($static) {
+//                    dd($inn, $searchResult);
+//                }
+
+                for ($i = 0; $i < $inn; $i++) {
+                    $searchResult = $searchResult->var;
+                }
+
+                //dump($searchResult);
+                $node = null;
+                if (
+                    $searchResult
+                    && isset($searchResult->args[$key])
+                    && property_exists($searchResult->args[$key], 'value')
+                ) {
+                    $class = $searchResult->args[$key]->value;
+                    if ($class instanceof Expr\Closure) {
+                        $arguments[$key] = $class;
+                    } else {
+                        $arguments[$key] = Node::closure();
+                    }
+                } else {
+                    $arguments[$key] = Node::closure();
+                }
+                $node = new ClosureNode($argument);
+                $node->mounting();
+                $node->parent = $this->queryNode;
+                $node->subject = $this->queryNode->subject;
+                $node->node = $arguments[$key];
+                $node->mounted();
+            }
+        }
+
+        $this->node->args
+            = Node::args($arguments);
+        $this->__setToStmt();
+        $this->iterations++;
+        return $this;
+    }
+
+    /**
      * @param  string|Expr|InlineTrap  $expr
      * @return $this
      */
@@ -174,67 +264,6 @@ class InlineTrap extends AnonymousStmt
         ...$arguments
     ): static {
         return $this->__call($function, $arguments);
-    }
-
-    /**
-     * @param  string  $name
-     * @param  array  $arguments
-     * @return $this
-     */
-    public function __call(
-        string $name,
-        array $arguments
-    ) {
-        $this->node = Node::callMethod(
-            $this->node,
-            $name,
-        );
-
-        foreach ($arguments as $key => $argument) {
-            if (is_callable($argument)) {
-                /** @var Expr\MethodCall|null $searchResult */
-                $searchResult = Comcode::findStmtByName(
-                    $this->queryNode->original,
-                    $name,
-                    $this->node::class
-                );
-
-                $inn = Comcode::maxInlineInner($searchResult) - $this->iterations - 1;
-
-                for ($i = 0; $i < $inn; $i++) {
-                    $searchResult = $searchResult->var;
-                }
-
-                //dump($searchResult);
-                $node = null;
-                if (
-                    $searchResult
-                    && isset($searchResult->args[$key])
-                    && property_exists($searchResult->args[$key], 'value')
-                ) {
-                    $class = $searchResult->args[$key]->value;
-                    if ($class instanceof Expr\Closure) {
-                        $arguments[$key] = $class;
-                    } else {
-                        $arguments[$key] = Node::closure();
-                    }
-                } else {
-                    $arguments[$key] = Node::closure();
-                }
-                $node = new ClosureNode($argument);
-                $node->mounting();
-                $node->parent = $this->queryNode;
-                $node->subject = $this->queryNode->subject;
-                $node->node = $arguments[$key];
-                $node->mounted();
-            }
-        }
-
-        $this->node->args
-            = Node::args($arguments);
-        $this->__setToStmt();
-        $this->iterations++;
-        return $this;
     }
 
     /**

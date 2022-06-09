@@ -2,8 +2,8 @@
 
 namespace Bfg\Comcode\Subjects;
 
-use Bfg\Comcode\FixStandard;
 use Bfg\Comcode\FileParser;
+use Bfg\Comcode\FixStandard;
 use ErrorException;
 
 class FileSubject

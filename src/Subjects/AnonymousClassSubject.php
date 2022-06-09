@@ -3,11 +3,11 @@
 namespace Bfg\Comcode\Subjects;
 
 use Bfg\Comcode\Nodes\AnonymousClassNode;
-use Bfg\Comcode\Nodes\ClassNode;
 use Bfg\Comcode\Nodes\ExpressionNode;
 use Bfg\Comcode\Nodes\NamespaceNode;
 use Bfg\Comcode\Nodes\NamespaceUseNode;
 use Bfg\Comcode\Nodes\ReturnNode;
+use PhpParser\Node\Expr\New_;
 
 class AnonymousClassSubject extends ClassSubject
 {
@@ -33,7 +33,7 @@ class AnonymousClassSubject extends ClassSubject
 
         if ($this->class) {
             $next = $this->namespaceNode = $this->apply(
-                new NamespaceNode($this->class . "\\AnonymousClass")
+                new NamespaceNode($this->class."\\AnonymousClass")
             );
         }
 
@@ -43,7 +43,7 @@ class AnonymousClassSubject extends ClassSubject
 
         $new = $return->apply(
             new ExpressionNode(
-                \PhpParser\Node\Expr\New_::class,
+                New_::class,
                 'expr',
                 ['class' => null]
             )

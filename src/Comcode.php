@@ -2,7 +2,6 @@
 
 namespace Bfg\Comcode;
 
-use Bfg\Comcode\Nodes\NamespaceNode;
 use Bfg\Comcode\Subjects\ClassSubject;
 use Illuminate\Support\Arr;
 use PhpParser\Node\Expr;
@@ -12,6 +11,7 @@ use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeAbstract;
 use PhpParser\ParserFactory;
 
@@ -168,6 +168,20 @@ class Comcode
         array $nodes = []
     ): AnonymousStmt {
         return new AnonymousStmt($nodes);
+    }
+
+    /**
+     * @param  string|Expr|null  $expr
+     * @return AnonymousLine
+     */
+    public static function anonymousLine(
+        string|Expr|null $expr = null
+    ): AnonymousLine {
+        return new AnonymousLine(
+            func_num_args() == 0
+                ? static::anonymousStmt()
+                : $expr
+        );
     }
 
     /**
@@ -385,6 +399,13 @@ class Comcode
                         && $result = static::findStmtByName($item->var, $name)
                     ) {
                         return $result;
+                    } else {
+                        if (
+                            property_exists($item, 'class')
+                            && (string) $item->class == $name
+                        ) {
+                            return $item;
+                        }
                     }
                 }
             }
@@ -400,16 +421,27 @@ class Comcode
     public static function maxInlineInner(
         ?NodeAbstract $node = null,
     ): int {
+        if ($node instanceof Expression) {
+            $node = $node->expr;
+        }
         $insideIteration = 0;
-        while ($node && property_exists($node, 'var')) {
-            if (
-                $node instanceof Expr\MethodCall
-                || $node instanceof Expr\PropertyFetch
-            ) {
+        while (
+            $node
+            && (property_exists($node, 'var') || property_exists($node, 'cl'))
+        ) {
+            if ($node instanceof Expr\StaticCall) {
                 $insideIteration++;
-                $node = $node->var;
-            } else {
                 $node = null;
+            } else {
+                if (
+                    $node instanceof Expr\MethodCall
+                    || $node instanceof Expr\PropertyFetch
+                ) {
+                    $insideIteration++;
+                    $node = $node->var;
+                } else {
+                    $node = null;
+                }
             }
         }
         return $insideIteration;

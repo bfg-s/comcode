@@ -56,9 +56,10 @@ class ClassTraitNode extends QueryNode implements
 
     /**
      * @param  TraitUse|mixed  $stmt
+     * @param  string|int  $key
      * @return bool
      */
-    public function clarification(mixed $stmt): bool
+    public function clarification(mixed $stmt, string|int $key): bool
     {
         return (
                 (string) $stmt->traits[0]

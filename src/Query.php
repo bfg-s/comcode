@@ -37,11 +37,6 @@ class Query
             );
     }
 
-    public function dd()
-    {
-        dd($this->items);
-    }
-
     /**
      * @param  callable|null  $callback
      * @return $this
@@ -81,6 +76,11 @@ class Query
     public static function new(mixed $item = []): static
     {
         return new static(is_array($item) ? $item : [$item]);
+    }
+
+    public function dd()
+    {
+        dd($this->items);
     }
 
     /**

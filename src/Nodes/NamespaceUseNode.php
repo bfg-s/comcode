@@ -42,9 +42,10 @@ class NamespaceUseNode extends QueryNode implements
 
     /**
      * @param  Use_|mixed  $stmt
+     * @param  string|int  $key
      * @return bool
      */
-    public function clarification(mixed $stmt): bool
+    public function clarification(mixed $stmt, string|int $key): bool
     {
         foreach ($stmt->uses as $use) {
             if (

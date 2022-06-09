@@ -56,9 +56,10 @@ class RowNode extends QueryNode implements
 
     /**
      * @param  Expression|mixed  $stmt
+     * @param  string|int  $key
      * @return bool
      */
-    public function clarification(mixed $stmt): bool
+    public function clarification(mixed $stmt, string|int $key): bool
     {
         if ($stmt->hasAttribute('comments')) {
             $attributes

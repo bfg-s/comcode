@@ -40,15 +40,6 @@ class ClassConstNode extends QueryNode implements
     }
 
     /**
-     * Get instance class of node type
-     * @return <class-string>
-     */
-    public function nodeClass(): string
-    {
-        return ClassConst::class;
-    }
-
-    /**
      * Has modifies
      * @return bool
      */
@@ -58,10 +49,20 @@ class ClassConstNode extends QueryNode implements
     }
 
     /**
+     * Get instance class of node type
+     * @return <class-string>
+     */
+    public function nodeClass(): string
+    {
+        return ClassConst::class;
+    }
+
+    /**
      * @param  ClassConst|mixed  $stmt
+     * @param  string|int  $key
      * @return bool
      */
-    public function clarification(mixed $stmt): bool
+    public function clarification(mixed $stmt, string|int $key): bool
     {
         return (string) $stmt->consts[0]->name == $this->name;
     }

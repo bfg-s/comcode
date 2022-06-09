@@ -7,8 +7,7 @@ use Bfg\Comcode\Interfaces\AnonymousInterface;
 use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
 use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
-use Bfg\Comcode\Nodes\AnonymousClassNode;
-use Bfg\Comcode\Nodes\ExpressionNode;
+use Bfg\Comcode\Nodes\LineNode;
 use Bfg\Comcode\Nodes\RowNode;
 use Bfg\Comcode\Subjects\DocSubject;
 use Bfg\Comcode\Subjects\SubjectAbstract;
@@ -66,48 +65,12 @@ abstract class QueryNode
      * @param  string  $name
      * @return RowNode
      */
-    public function row(
-        string $name
-    ): RowNode {
-        $this->rowCount++;
+    public function line(
+        ?int $num = null
+    ): LineNode {
         return $this->apply(
-            new RowNode($name)
+            new LineNode($num === null ? $this->rowCount++ : $num)
         );
-    }
-
-    /**
-     * @param  string  $name
-     * @return bool
-     */
-    public function forgetRow(
-        string $name
-    ): bool {
-        $this->rowCount--;
-        return $this->forget(
-            new RowNode($name)
-        );
-    }
-
-    /**
-     * @param  string  $name
-     * @return bool
-     */
-    public function existsRow(
-        string $name
-    ): bool {
-        return $this->exists(
-            new RowNode($name)
-        );
-    }
-
-    /**
-     * @param  string  $name
-     * @return bool
-     */
-    public function notExistsRow(
-        string $name
-    ): bool {
-        return ! $this->existsRow($name);
     }
 
     /**
@@ -263,6 +226,18 @@ abstract class QueryNode
     }
 
     /**
+     * @param  string  $name
+     * @return bool
+     */
+    public function forgetLine(
+        ?int $num = null
+    ): bool {
+        return $this->forget(
+            new LineNode($num === null ? $this->rowCount-- : $num)
+        );
+    }
+
+    /**
      * @param  QueryNode  $nodeClass
      * @return bool
      */
@@ -291,6 +266,28 @@ abstract class QueryNode
     }
 
     /**
+     * @param  string  $name
+     * @return bool
+     */
+    public function notExistsLine(
+        ?int $num = null
+    ): bool {
+        return !$this->existsLine($num);
+    }
+
+    /**
+     * @param  string  $name
+     * @return bool
+     */
+    public function existsLine(
+        ?int $num = null
+    ): bool {
+        return $this->exists(
+            new LineNode($num === null ? $this->rowCount : $num)
+        );
+    }
+
+    /**
      * @param  QueryNode  $nodeClass
      * @return bool
      */
@@ -300,6 +297,54 @@ abstract class QueryNode
         $nodeClass->subject = $this->subject;
         return Query::find($this->node, $nodeClass)
             ->isNotEmpty();
+    }
+
+    /**
+     * @param  string  $name
+     * @return RowNode
+     */
+    public function row(
+        string $name
+    ): RowNode {
+        $this->rowCount++;
+        return $this->apply(
+            new RowNode($name)
+        );
+    }
+
+    /**
+     * @param  string  $name
+     * @return bool
+     */
+    public function forgetRow(
+        string $name
+    ): bool {
+        $this->rowCount--;
+        return $this->forget(
+            new RowNode($name)
+        );
+    }
+
+    /**
+     * @param  string  $name
+     * @return bool
+     */
+    public function notExistsRow(
+        string $name
+    ): bool {
+        return !$this->existsRow($name);
+    }
+
+    /**
+     * @param  string  $name
+     * @return bool
+     */
+    public function existsRow(
+        string $name
+    ): bool {
+        return $this->exists(
+            new RowNode($name)
+        );
     }
 
     /**
@@ -326,17 +371,17 @@ abstract class QueryNode
     /**
      * @return bool
      */
-    public function existsComment(): bool
+    public function notExistsComment(): bool
     {
-        return (bool) $this->node?->getDocComment();
+        return !$this->existsComment();
     }
 
     /**
      * @return bool
      */
-    public function notExistsComment(): bool
+    public function existsComment(): bool
     {
-        return ! $this->existsComment();
+        return (bool) $this->node?->getDocComment();
     }
 
     /**

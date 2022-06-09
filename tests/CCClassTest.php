@@ -32,6 +32,21 @@ class CCClassTest extends TestCase
 
         $method1 = $class->protectedMethod('method1');
 
+        $method1->row('test row -1')
+            ->staticCall(Comcode::class, 'trait', 'test')->nextMethod();
+
+        $method1->line()->var('test')->assign(php()->real(100));
+        $method1->line()->var('test')->assign(php()->real(10000));
+        $method1->line()->staticCall(
+            Comcode::class,
+            'trait',
+            function (ClosureNode $q) {
+                $q->expectParams('q');
+                $q->line()->var('test')->assign('q');
+                $q->return('test');
+            }
+        )->gets();
+
         $method1->return()->real('text');
 
         $method2 = $class->publicMethod('method2');
@@ -160,6 +175,9 @@ class CCClassTest extends TestCase
         $this->assertClassContains('$text += 400;');
         $this->assertClassContains('$text += 100;');
         $this->assertClassContains('return max($text);');
+        $this->assertClassContains('// test row -1');
+        $this->assertClassContains("Comcode::trait('test')->nextMethod();");
+        $this->assertClassContains('*Comcode::trait(function ($q) {*$test = $q;*return $test;*})->gets();*');
 
         $class->delete();
     }

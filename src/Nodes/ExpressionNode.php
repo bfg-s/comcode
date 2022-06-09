@@ -2,11 +2,8 @@
 
 namespace Bfg\Comcode\Nodes;
 
-use Bfg\Comcode\InlineTrap;
-use Bfg\Comcode\Interfaces\AlwaysLastNodeInterface;
 use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Interfaces\ReconstructionNodeInterface;
-use Bfg\Comcode\Node;
 use Bfg\Comcode\QueryNode;
 use Bfg\Comcode\Traits\CommonWhileExpressions;
 use PhpParser\Node\Stmt\Return_;

@@ -17,7 +17,6 @@ class PhpService
 {
     public static function boot(): void
     {
-
     }
 
     /**
@@ -47,6 +46,18 @@ class PhpService
     }
 
     /**
+     * @param  string  $file
+     * @return FileSubject
+     * @throws ErrorException
+     */
+    public function file(string $file): FileSubject
+    {
+        return new FileSubject(
+            Comcode::fileReservation($file)
+        );
+    }
+
+    /**
      * @param  string|null  $namespace
      * @param  string  $file
      * @return AnonymousClassSubject
@@ -58,18 +69,6 @@ class PhpService
     ): AnonymousClassSubject {
         return $this->file($file)
             ->anonymousClass($namespace);
-    }
-
-    /**
-     * @param  string  $file
-     * @return FileSubject
-     * @throws ErrorException
-     */
-    public function file(string $file): FileSubject
-    {
-        return new FileSubject(
-            Comcode::fileReservation($file)
-        );
     }
 
     /**

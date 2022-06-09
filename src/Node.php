@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -364,5 +365,23 @@ class Node
         return new TraitUse([
             static::name($namespace)
         ]);
+    }
+
+    /**
+     * @param  string|Expr  $var
+     * @param  string|Expr  $expr
+     * @param  array  $arguments
+     * @return StaticCall
+     */
+    public static function callStaticMethod(
+        string|Expr $var,
+        string|Expr $expr,
+        array $arguments = []
+    ): StaticCall {
+        return new StaticCall(
+            is_string($var) ? static::name($var) : $var,
+            $expr,
+            $arguments
+        );
     }
 }

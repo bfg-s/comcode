@@ -3,7 +3,6 @@
 namespace Bfg\Comcode\Subjects;
 
 use Bfg\Comcode\Exceptions\QueryNodeError;
-use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
 use Bfg\Comcode\Node;
 use Bfg\Comcode\Nodes\ClassConstNode;
 use Bfg\Comcode\Nodes\ClassExtendsNode;
@@ -14,7 +13,6 @@ use Bfg\Comcode\Nodes\ClassPropertyNode;
 use Bfg\Comcode\Nodes\ClassTraitNode;
 use Bfg\Comcode\Nodes\NamespaceNode;
 use Bfg\Comcode\Nodes\NamespaceUseNode;
-use Bfg\Comcode\Query;
 use Bfg\Comcode\QueryNode;
 
 /**
@@ -173,36 +171,42 @@ class ClassSubject extends SubjectAbstract
             return $this->classNode->forget(
                 $this->detectInsideNodeByMathes($matches, $arguments)
             );
-        } else if (
-            preg_match(
-                '/^exists('.implode('|', array_keys(static::$classNodes)).')$/i',
-                $name,
-                $matches
-            )
-        ) {
-            return $this->classNode->exists(
-                $this->detectInsideNodeByMathes($matches, $arguments)
-            );
-        } else if (
-            preg_match(
-                '/^notExists('.implode('|', array_keys(static::$classNodes)).')$/i',
-                $name,
-                $matches
-            )
-        ) {
-            return ! $this->classNode->exists(
-                $this->detectInsideNodeByMathes($matches, $arguments)
-            );
-        } else if (
-            preg_match(
-                '/^([a-zA-Z]+)?('.implode('|', array_keys(static::$classNodes)).')$/i',
-                $name,
-                $matches
-            )
-        ) {
-            return $this->classNode->apply(
-                $this->detectInsideNodeByMathesWithModifier($matches, $arguments)
-            );
+        } else {
+            if (
+                preg_match(
+                    '/^exists('.implode('|', array_keys(static::$classNodes)).')$/i',
+                    $name,
+                    $matches
+                )
+            ) {
+                return $this->classNode->exists(
+                    $this->detectInsideNodeByMathes($matches, $arguments)
+                );
+            } else {
+                if (
+                    preg_match(
+                        '/^notExists('.implode('|', array_keys(static::$classNodes)).')$/i',
+                        $name,
+                        $matches
+                    )
+                ) {
+                    return !$this->classNode->exists(
+                        $this->detectInsideNodeByMathes($matches, $arguments)
+                    );
+                } else {
+                    if (
+                        preg_match(
+                            '/^([a-zA-Z]+)?('.implode('|', array_keys(static::$classNodes)).')$/i',
+                            $name,
+                            $matches
+                        )
+                    ) {
+                        return $this->classNode->apply(
+                            $this->detectInsideNodeByMathesWithModifier($matches, $arguments)
+                        );
+                    }
+                }
+            }
         }
 
         throw new QueryNodeError("Node controller [$name] not fond!");

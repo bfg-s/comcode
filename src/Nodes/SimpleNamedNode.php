@@ -52,9 +52,10 @@ abstract class SimpleNamedNode extends QueryNode implements
 
     /**
      * @param  Name|mixed  $stmt
+     * @param  string|int  $key
      * @return bool
      */
-    public function clarification(mixed $stmt): bool
+    public function clarification(mixed $stmt, string|int $key): bool
     {
         return (
                 $stmt->__toString()

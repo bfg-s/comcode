@@ -43,6 +43,25 @@ class PrettyPrinter extends Standard
     }
 
     /**
+     * @param  AnonymousLine  $node
+     * @return string
+     */
+    public function plineanonymous(AnonymousLine $node): string
+    {
+        $result = "";
+
+        if ($node->expr instanceof Expr) {
+            $result .= $this->{'p'.$node->expr->getType()}($node->expr);
+        } else {
+            if (!$node->expr instanceof AnonymousStmt) {
+                $result .= $node->expr;
+            }
+        }
+
+        return $result ? $result.";" : $result;
+    }
+
+    /**
      * @param  Class_  $node
      * @return string
      */

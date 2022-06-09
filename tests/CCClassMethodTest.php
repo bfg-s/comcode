@@ -26,7 +26,7 @@ class CCClassMethodTest extends TestCase
         $this->assertClassContains('use Bfg\Comcode\Nodes\RowNode;');
         $this->assertClassContains('protected function node(): RowNode');
         $this->class()->forgetMethod('node');
-        $this->class()->save();
+        $this->class()->save()->standard();
         $this->assertClassNotContains('use Bfg\Comcode\Nodes\RowNode;');
         $this->assertClassNotContains('protected function node(): RowNode');
         $this->class()->delete();

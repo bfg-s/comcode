@@ -37,21 +37,21 @@ class ClassMethodNode extends QueryNode implements
     }
 
     /**
-     * Get instance class of node type
-     * @return <class-string>
-     */
-    public function nodeClass(): string
-    {
-        return ClassMethod::class;
-    }
-
-    /**
      * Has modifies
      * @return bool
      */
     public static function modified(): bool
     {
         return true;
+    }
+
+    /**
+     * Get instance class of node type
+     * @return <class-string>
+     */
+    public function nodeClass(): string
+    {
+        return ClassMethod::class;
     }
 
     /**
@@ -69,9 +69,10 @@ class ClassMethodNode extends QueryNode implements
 
     /**
      * @param  ClassMethod|mixed  $stmt
+     * @param  string|int  $key
      * @return bool
      */
-    public function clarification(mixed $stmt): bool
+    public function clarification(mixed $stmt, string|int $key): bool
     {
         if (
             (string) $stmt->name

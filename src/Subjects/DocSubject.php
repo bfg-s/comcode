@@ -3,6 +3,7 @@
 namespace Bfg\Comcode\Subjects;
 
 use Bfg\Comcode\Comcode;
+use Exception;
 
 class DocSubject
 {
@@ -481,7 +482,7 @@ class DocSubject
      * @param $name
      * @param $arguments
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
     public function __call($name, $arguments)
     {

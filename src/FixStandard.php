@@ -119,6 +119,26 @@ class FixStandard
         return new static($file);
     }
 
+    public static function standardTouched(): void
+    {
+        static::$touchedFiles
+            = array_filter(static::$touchedFiles, 'is_file');
+
+        if (static::$touchedFiles) {
+            static::execEcs(
+                static::$touchedFiles
+            );
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public static function touchedFiles(): array
+    {
+        return static::$touchedFiles;
+    }
+
     /**
      * Run fixer process
      * @return string|null
@@ -137,34 +157,13 @@ class FixStandard
         static::execEcs([$this->file->file]);
     }
 
-    public static function standardTouched(): void
-    {
-        static::$touchedFiles
-            = array_filter(static::$touchedFiles, 'is_file');
-
-        if (static::$touchedFiles) {
-
-            static::execEcs(
-                static::$touchedFiles
-            );
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public static function touchedFiles(): array
-    {
-        return static::$touchedFiles;
-    }
-
     protected static function execEcs(array $files)
     {
         exec(implode(" ", [
             'vendor/bin/ecs',
             'check',
             implode(' ', $files),
-            '--config ' . __DIR__ . '/../ecs.php',
+            '--config '.__DIR__.'/../ecs.php',
             '--fix',
             '--quiet',
         ]));

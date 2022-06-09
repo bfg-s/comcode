@@ -2,6 +2,7 @@
 
 namespace Bfg\Comcode\Subjects;
 
+use Bfg\Comcode\AnonymousStmt;
 use Bfg\Comcode\Comcode;
 use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
@@ -23,7 +24,7 @@ abstract class SubjectAbstract implements Stringable
     public array $nodes = [];
 
     /**
-     * @var NodeAbstract|\Bfg\Comcode\AnonymousStmt
+     * @var NodeAbstract|AnonymousStmt
      */
     public NodeAbstract $node;
 

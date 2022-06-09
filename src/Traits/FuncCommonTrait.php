@@ -22,7 +22,6 @@ trait FuncCommonTrait
                 ? Node::param($this->subject, ...$parameter)
                 : Node::param($this->subject, $parameter);
         }
-
         return $this;
     }
 
@@ -52,6 +51,14 @@ trait FuncCommonTrait
         );
     }
 
+    /**
+     * @return bool
+     */
+    public function notExistsReturn(): bool
+    {
+        return !$this->existsReturn();
+    }
+
     public function existsReturn(): bool
     {
         return $this->exists(
@@ -59,10 +66,5 @@ trait FuncCommonTrait
         );
     }
 
-    /**
-     * @return bool
-     */
-    public function notExistsReturn(): bool {
-        return ! $this->existsReturn();
-    }
+
 }
