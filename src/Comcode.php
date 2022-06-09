@@ -240,8 +240,9 @@ class Comcode
         }
         if (
             is_string($value)
-            && static::isCanBeClass($value)
+            && (static::isCanBeClass($value) || str_ends_with($value, '::class'))
         ) {
+            $value = str_replace('::class', '', $value);
             return new ClassConstFetch(
                 Node::name($value),
                 'class'
