@@ -3,7 +3,6 @@
 namespace Bfg\Comcode;
 
 use Bfg\Comcode\Subjects\ClassSubject;
-use Illuminate\Support\Arr;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
@@ -14,6 +13,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeAbstract;
 use PhpParser\ParserFactory;
+use PhpParser\{Lexer, NodeTraverser, NodeVisitor, Parser};
 
 class Comcode
 {
@@ -21,6 +21,7 @@ class Comcode
      * @var array
      */
     public static array $defaultClassList = [];
+    protected static array $tokens = [];
 
     /**
      * @param  string  $file
@@ -30,19 +31,43 @@ class Comcode
         string $file
     ): ?array {
         return static::parsPhp(
-            file_get_contents($file)
+            file_get_contents($file),
+            $file
         );
     }
 
     /**
      * @param  string  $code
+     * @param  string|null  $file
      * @return array|null
      */
     public static function parsPhp(
-        string $code
+        string $code,
+        ?string $file = null,
     ): ?array {
         $code = str_starts_with($code, "<?php")
             ? $code : "<?php\n\n".$code;
+
+        if ($file) {
+            $lexer = new Lexer\Emulative([
+                'usedAttributes' => [
+                    'comments',
+                    'startLine', 'endLine',
+                    'startTokenPos', 'endTokenPos',
+                ],
+            ]);
+            $parser = new Parser\Php7($lexer);
+
+            $traverser = new NodeTraverser();
+            $traverser->addVisitor(new NodeVisitor\CloningVisitor());
+
+            $oldStmts = $parser->parse($code);
+
+            static::$tokens[$file]
+                = [$oldStmts, $lexer];
+
+            return $traverser->traverse($oldStmts);
+        }
         return (new ParserFactory())
             ->create(ParserFactory::PREFER_PHP7)
             ->parse($code);
@@ -50,15 +75,25 @@ class Comcode
 
     /**
      * @param $node
-     * @param  bool  $file
+     * @param  string|null  $file
      * @return string
      */
     public static function printStmt(
         $node,
-        bool $file = false
+        ?string $file = null
     ): string {
+        if ($file && isset(static::$tokens[$file])) {
+            $tokens = static::$tokens[$file][1]->getTokens();
+            return (new PrettyPrinter)
+                ->printFormatPreserving(
+                    $node,
+                    static::$tokens[$file][0],
+                    $tokens,
+                );
+        }
+
         return (new PrettyPrinter)
-            ->{$file ? 'prettyPrintFile' : 'prettyPrint'}(
+            ->prettyPrint(
                 Comcode::undressNodes(
                     is_array($node) ? $node : [$node]
                 )
@@ -226,9 +261,9 @@ class Comcode
                         );
                     } else {
                         if (is_array($value)) {
-                            return (Comcode::parsPhp(
-                                    "\$variable = ".static::var_export($value, $inline).';'
-                                )[0] ?? null)?->expr?->expr;
+                            $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+                            $result = $parser->parse("<?php\n\n\$variable = ".static::var_export($value, $inline).';');
+                            return ($result[0] ?? null)?->expr?->expr;
                         }
                     }
                 }

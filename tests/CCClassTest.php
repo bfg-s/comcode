@@ -12,6 +12,13 @@ class CCClassTest extends TestCase
 {
     public function test_class_content()
     {
+//        dd(
+//            Comcode::parsPhp(
+//                    "\$variable = ".Comcode::var_export(['a' => 1, 'b' =>2], 0).';',
+//                    'var_export'
+//                )
+//        );
+
         $class = $this->class();
 
         $class->trait(Conditionable::class);
@@ -76,6 +83,16 @@ class CCClassTest extends TestCase
             }, fn(ClosureNode $node) => $node->expectParams('name')->return()->var('name'));
 
         $method2->return('wait');
+
+        $method4 = $class->protectedMethod('method4');
+
+        $method4->return(
+            php()->real([
+                'name' => ['q', 's', 'd'],
+                'lname' => ['q', 's', 'd'],
+                'fname' => ['q', 's', 'd'],
+            ])
+        );
 
         $method3 = $class->protectedMethod('method3');
         $method3->comment('/**

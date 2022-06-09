@@ -130,7 +130,7 @@ abstract class SubjectAbstract implements Stringable
     {
         return Comcode::printStmt(
             $this->toStmt(),
-            true
+            $this->fileSubject->file
         );
     }
 

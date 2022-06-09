@@ -3,8 +3,17 @@
 $config = new PhpCsFixer\Config();
 
 return $config
+    ->registerCustomFixers(new PhpCsFixerCustomFixers\Fixers())
+    ->registerCustomFixers(new PedroTroller\CS\Fixer\Fixers())
     ->setRules([
-
+        'PedroTroller/line_break_between_method_arguments' => [ 'max-args' => 4, 'max-length' => 120, 'automatic-argument-merge' => true ],
+        'PedroTroller/phpspec' => [ 'instanceof' => [ 'PhpSpec\ObjectBehavior' ] ],
+    ])
+    ->setRules([
+        \PhpCsFixerCustomFixers\Fixer\MultilinePromotedPropertiesFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\ConstructorEmptyBracesFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\NoDuplicatedArrayKeyFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\NoDuplicatedImportsFixer::name() => true,
         '@PSR12' => true,
         '@PHP81Migration' => true,
         '@Symfony' => true,
@@ -19,7 +28,6 @@ return $config
         'no_alias_language_construct_call' => true,
         'no_whitespace_before_comma_in_array' => true,
         'normalize_index_brace' => true,
-        'trim_array_spaces' => true,
         'constant_case' => ['case' => 'lower'],
         'lowercase_keywords' => true,
         'lowercase_static_reference' => true,
@@ -56,7 +64,6 @@ return $config
         'concat_space' => ['spacing' => 'one'],
         'no_space_around_double_colon' => true,
         'not_operator_with_successor_space' => true,
-        'object_operator_without_whitespace' => true,
         'operator_linebreak' => ['position' => 'beginning'],
         'ternary_operator_spaces' => true,
         'ternary_to_null_coalescing' => true,
@@ -75,8 +82,27 @@ return $config
         'new_with_braces' => false,
 
 
+        'no_multiline_whitespace_around_double_arrow' => false,
+        'trim_array_spaces' => false,
+        'object_operator_without_whitespace' => false,
 
-        //'@PSR12' => true,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        '@PSR12' => true,
 //        '@PHP81Migration' => true,
 //        '@PhpCsFixer' => true,
 //
