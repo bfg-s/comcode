@@ -42,6 +42,16 @@ trait FuncCommonTrait
     }
 
     /**
+     * @return $this
+     */
+    public function clear(): static
+    {
+        $this->node->stmts = [];
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function forgetReturn(): bool

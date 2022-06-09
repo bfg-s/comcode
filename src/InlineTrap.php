@@ -9,9 +9,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeAbstract;
 
-/**
- * @internal
- */
 class InlineTrap extends AnonymousStmt
 {
     use Conditionable;
