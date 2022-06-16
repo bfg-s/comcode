@@ -141,6 +141,13 @@ class Comcode
             return $findFile;
         }
 
+        $dir = basename($file);
+
+        if (! is_dir($dir)) {
+
+            mkdir($dir, 0777, true);
+        }
+
         file_put_contents($file, "<?php\n\n");
 
         return $file;
