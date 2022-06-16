@@ -10,11 +10,17 @@ use Bfg\Comcode\Traits\Conditionable;
 
 class CCAnonymousClassTest extends TestCase
 {
+    /**
+     * @throws \ErrorException
+     */
     public function test_anonymous_class_content_no_namespace()
     {
         $this->test_anonymous_class_content(true);
     }
 
+    /**
+     * @throws \ErrorException
+     */
     public function test_anonymous_class_content(bool $noNamespace = false)
     {
         if ($noNamespace) {
@@ -145,7 +151,7 @@ class CCAnonymousClassTest extends TestCase
         $this->assertClassContains('protected $settings = false;');
         $this->assertClassContains('private Comcode $engine;');
         $this->assertClassContains('And him Description.');
-        $this->assertClassContains('    public function method2(Node $wait = null, $attributes)');
+        $this->assertClassContains('    public function method2(?Node $wait = null, $attributes)');
         $this->assertClassContains("*\$wait = \$this->methodWithProps(1, function (*string \$param1 = 'default text'*) {*");
         $this->assertClassContains("\$param1 .= ' and true text';");
         $this->assertClassContains("\$param1 .= ' and false text';");

@@ -6,7 +6,7 @@ class CCRowTest extends TestCase
 {
     public function test_class_method_one_row()
     {
-        $method = $this->class()->publicMethod('nodeRow');
+        $method = $this->resetClass()->class()->publicMethod('nodeRow');
         $method->row('test row 1')->var('test')->assign(php()->real(1));
         $method->return()->var('test');
         $this->class()->save();
@@ -25,7 +25,7 @@ class CCRowTest extends TestCase
 
     public function test_class_method_couple_row()
     {
-        $method = $this->class()->publicMethod('nodeRows');
+        $method = $this->resetClass()->class()->publicMethod('nodeRows');
         $method->row('test row 1')->var('test')->assign(php()->real(1));
         $method->row('test row 2')->var('test2')->assign(
             php('this')->nodeRows()->nodeRows
