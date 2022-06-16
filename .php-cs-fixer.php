@@ -160,6 +160,7 @@ return $config
             'identical' => false
         ],
         'new_with_braces' => false,
-        'use_arrow_functions' =>true,
+        'use_arrow_functions' => true,
+        'php_unit_test_class_requires_covers' => false,
     ])
     ->setLineEnding("\n");
