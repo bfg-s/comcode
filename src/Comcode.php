@@ -141,7 +141,7 @@ class Comcode
             return $findFile;
         }
 
-        $dir = basename($file);
+        $dir = dirname($file);
 
         if (! is_dir($dir)) {
 
