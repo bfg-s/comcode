@@ -6,6 +6,7 @@ use Bfg\Comcode\Comcode;
 use Bfg\Comcode\Interfaces\AlwaysLastNodeInterface;
 use Bfg\Comcode\Subjects\AnonymousClassSubject;
 use Bfg\Comcode\Subjects\ClassSubject;
+use Bfg\Comcode\Subjects\InterfaceSubject;
 use Bfg\Comcode\Subjects\TraitSubject;
 use JetBrains\PhpStorm\NoReturn;
 
@@ -75,6 +76,16 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function trait(): TraitSubject
     {
         $class = php()->trait(\Tests\TestedTrait::class);
+        return $class;
+    }
+
+    /**
+     * @throws \ErrorException
+     */
+    protected function interface(): InterfaceSubject
+    {
+        $class = php()->interface(\Tests\TestedInterface::class);
+        $class->extends(AlwaysLastNodeInterface::class);
         return $class;
     }
 

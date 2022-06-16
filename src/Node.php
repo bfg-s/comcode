@@ -24,6 +24,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
@@ -118,6 +119,16 @@ class Node
         ?string $name
     ): Trait_ {
         return new Trait_($name);
+    }
+
+    /**
+     * @param  string|null  $name
+     * @return Interface_
+     */
+    public static function interfaceStmt(
+        ?string $name
+    ): Interface_ {
+        return new Interface_($name);
     }
 
     /**

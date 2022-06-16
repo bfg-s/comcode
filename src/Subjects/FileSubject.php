@@ -55,6 +55,21 @@ class FileSubject
 
     /**
      * CHILDHOOD FUNCTION
+     * @param  string|null  $class
+     * @return InterfaceSubject
+     */
+    public function interface(
+        string $class = null
+    ): InterfaceSubject {
+        return (new InterfaceSubject(
+            $this, $class
+            ?: (new FileParser)
+                ->getClassFullNameFromFile($this->file)
+        ));
+    }
+
+    /**
+     * CHILDHOOD FUNCTION
      * @param  string|null  $namespace
      * @return AnonymousClassSubject
      */

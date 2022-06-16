@@ -5,6 +5,7 @@ namespace Bfg\Comcode;
 use Bfg\Comcode\Subjects\AnonymousClassSubject;
 use Bfg\Comcode\Subjects\ClassSubject;
 use Bfg\Comcode\Subjects\FileSubject;
+use Bfg\Comcode\Subjects\InterfaceSubject;
 use Bfg\Comcode\Subjects\TraitSubject;
 use ErrorException;
 use PhpParser\Node\Expr;
@@ -66,6 +67,30 @@ class PhpService
 
         return $this->file(Comcode::fileReservation($file))
             ->trait($class);
+    }
+
+    /**
+     * @param  string  $class
+     * @param  string|null  $file
+     * @return InterfaceSubject
+     * @throws ErrorException
+     */
+    public function interface(
+        string $class,
+        string $file = null
+    ): InterfaceSubject {
+        $file = $file ?: str_replace(
+            "\\",
+            DIRECTORY_SEPARATOR,
+            lcfirst(trim($class, "\\"))
+        ).'.php';
+
+        if ((!$file || !is_file($file)) && interface_exists($class)) {
+            $file = (new ReflectionClass($class))->getFileName();
+        }
+
+        return $this->file(Comcode::fileReservation($file))
+            ->interface($class);
     }
 
     /**
