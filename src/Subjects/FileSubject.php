@@ -40,6 +40,21 @@ class FileSubject
 
     /**
      * CHILDHOOD FUNCTION
+     * @param  string|null  $class
+     * @return TraitSubject
+     */
+    public function trait(
+        string $class = null
+    ): TraitSubject {
+        return (new TraitSubject(
+            $this, $class
+            ?: (new FileParser)
+                ->getClassFullNameFromFile($this->file)
+        ));
+    }
+
+    /**
+     * CHILDHOOD FUNCTION
      * @param  string|null  $namespace
      * @return AnonymousClassSubject
      */

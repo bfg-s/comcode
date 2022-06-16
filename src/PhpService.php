@@ -5,6 +5,7 @@ namespace Bfg\Comcode;
 use Bfg\Comcode\Subjects\AnonymousClassSubject;
 use Bfg\Comcode\Subjects\ClassSubject;
 use Bfg\Comcode\Subjects\FileSubject;
+use Bfg\Comcode\Subjects\TraitSubject;
 use ErrorException;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
@@ -29,20 +30,42 @@ class PhpService
         string $class,
         string $file = null
     ): ClassSubject {
-        $file = $file ?: Comcode::fileReservation(
-            str_replace(
-                "\\",
-                DIRECTORY_SEPARATOR,
-                lcfirst(trim($class, "\\"))
-            ).'.php'
-        );
+        $file = $file ?: str_replace(
+            "\\",
+            DIRECTORY_SEPARATOR,
+            lcfirst(trim($class, "\\"))
+        ).'.php';
 
         if ((!$file || !is_file($file)) && class_exists($class)) {
             $file = (new ReflectionClass($class))->getFileName();
         }
 
-        return $this->file($file)
+        return $this->file(Comcode::fileReservation($file))
             ->class($class);
+    }
+
+    /**
+     * @param  string  $class
+     * @param  string|null  $file
+     * @return TraitSubject
+     * @throws ErrorException
+     */
+    public function trait(
+        string $class,
+        string $file = null
+    ): TraitSubject {
+        $file = $file ?: str_replace(
+            "\\",
+            DIRECTORY_SEPARATOR,
+            lcfirst(trim($class, "\\"))
+        ).'.php';
+
+        if ((!$file || !is_file($file)) && trait_exists($class)) {
+            $file = (new ReflectionClass($class))->getFileName();
+        }
+
+        return $this->file(Comcode::fileReservation($file))
+            ->trait($class);
     }
 
     /**

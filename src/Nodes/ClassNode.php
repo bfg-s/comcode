@@ -26,7 +26,7 @@ class ClassNode extends QueryNode
     public SubjectAbstract $subject;
 
     /**
-     * @param  string  $name
+     * @param  string|null  $name
      */
     public function __construct(
         public ?string $name

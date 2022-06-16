@@ -6,6 +6,7 @@ use Bfg\Comcode\Comcode;
 use Bfg\Comcode\Interfaces\AlwaysLastNodeInterface;
 use Bfg\Comcode\Subjects\AnonymousClassSubject;
 use Bfg\Comcode\Subjects\ClassSubject;
+use Bfg\Comcode\Subjects\TraitSubject;
 use JetBrains\PhpStorm\NoReturn;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
@@ -66,6 +67,15 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $this->class->implement(AlwaysLastNodeInterface::class);
         }
         return $this->class;
+    }
+
+    /**
+     * @throws \ErrorException
+     */
+    protected function trait(): TraitSubject
+    {
+        $class = php()->trait(\Tests\TestedTrait::class);
+        return $class;
     }
 
     protected function anonymousClass(): AnonymousClassSubject

@@ -28,6 +28,7 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
@@ -107,6 +108,16 @@ class Node
         ?string $name
     ): Class_ {
         return new Class_($name);
+    }
+
+    /**
+     * @param  string|null  $name
+     * @return Trait_
+     */
+    public static function traitStmt(
+        ?string $name
+    ): Trait_ {
+        return new Trait_($name);
     }
 
     /**
