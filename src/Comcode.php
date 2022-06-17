@@ -329,6 +329,11 @@ class Comcode
     {
         switch (gettype($var)) {
             case "string":
+                if (
+                    preg_match('/^RAW\((.*)\)$/', $var, $m)
+                ) {
+                    return $m[1];
+                }
                 if (str_ends_with($var, '::class')) {
                     return $var;
                 }
