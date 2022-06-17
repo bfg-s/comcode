@@ -162,6 +162,15 @@ class PhpService
     }
 
     /**
+     * @param  string  $raw
+     * @return string
+     */
+    public function raw(string $raw): string
+    {
+        return "RAW($raw)";
+    }
+
+    /**
      * @param  string  $name
      * @return Expr|null
      */
