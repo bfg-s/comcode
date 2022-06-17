@@ -162,5 +162,9 @@ return $config
         'new_with_braces' => false,
         'use_arrow_functions' => true,
         'php_unit_test_class_requires_covers' => false,
+
+        'final_internal_class' => false,
+        'php_unit_internal_class' => false,
+        'php_unit_dedicate_assert_internal_type' => false,
     ])
     ->setLineEnding("\n");
