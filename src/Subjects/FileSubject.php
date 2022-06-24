@@ -5,6 +5,7 @@ namespace Bfg\Comcode\Subjects;
 use Bfg\Comcode\FileParser;
 use Bfg\Comcode\FixStandard;
 use ErrorException;
+use SplFileInfo;
 
 class FileSubject
 {
@@ -14,6 +15,11 @@ class FileSubject
     public FixStandard $fixer;
 
     /**
+     * @var SplFileInfo
+     */
+    public SplFileInfo $info;
+
+    /**
      * @param  string  $file
      * @throws ErrorException
      */
@@ -21,6 +27,7 @@ class FileSubject
         public string $file,
     ) {
         $this->fixer = FixStandard::new($this);
+        $this->info = new SplFileInfo($this->file);
     }
 
     /**
@@ -131,5 +138,13 @@ class FileSubject
     public function content(): string
     {
         return file_get_contents($this->file) ?? '';
+    }
+
+    /**
+     * @return SplFileInfo
+     */
+    public function info(): SplFileInfo
+    {
+        return $this->info;
     }
 }
