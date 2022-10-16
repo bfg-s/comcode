@@ -81,6 +81,12 @@ class ClassSubject extends SubjectAbstract
     static array $events = [];
 
     /**
+     * Cached data
+     * @var array
+     */
+    protected array $cache = [];
+
+    /**
      * @var ClassNode
      */
     public ClassNode $classNode;
@@ -301,5 +307,24 @@ class ClassSubject extends SubjectAbstract
         $this->classNode = $this->namespaceNode->apply(
             new ClassNode($this->class)
         );
+    }
+
+    /**
+     * @param  string  $name
+     * @return mixed|null
+     */
+    public function __get(string $name)
+    {
+        return $this->cache[$name] ?? null;
+    }
+
+    /**
+     * @param  string  $name
+     * @param $value
+     * @return void
+     */
+    public function __set(string $name, $value): void
+    {
+        $this->cache[$name] = $value;
     }
 }
