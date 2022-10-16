@@ -78,6 +78,8 @@ class ClassSubject extends SubjectAbstract
         'method' => ClassMethodNode::class,
     ];
 
+    static array $events = [];
+
     /**
      * @var ClassNode
      */
@@ -97,6 +99,16 @@ class ClassSubject extends SubjectAbstract
         public object|string $class,
     ) {
         parent::__construct($this->fileSubject);
+    }
+
+    /**
+     * @param  string  $nodeName
+     * @param  callable  $cb
+     * @return void
+     */
+    public static function on(string $nodeName, callable $cb): void
+    {
+        static::$events[$nodeName][] = $cb;
     }
 
     /**
@@ -222,6 +234,13 @@ class ClassSubject extends SubjectAbstract
             ? new static::$classNodes[$nodeName](null, ...$arguments)
             : new static::$classNodes[$nodeName](...$arguments);
         $node->subject = $this;
+        if (isset(static::$events[$nodeName]) && static::$events[$nodeName]) {
+            foreach (static::$events[$nodeName] as $event) {
+                if (is_callable($event)) {
+                    call_user_func($event, $this, $node, ...$arguments);
+                }
+            }
+        }
         return $node;
     }
 
@@ -241,6 +260,13 @@ class ClassSubject extends SubjectAbstract
             ? new static::$classNodes[$nodeName]($modifier, ...$arguments)
             : new static::$classNodes[$nodeName](...$arguments);
         $node->subject = $this;
+        if (isset(static::$events[$nodeName]) && static::$events[$nodeName]) {
+            foreach (static::$events[$nodeName] as $event) {
+                if (is_callable($event)) {
+                    call_user_func($event, $this, $node, ...$arguments);
+                }
+            }
+        }
         return $node;
     }
 
