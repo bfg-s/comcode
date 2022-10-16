@@ -37,6 +37,22 @@ class ClassMethodNode extends QueryNode implements
     }
 
     /**
+     * @return array|mixed|string
+     */
+    public function getName()
+    {
+        return is_array($this->name) ? $this->name[1] : $this->name;
+    }
+
+    /**
+     * @return array|mixed|string
+     */
+    public function getType()
+    {
+        return is_array($this->name) ? $this->name[0] : null;
+    }
+
+    /**
      * Has modifies
      * @return bool
      */
@@ -75,8 +91,7 @@ class ClassMethodNode extends QueryNode implements
     public function clarification(mixed $stmt, string|int $key): bool
     {
         if (
-            (string) $stmt->name
-            == (is_array($this->name) ? $this->name[1] : $this->name)
+            (string) $stmt->name == $this->getName()
         ) {
             return true;
         }
@@ -102,8 +117,8 @@ class ClassMethodNode extends QueryNode implements
      */
     public function reconstruction(): void
     {
-        $name = (is_array($this->name) ? $this->name[1] : $this->name);
-        $type = (is_array($this->name) ? $this->name[0] : null);
+        $name = $this->getName();
+        $type = $this->getType();
         $this->node->name = Node::identifier($name);
         $this->node->returnType = $type ? Node::name($type) : null;
         $this->node->flags = Comcode::detectPropertyModifier(

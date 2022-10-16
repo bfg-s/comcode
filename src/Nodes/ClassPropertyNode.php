@@ -40,6 +40,22 @@ class ClassPropertyNode extends QueryNode implements
     }
 
     /**
+     * @return array|mixed|string
+     */
+    public function getName()
+    {
+        return is_array($this->name) ? $this->name[1] : $this->name;
+    }
+
+    /**
+     * @return array|mixed|string
+     */
+    public function getType()
+    {
+        return is_array($this->name) ? $this->name[0] : null;
+    }
+
+    /**
      * Has modifies
      * @return bool
      */
@@ -77,8 +93,7 @@ class ClassPropertyNode extends QueryNode implements
      */
     public function clarification(mixed $stmt, string|int $key): bool
     {
-        return ((string) $stmt->props[0]->name
-            == (is_array($this->name) ? $this->name[1] : $this->name));
+        return (string) $stmt->props[0]->name == $this->getName();
     }
 
     /**
@@ -96,8 +111,8 @@ class ClassPropertyNode extends QueryNode implements
      */
     public function reconstruction(): void
     {
-        $name = (is_array($this->name) ? $this->name[1] : $this->name);
-        $type = (is_array($this->name) ? $this->name[0] : null);
+        $name = $this->getName();
+        $type = $this->getType();
         $this->node->props[0]->name = Node::varId($name);
         $this->node->props[0]->default = !is_null($this->default)
             ? Comcode::defineValueNode($this->default)
