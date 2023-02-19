@@ -174,7 +174,7 @@ class InlineTrap extends AnonymousStmt
         }
 
         foreach ($arguments as $key => $argument) {
-            if (is_callable($argument)) {
+            if (is_callable($argument) && ! is_string($argument)) {
                 /** @var Expr\MethodCall|null $searchResult */
                 $searchResult = Comcode::findStmtByName(
                     $this->queryNode->original,
@@ -184,15 +184,10 @@ class InlineTrap extends AnonymousStmt
 
                 $inn = Comcode::maxInlineInner($searchResult) - $this->iterations - 1;
 
-//                if ($static) {
-//                    dd($inn, $searchResult);
-//                }
-
                 for ($i = 0; $i < $inn; $i++) {
                     $searchResult = $searchResult->var;
                 }
 
-                //dump($searchResult);
                 $node = null;
                 if (
                     $searchResult

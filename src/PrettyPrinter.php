@@ -60,14 +60,4 @@ class PrettyPrinter extends Standard
 
         return $result ? $result.";" : $result;
     }
-
-//    /**
-//     * @param  Class_  $node
-//     * @return string
-//     */
-//    protected function pStmt_Class(Class_ $node): string
-//    {
-//        return "\n"
-//            .$this->pClassCommon($node, ' '.$node->name);
-//    }
 }
