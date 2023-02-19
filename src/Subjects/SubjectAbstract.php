@@ -34,10 +34,12 @@ abstract class SubjectAbstract implements Stringable
     public function __construct(
         public FileSubject $fileSubject
     ) {
+        Comcode::emit('start-parse', $this);
         $this->nodes = Comcode::parsPhpFile($this->fileSubject->file);
         $this->node = Comcode::anonymousStmt($this->nodes);
-
+        Comcode::emit('parsed', $this);
         $this->discoverStmtEnvironment();
+        Comcode::emit('discovered-env', $this);
     }
 
     /**
@@ -90,6 +92,8 @@ abstract class SubjectAbstract implements Stringable
                 $this->nodes[] = $nodeClass->node;
             }
         }
+
+        Comcode::emit('apply', $this);
 
         return $nodeClass;
     }

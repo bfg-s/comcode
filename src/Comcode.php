@@ -3,6 +3,7 @@
 namespace Bfg\Comcode;
 
 use Bfg\Comcode\Subjects\ClassSubject;
+use Closure;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
@@ -21,7 +22,36 @@ class Comcode
      * @var array
      */
     public static array $defaultClassList = [];
+
     protected static array $tokens = [];
+
+    /**
+     * @var callable[]|Closure[]
+     */
+    protected static array $_callbacks = [];
+
+    /**
+     * @param  string  $name
+     * @param  Closure|callable  $callback
+     * @return void
+     */
+    public static function on(string $name, Closure|callable $callback): void
+    {
+        static::$_callbacks[$name] = $callback;
+    }
+
+    /**
+     * @param  string  $name
+     * @param ...$arguments
+     * @return mixed
+     */
+    public static function emit(string $name, ...$arguments): mixed
+    {
+        if (array_key_exists($name, static::$_callbacks)) {
+            return call_user_func_array(static::$_callbacks[$name], $arguments);
+        }
+        return null;
+    }
 
     /**
      * @param  string  $file
@@ -136,6 +166,8 @@ class Comcode
         if (!str_starts_with($file, $prefix)) {
             $file = $prefix.$file;
         }
+
+        Comcode::emit('file-reservation', $file);
 
         if ($findFile = static::findFile($file)) {
             return $findFile;

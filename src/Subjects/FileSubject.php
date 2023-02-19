@@ -2,6 +2,7 @@
 
 namespace Bfg\Comcode\Subjects;
 
+use Bfg\Comcode\Comcode;
 use Bfg\Comcode\FileParser;
 use Bfg\Comcode\FixStandard;
 use ErrorException;
@@ -38,6 +39,7 @@ class FileSubject
     public function class(
         string $class = null
     ): ClassSubject {
+        Comcode::emit('create-subject', $class);
         return (new ClassSubject(
             $this, $class
             ?: (new FileParser)
@@ -53,6 +55,7 @@ class FileSubject
     public function trait(
         string $class = null
     ): TraitSubject {
+        Comcode::emit('create-subject', $class);
         return (new TraitSubject(
             $this, $class
             ?: (new FileParser)
@@ -68,6 +71,7 @@ class FileSubject
     public function interface(
         string $class = null
     ): InterfaceSubject {
+        Comcode::emit('create-subject', $class);
         return (new InterfaceSubject(
             $this, $class
             ?: (new FileParser)
@@ -83,6 +87,7 @@ class FileSubject
     public function anonymousClass(
         ?string $namespace = null
     ): AnonymousClassSubject {
+        Comcode::emit('create-subject', $namespace);
         return (new AnonymousClassSubject(
             $this, $namespace ?: ''
         ));

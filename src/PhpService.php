@@ -17,10 +17,6 @@ use ReflectionClass;
  */
 class PhpService
 {
-    public static function boot(): void
-    {
-    }
-
     /**
      * @param  string  $class
      * @param  string|null  $file
