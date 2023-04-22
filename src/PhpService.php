@@ -168,6 +168,16 @@ class PhpService
     }
 
     /**
+     * @param  string  $raw
+     * @return string
+     */
+    public function rawForArray(
+        string $raw
+    ): string {
+        return "RAW($raw)";
+    }
+
+    /**
      * @param  string  $name
      * @return Expr|null
      */
