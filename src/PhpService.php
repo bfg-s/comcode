@@ -159,11 +159,12 @@ class PhpService
 
     /**
      * @param  string  $raw
-     * @return string
+     * @return Expr|null
      */
-    public function raw(string $raw): string
-    {
-        return "RAW($raw)";
+    public function raw(
+        string $raw
+    ): ?Expr {
+        return Comcode::anonymousLine($raw);
     }
 
     /**
