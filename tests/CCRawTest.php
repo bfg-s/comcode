@@ -24,6 +24,6 @@ class CCRawTest extends TestCase
         $this->assertClassContains('// test row 2');
         $this->assertClassContains('$test = [\'a\' => $TEST];');
         $this->assertClassContains('return $test;');
-        //$this->class()->delete();
+        $this->class()->delete();
     }
 }
