@@ -97,7 +97,6 @@ return $config
             'syntax' => 'short'
         ],
         'blank_line_after_namespace' => true,
-        'single_blank_line_before_namespace' => true,
         'no_leading_namespace_whitespace' => true,
         'assign_null_coalescing_to_coalesce_equal' => true,
         'binary_operator_spaces' => true,

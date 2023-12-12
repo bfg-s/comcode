@@ -89,7 +89,7 @@ class FixStandard
             $this->toolInfo
         );
 
-        $progressType = $resolver->getProgress();
+        $progressType = $resolver->getProgressType();
 
         /** @var Traversable $finder */
         $finder = $resolver->getFinder();

@@ -142,7 +142,7 @@ class CCAnonymousClassTest extends TestCase
         $this->assertClassContains('use Bfg\Comcode\Interfaces\AlwaysLastNodeInterface;');
         $this->assertClassContains('use Bfg\Comcode\Node;');
         $this->assertClassContains('use Bfg\Comcode\Traits\Conditionable;');
-        $this->assertClassContains('return new class extends Comcode implements AlwaysLastNodeInterface {');
+        $this->assertClassContains('return new class() extends Comcode implements AlwaysLastNodeInterface {');
         $this->assertClassContains('use Conditionable;');
         $this->assertClassContains('protected const CONST1 = 1;');
         $this->assertClassContains('protected const CONST2 = 1.1;');
