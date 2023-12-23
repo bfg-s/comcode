@@ -4,6 +4,7 @@ namespace Bfg\Comcode;
 
 use Bfg\Comcode\Subjects\AnonymousClassSubject;
 use Bfg\Comcode\Subjects\ClassSubject;
+use Bfg\Comcode\Subjects\EnumSubject;
 use Bfg\Comcode\Subjects\FileSubject;
 use Bfg\Comcode\Subjects\InterfaceSubject;
 use Bfg\Comcode\Subjects\TraitSubject;
@@ -63,6 +64,31 @@ class PhpService
 
         return $this->file(Comcode::fileReservation($file))
             ->trait($class);
+    }
+
+    /**
+     * @param  string  $class
+     * @param  string|null  $file
+     * @return EnumSubject
+     * @throws ErrorException
+     */
+    public function enum(
+        string $class,
+        string $file = null,
+    ): EnumSubject {
+
+        $file = $file ?: str_replace(
+            "\\",
+            DIRECTORY_SEPARATOR,
+            lcfirst(trim($class, "\\"))
+        ).'.php';
+
+        if ((!$file || !is_file($file)) && trait_exists($class)) {
+            $file = (new ReflectionClass($class))->getFileName();
+        }
+
+        return $this->file(Comcode::fileReservation($file))
+            ->enum($class);
     }
 
     /**

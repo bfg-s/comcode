@@ -23,6 +23,8 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Enum_;
+use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
@@ -204,6 +206,37 @@ class Node
                 Comcode::defineValueNode($value)
             )
         ], $modifier ? Comcode::detectPropertyModifier($modifier) : 0);
+    }
+
+    /**
+     * @param  string|null  $name
+     * @param  string|null  $scalarType
+     * @return Enum_
+     */
+    public static function enumStmt(
+        ?string $name,
+        ?string $scalarType = null,
+    ): Enum_ {
+        $params = [];
+        if ($scalarType) {
+            $params['scalarType'] = static::identifier($scalarType);
+        }
+        return new Enum_($name, $params);
+    }
+
+    /**
+     * @param  string|array  $name
+     * @param  mixed  $value
+     * @return EnumCase
+     */
+    public static function enumCase(
+        string|array $name,
+        mixed $value,
+    ): EnumCase {
+        return new \PhpParser\Node\Stmt\EnumCase(
+            static::identifier($name),
+            Comcode::defineValueNode($value)
+        );
     }
 
     /**

@@ -66,6 +66,23 @@ class FileSubject
     /**
      * CHILDHOOD FUNCTION
      * @param  string|null  $class
+     * @return EnumSubject
+     */
+    public function enum(
+        string $class = null,
+    ): EnumSubject {
+        Comcode::emit('create-subject', $class);
+        return (new EnumSubject(
+            $this,
+            $class
+            ?: (new FileParser)
+                ->getClassFullNameFromFile($this->file)
+        ));
+    }
+
+    /**
+     * CHILDHOOD FUNCTION
+     * @param  string|null  $class
      * @return InterfaceSubject
      */
     public function interface(
