@@ -81,7 +81,7 @@ class FixStandard
                 'allow-risky' => 'yes',
                 'cache-file' => false,
                 'diff' => true,
-                'format' => 1,
+                'format' => '1',
                 'rules' => null,
                 'using-cache' => 'no',
             ],
