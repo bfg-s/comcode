@@ -91,13 +91,19 @@ abstract class QueryNode
         $query = Query::new($this->node->{$store})
             ->unless(
                 $nodeClass instanceof AnonymousInterface,
-                fn(Query $query) => $query
-                    ->isA($nodeClass->nodeClass())
-            )->when(
+                function(Query $query) use ($nodeClass) {
+                    return $query
+                        ->isA($nodeClass->nodeClass());
+                }
+            )
+            ->when(
                 $nodeClass instanceof ClarificationNodeInterface,
-                fn(Query $query) => $query
-                    ->filter([$nodeClass, 'clarification'])
-            );
+                function(Query $query) use ($nodeClass) {
+                    return $query
+                        ->filter([$nodeClass, 'clarification']);
+                }
+            )
+        ;
 
         $key = $query->firstKey();
 

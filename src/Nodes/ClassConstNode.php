@@ -64,7 +64,7 @@ class ClassConstNode extends QueryNode implements
      */
     public function clarification(mixed $stmt, string|int $key): bool
     {
-        return (string) $stmt->consts[0]->name == $this->name;
+        return property_exists($stmt, 'consts') && (string) $stmt->consts[0]->name == $this->name;
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Bfg\Comcode\Subjects;
 
+use Bfg\Comcode\Comcode;
+use Bfg\Comcode\Node;
 use Bfg\Comcode\Nodes\AnonymousClassNode;
 use Bfg\Comcode\Nodes\ExpressionNode;
 use Bfg\Comcode\Nodes\NamespaceNode;
@@ -45,7 +47,7 @@ class AnonymousClassSubject extends ClassSubject
             new ExpressionNode(
                 New_::class,
                 'expr',
-                ['class' => null]
+                ['class' => Comcode::anonymousLine()]
             )
         );
 

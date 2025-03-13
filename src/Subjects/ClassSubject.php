@@ -118,15 +118,27 @@ class ClassSubject extends SubjectAbstract
     }
 
     /**
+     * @param  string  $name
+     * @return $this
+     */
+    public function rename(string $name): static
+    {
+        $this->classNode->node->name = Node::identifier($name);
+        $this->save();
+        $newFilename = dirname($this->fileSubject->file) . DIRECTORY_SEPARATOR . $name . '.php';
+        rename($this->fileSubject->file, $newFilename);
+        return new static(new FileSubject($newFilename), $name);
+    }
+
+    /**
      * @param  string  $namespace
      * @return NamespaceUseNode
      */
     public function use(
         string $namespace
     ): NamespaceUseNode {
-        return $this->namespaceNode->apply(
-            new NamespaceUseNode($namespace)
-        );
+        return $this->namespaceNode
+            ->use($namespace);
     }
 
     /**

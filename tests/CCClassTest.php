@@ -155,7 +155,7 @@ class CCClassTest extends TestCase
         $this->assertClassContains('use Bfg\Comcode\Interfaces\AlwaysLastNodeInterface;');
         $this->assertClassContains('use Bfg\Comcode\Node;');
         $this->assertClassContains('use Bfg\Comcode\Traits\Conditionable;');
-        $this->assertClassContains('Description of test class.');
+        $this->assertClassContains('Description of test class');
         $this->assertClassContains('@method static get()');
         $this->assertClassContains('class TestedClass extends Comcode implements AlwaysLastNodeInterface');
         $this->assertClassContains('use Conditionable;');
@@ -195,6 +195,19 @@ class CCClassTest extends TestCase
         $this->assertClassContains('// test row -1');
         $this->assertClassContains("Comcode::trait('test')->nextMethod();");
         $this->assertClassContains('*Comcode::trait(function ($q) {*$test = $q;*return $test;*})->gets();*');
+
+        $class->delete();
+    }
+
+    public function test_class_rename()
+    {
+        $class = $this->class();
+
+        $class->save()->standard();
+
+        $this->class = $class = $class->rename('TestedClass2');
+
+        $this->assertClassContains('class TestedClass2 extends Comcode implements AlwaysLastNodeInterface');
 
         $class->delete();
     }

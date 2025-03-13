@@ -35,6 +35,7 @@ use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
+use PhpParser\Node\UseItem;
 use PhpParser\Node\VarLikeIdentifier;
 
 class Node
@@ -79,6 +80,16 @@ class Node
         string $name
     ): Name {
         return new Name(explode("\\", $name));
+    }
+
+    /**
+     * @param  string  $name
+     * @return UseItem
+     */
+    public static function useItem(
+        string $name
+    ): UseItem {
+        return new UseItem(static::name($name));
     }
 
     /**
@@ -141,9 +152,7 @@ class Node
         string $namespace
     ): Use_ {
         return new Use_([
-            new UseUse(
-                static::name($namespace)
-            )
+            static::useItem($namespace)
         ]);
     }
 
@@ -162,11 +171,13 @@ class Node
             ? explode(':', $name) : $name;
         return new Property(
             Comcode::detectPropertyModifier($modifier), [
-            new PropertyProperty(
-                new VarLikeIdentifier(is_array($name) ? $name[1] : $name),
-                !is_null($default) ? Comcode::defineValueNode($default) : null
-            )
-        ], [], is_array($name) ? $name[0] : null
+                new PropertyProperty(
+                    new VarLikeIdentifier(is_array($name) ? $name[1] : $name),
+                    !is_null($default) ? Comcode::defineValueNode($default) : null
+                )
+            ],
+            [],
+            is_array($name) ? static::identifier($name[0]) : null
         );
     }
 
@@ -185,7 +196,7 @@ class Node
         $name = is_array($name) ? $name[1] : $name;
         return new ClassMethod($name, [
             'flags' => Comcode::detectPropertyModifier($modifier),
-            'returnType' => Comcode::useIfClass($type, $classSubject)
+            'returnType' => $type ? Comcode::anonymousExpr(Comcode::useIfClass($type, $classSubject)): null
         ]);
     }
 
@@ -369,7 +380,7 @@ class Node
      */
     public static function assign(
         Expr $var,
-        string|Expr $expr
+        string|Expr|InlineTrap $expr
     ): Assign {
         return new Assign($var, $expr);
     }

@@ -2,6 +2,8 @@
 
 namespace Bfg\Comcode\Nodes;
 
+use Bfg\Comcode\AnonymousStmt;
+use Bfg\Comcode\Comcode;
 use Bfg\Comcode\Interfaces\AnonymousInterface;
 use Bfg\Comcode\Interfaces\BirthNodeInterface;
 use Bfg\Comcode\Interfaces\ClarificationNodeInterface;
@@ -9,6 +11,7 @@ use Bfg\Comcode\Node;
 use Bfg\Comcode\QueryNode;
 use Bfg\Comcode\Traits\CommonWhileExpressions;
 use PhpParser\Comment;
+use PhpParser\Comment\Doc;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeAbstract;
 
@@ -47,7 +50,7 @@ class RowNode extends QueryNode implements
      */
     public function birth(): NodeAbstract
     {
-        $node = Node::expression();
+        $node = Comcode::anonymousStmt();
         $node->setDocComment(
             Node::doc($this->name)
         );
@@ -69,9 +72,8 @@ class RowNode extends QueryNode implements
                 if (
                     $attribute instanceof Comment
                 ) {
-                    $name = $this->name;
                     if (
-                        $attribute->getText() == $name
+                        $attribute->getText() == $this->name
                     ) {
                         return true;
                     }

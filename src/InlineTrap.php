@@ -7,9 +7,10 @@ use Bfg\Comcode\Traits\Conditionable;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeAbstract;
 
-class InlineTrap extends AnonymousStmt
+class InlineTrap extends AnonymousExpr
 {
     use Conditionable;
 
@@ -53,12 +54,11 @@ class InlineTrap extends AnonymousStmt
         public array $nodes = [],
         array $attributes = []
     ) {
-        parent::__construct($this->nodes, $attributes);
+        parent::__construct($var, $attributes);
 
         $this->node = $this->firstNode = is_string($var)
             ? Node::var($var)
             : $var;
-        $this->nodes[] = $this->node;
     }
 
     /**
@@ -81,21 +81,21 @@ class InlineTrap extends AnonymousStmt
         string $mode
     ): InlineTrap {
         $current = $this;
-        if ($expr instanceof InlineTrap) {
-            $current = $expr;
-            $expr = $current->node;
-        }
         if (is_string($expr)) {
-            $current = (new InlineTrap($expr));
-            $expr = $current->node;
+            $expr = (new InlineTrap($expr));
+            $expr->nodes[] = $expr->node;
+            $current = $expr;
         }
-        $this->node = call_user_func(
+        $last = $this->nodes[array_key_last($this->nodes)] ?? $this->node;
+        $this->nodes[] = call_user_func(
             [Node::class, $mode],
-            $this->node,
+            $last,
             $expr,
         );
-        $this->__setToStmt();
-        return $current->__bindExpression($this->queryNode, $this->node);
+
+        $current->__bindExpression($this->queryNode, $expr, 'nodes');
+
+        return $current;
     }
 
     /**
@@ -157,20 +157,27 @@ class InlineTrap extends AnonymousStmt
         array $arguments
     ) {
         $static = false;
+        $isReturn = $this?->stmt instanceof Return_;
+        $last = $isReturn ? $this->stmt->expr : ($this->nodes[array_key_last($this->nodes)] ?? $this->node);
         if (str_ends_with($name, '::')) {
             $name = substr($name, 0, -2);
-            $this->node = Node::callStaticMethod(
+            $csm = Node::callStaticMethod(
                 $name,
-                $this->node instanceof Variable
-                    ? (string) $this->node->name
-                    : $this->node,
+                $last instanceof Variable
+                    ? (string) $last->name
+                    : $last,
             );
             $static = true;
         } else {
-            $this->node = Node::callMethod(
-                $this->node,
+            $csm = Node::callMethod(
+                $last,
                 $name,
             );
+        }
+        if ($isReturn) {
+            $this->stmt->expr = $csm;
+        } else {
+            $this->nodes[array_key_last($this->nodes) ?: 0] = $csm;
         }
 
         foreach ($arguments as $key => $argument) {
@@ -179,7 +186,7 @@ class InlineTrap extends AnonymousStmt
                 $searchResult = Comcode::findStmtByName(
                     $this->queryNode->original,
                     $name,
-                    $this->node::class
+                    ($isReturn ? $this->stmt->expr : $this->nodes[array_key_last($this->nodes)])::class
                 );
 
                 $inn = Comcode::maxInlineInner($searchResult) - $this->iterations - 1;
@@ -212,9 +219,11 @@ class InlineTrap extends AnonymousStmt
             }
         }
 
-        $this->node->args
-            = Node::args($arguments);
-        $this->__setToStmt();
+        if ($isReturn) {
+            $this->stmt->expr->args = Node::args($arguments);
+        } else {
+            $this->nodes[array_key_last($this->nodes)]->args = Node::args($arguments);
+        }
         $this->iterations++;
         return $this;
     }
@@ -278,11 +287,16 @@ class InlineTrap extends AnonymousStmt
     public function __get(
         string $property
     ) {
-        $this->node = Node::callProperty(
-            $this->node,
+        $isReturn = $this?->stmt instanceof Return_;
+        $cp = Node::callProperty(
+            $isReturn ? $this->stmt->expr : ($this->nodes[array_key_last($this->nodes)] ?? $this->node),
             $property
         );
-        $this->__setToStmt();
+        if ($isReturn) {
+            $this->stmt->expr = $cp;
+        } else {
+            $this->nodes[array_key_last($this->nodes) ?: 0] = $cp;
+        }
         $this->iterations++;
         return $this;
     }

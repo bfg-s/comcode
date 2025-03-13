@@ -27,7 +27,7 @@ class EnumNode extends ClassNode
      */
     public function birth(): NodeAbstract
     {
-        return Node::enumStmt($this->name, $this->type);
+        return Node::enumStmt($this->name);
     }
 
     /**

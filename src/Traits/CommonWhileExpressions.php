@@ -2,10 +2,13 @@
 
 namespace Bfg\Comcode\Traits;
 
+use Bfg\Comcode\AnonymousExpr;
+use Bfg\Comcode\AnonymousLine;
 use Bfg\Comcode\Comcode;
 use Bfg\Comcode\InlineTrap;
 use Bfg\Comcode\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Stmt\Expression;
 
 trait CommonWhileExpressions
 {
@@ -24,10 +27,15 @@ trait CommonWhileExpressions
     public function var(
         string|Expr $name
     ): InlineTrap {
-        $this->node->expr
-            = new InlineTrap($name);
-        return $this->node->expr
-            ->__bindExpression($this, $this->node);
+        $trap = new InlineTrap($name);
+        $isExpr = $this->node instanceof Expression || property_exists($this->node, 'expr');
+        if ($isExpr) {
+            $this->node->expr = $trap->node;
+        } else {
+            $this->node->nodes[] = $trap;
+        }
+        $trap->__bindExpression($this, $this->node, $isExpr ? 'expr' : 'nodes');
+        return $trap;
     }
 
     /**
@@ -59,12 +67,17 @@ trait CommonWhileExpressions
             $class,
             $this->subject
         );
-        $this->node->expr = new InlineTrap(
-            $name
-        );
-        return $this->node->expr
-            ->__bindExpression($this, $this->node)
+        $trap = new InlineTrap($name);
+        $isExpr = $this->node instanceof Expression && property_exists($this->node, 'expr');
+        if ($isExpr) {
+            $this->node->expr = $trap->node;
+        } else {
+            $this->node->nodes[] = $trap;
+        }
+        $trap
+            ->__bindExpression($this, $this->node, $isExpr ? 'expr' : 'nodes')
             ->staticCall($class, ...$arguments);
+        return $trap;
     }
 
     /**

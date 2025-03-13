@@ -73,6 +73,6 @@ class NamespaceUseNode extends QueryNode implements
      */
     public function reconstruction(): void
     {
-        $this->node->name = Node::name($this->name);
+        $this->node->uses = [Node::useItem($this->name)];
     }
 }

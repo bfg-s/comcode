@@ -48,7 +48,7 @@ class LineNode extends QueryNode implements
      */
     public function birth(): NodeAbstract
     {
-        return Comcode::anonymousLine();
+        return Comcode::anonymousStmt();
     }
 
     /**

@@ -36,11 +36,7 @@ class ReturnNode extends QueryNode implements
      */
     public function this(): InlineTrap
     {
-        $this->node->expr
-            = new InlineTrap('this');
-
-        return $this->node->expr
-            ->__bindExpression($this, $this->node);
+        return $this->var('this');
     }
 
     /**

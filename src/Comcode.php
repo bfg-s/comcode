@@ -14,7 +14,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeAbstract;
 use PhpParser\ParserFactory;
-use PhpParser\{Lexer, NodeTraverser, NodeVisitor, Parser};
+use PhpParser\{Lexer, NodeTraverser, NodeVisitor, Parser, PhpVersion};
 
 class Comcode
 {
@@ -79,13 +79,8 @@ class Comcode
             ? $code : "<?php\n\n".$code;
 
         if ($file) {
-            $lexer = new Lexer\Emulative([
-                'usedAttributes' => [
-                    'comments',
-                    'startLine', 'endLine',
-                    'startTokenPos', 'endTokenPos',
-                ],
-            ]);
+            $phpVersion = PhpVersion::fromComponents(8, 4);
+            $lexer = new Lexer\Emulative($phpVersion);
             $parser = new Parser\Php7($lexer);
 
             $traverser = new NodeTraverser();
@@ -94,7 +89,7 @@ class Comcode
             $oldStmts = $parser->parse($code);
 
             static::$tokens[$file]
-                = [$oldStmts, $lexer];
+                = [$oldStmts, $lexer, $parser->getTokens()];
 
             return $traverser->traverse($oldStmts);
         }
@@ -113,12 +108,11 @@ class Comcode
         ?string $file = null
     ): string {
         if ($file && isset(static::$tokens[$file])) {
-            $tokens = static::$tokens[$file][1]->getTokens();
             return (new PrettyPrinter)
                 ->printFormatPreserving(
                     $node,
                     static::$tokens[$file][0],
-                    $tokens,
+                    static::$tokens[$file][2],
                 );
         }
 
@@ -301,7 +295,7 @@ class Comcode
                         );
                     } else {
                         if (is_array($value)) {
-                            $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+                            $parser = (new ParserFactory)->createForVersion(PhpVersion::fromComponents(8,4));
                             $result = $parser->parse("<?php\n\n\$variable = ".static::var_export($value, $inline).';');
                             return ($result[0] ?? null)?->expr?->expr;
                         }

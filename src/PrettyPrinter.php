@@ -3,7 +3,6 @@
 namespace Bfg\Comcode;
 
 use PhpParser\Node\Expr;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\PrettyPrinter\Standard;
 
 class PrettyPrinter extends Standard
@@ -17,10 +16,14 @@ class PrettyPrinter extends Standard
         $result = "";
 
         foreach ($node->nodes as $nodeChild) {
-            $result .= $this->{'p'.$nodeChild->getType()}($nodeChild);
+            $comments = $nodeChild->getComments();
+            if ($comments) {
+                $result .= $this->nl . $this->pComments($comments);
+            }
+            $result .= $this->{'p'.$nodeChild->getType()}($nodeChild, 0, 161);
         }
 
-        return $result;
+        return $result ? rtrim($result, ';').";" : $result;
     }
 
     /**
@@ -31,11 +34,22 @@ class PrettyPrinter extends Standard
     {
         $result = "";
 
-        if ($node->expr instanceof Expr) {
-            $result .= $this->{'p'.$node->expr->getType()}($node->expr);
+        if ($node instanceof InlineTrap) {
+            foreach ($node->nodes as $nodeChild) {
+                $comments = $nodeChild->getComments();
+                if ($comments) {
+                    $result .= $this->nl . $this->pComments($comments);
+                }
+                $result .= $this->{'p'.$nodeChild->getType()}($nodeChild, 0, 161);
+            }
+            return $result ? rtrim($result, ';').";" : $result;
         } else {
-            if (!$node->expr instanceof AnonymousStmt) {
-                $result .= $node->expr;
+            if ($node->expr instanceof Expr) {
+                $result .= $this->{'p'.$node->expr->getType()}($node->expr, 0, 161);
+            } else {
+                if (!$node->expr instanceof AnonymousStmt) {
+                    $result .= $node->expr;
+                }
             }
         }
 
@@ -51,13 +65,12 @@ class PrettyPrinter extends Standard
         $result = "";
 
         if ($node->expr instanceof Expr) {
-            $result .= $this->{'p'.$node->expr->getType()}($node->expr);
+            $result .= $this->{'p'.$node->expr->getType()}($node->expr, 0, 161);
         } else {
             if (!$node->expr instanceof AnonymousStmt) {
                 $result .= $node->expr;
             }
         }
-
-        return $result ? $result.";" : $result;
+        return $result ? rtrim($result, ';').";" : $result;
     }
 }

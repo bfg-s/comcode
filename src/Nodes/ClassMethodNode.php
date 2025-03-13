@@ -93,6 +93,7 @@ class ClassMethodNode extends QueryNode implements
         if (
             (string) $stmt->name == $this->getName()
         ) {
+            $stmt->stmts = [];
             return true;
         }
         return false;
