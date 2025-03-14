@@ -155,7 +155,7 @@ class Comcode
     public static function fileReservation(
         string $file
     ): string {
-        $prefix = getcwd().'/';
+        $prefix = base_path().DIRECTORY_SEPARATOR;
 
         if (!str_starts_with($file, $prefix)) {
             $file = $prefix.$file;
