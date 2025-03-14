@@ -163,9 +163,9 @@ class InlineTrap extends AnonymousExpr
             $name = substr($name, 0, -2);
             $csm = Node::callStaticMethod(
                 $name,
-                $last instanceof Variable
+                ($last instanceof Variable
                     ? (string) $last->name
-                    : $last,
+                    : $last) ?: Node::name($this->node->name),
             );
             $static = true;
         } else {
